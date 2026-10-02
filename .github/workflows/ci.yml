@@ -1,0 +1,118 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      # Full test suite + JaCoCo gates + embedded Postgres contract.
+      # The dependency warm-up absorbs transient Maven Central failures on a cold cache.
+      # The build itself runs ONCE: a blind retry hides flaky tests.
+      - name: Build & test
+        run: |
+          set -euo pipefail
+          mvn -B --no-transfer-progress -q dependency:go-offline || true
+          mvn -B --no-transfer-progress verify
+
+      # The distribution is assembled from the full reactor: fail fast when a
+      # piece went missing instead of shipping a half-built dist artifact.
+      - name: Check dist layout
+        run: |
+          set -euo pipefail
+          DIST=app/target/dist
+          for f in \
+            "$DIST/saver-launcher.jar" \
+            "$DIST/saver-bot.jar" \
+            "$DIST/libs-manifest.txt" \
+            "$DIST/start.bat" \
+            "$DIST/start.sh"; do
+            if [ ! -f "$f" ]; then
+              echo "::error::missing $f"
+              exit 1
+            fi
+          done
+          if [ ! -d "$DIST/libs" ] || [ -z "$(ls -A "$DIST/libs")" ]; then
+            echo "::error::libs/ is missing or empty"
+            exit 1
+          fi
+          # the launcher must find every library listed in the manifest
+          while IFS='|' read -r rel sum || [ -n "$rel" ]; do
+            case "$rel" in '' | '#'*) continue ;; esac
+            [ -f "$DIST/libs/$rel" ] || { echo "::error::manifest entry missing on disk: $rel"; exit 1; }
+            echo "$sum  $DIST/libs/$rel" | sha256sum -c - >/dev/null \
+              || { echo "::error::sha256 mismatch for $rel"; exit 1; }
+          done < "$DIST/libs-manifest.txt"
+          echo "dist layout OK"
+
+      # The extraction tools are external by design; CI pins only that they install
+      # and answer - the same contract the Docker image and the README promise.
+      - name: Extraction tools smoke
+        run: |
+          set -euo pipefail
+          pipx install yt-dlp >/dev/null 2>&1 || pip install --user -q yt-dlp
+          pipx install gallery-dl >/dev/null 2>&1 || pip install --user -q gallery-dl
+          export PATH="$HOME/.local/bin:$PATH"
+          yt-dlp --version
+          gallery-dl --version
+
+      # Real smoke: the distribution starts via the launcher and answers /healthz,
+      # with the tools on PATH so the engine reports them present.
+      # The config is written line by line (no heredoc); health is checked with python3 -
+      # it exists on every runner, unlike curl/wget.
+      - name: Smoke (launcher + /healthz)
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          WORK=$(mktemp -d)
+          mkdir -p "$WORK/config"
+          {
+            echo "storage: { type: sqlite, sqlite-path: data/saver.db }"
+            echo "webapp: { enabled: true, bind-host: 127.0.0.1, port: 8099 }"
+            echo "locale: { default: ru, supported: [ru, en] }"
+            echo "platforms: { telegram: { enabled: false } }"
+          } > "$WORK/config/application.yml"
+          cd "$WORK"
+          LOG="$WORK/launcher.log"
+          java -Dsaver.home="$GITHUB_WORKSPACE/app/target/dist" \
+               -jar "$GITHUB_WORKSPACE/app/target/dist/saver-launcher.jar" > "$LOG" 2>&1 &
+          PID=$!
+          trap 'kill $PID || true' EXIT
+          for i in $(seq 1 60); do
+            if python3 -c "import urllib.request as u; u.urlopen('http://127.0.0.1:8099/healthz', timeout=2)" 2>/dev/null; then
+              echo "healthz OK after ${i}s"
+              python3 -c "import urllib.request as u; print(u.urlopen('http://127.0.0.1:8099/healthz', timeout=2).read().decode())"
+              python3 -c "import urllib.request as u; print(u.urlopen('http://127.0.0.1:8099/metrics', timeout=2).read()[:300].decode())"
+              # the engine must see the tools CI just installed
+              python3 -c "import json, urllib.request; h = json.load(urllib.request.urlopen('http://127.0.0.1:8099/healthz', timeout=2)); assert h['backends']['ytdlp'], 'healthz reports yt-dlp missing'; print('toolchain visible to the engine: OK')"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::healthz did not respond within 60 seconds"
+          cat "$LOG"
+          exit 1
+
+      # The runtime image must actually build: it pins the extraction tools and wires
+      # the healthcheck; a broken Dockerfile must fail HERE, not on the deploy host.
+      - name: Docker image builds (tools pinned)
+        run: |
+          set -euo pipefail
+          docker build -t saver-bot:ci .
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: saver-bot-dist
+          path: app/target/dist/

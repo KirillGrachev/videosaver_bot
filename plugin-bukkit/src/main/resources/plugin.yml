@@ -1,0 +1,10 @@
+name: SaverBot
+version: '1.0.0'
+main: eu.neydev.saver.plugin.bukkit.SaverBotPlugin
+api-version: '1.21'
+description: >-
+  Saver Bot inside the Minecraft server: send "!save <url>" (or any other bot
+  command with the "!" prefix) in chat and the downloaded media lands in
+  plugins/SaverBot/downloads/<your-uuid>/. All messenger platforms configured in
+  plugins/SaverBot/application.yml keep working from the same jar.
+author: neydev

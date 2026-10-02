@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.neydev.saver</groupId>
+        <artifactId>saver-bot-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>saver-launcher</artifactId>
+    <name>Saver Bot Launcher</name>
+    <description>
+        Thin loader: the main jar contains ONLY our code; third-party jars
+        live next to it in libs/ (repository layout). The launcher verifies the manifest
+        (coordinates + sha256), downloads whatever is missing from Maven Central and starts
+        the application in an isolated URLClassLoader. No 40 MB fat jars.
+    </description>
+
+  <properties>
+    <maven.compiler.release>8</maven.compiler.release>
+    <maven.compiler.testRelease>21</maven.compiler.testRelease>
+    <!-- JRE download/extraction is network-bound; covered by real provisioning, not tests. -->
+    <jacoco.instruction.minimum>0.35</jacoco.instruction.minimum>
+  </properties>
+
+    <!-- The launcher deliberately has no dependencies: it needs JDK classes only -->
+    <build>
+        <finalName>saver-launcher</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>eu.neydev.saver.launcher.Launcher</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+

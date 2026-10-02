@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.neydev.saver</groupId>
+        <artifactId>saver-bot-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>saver-app</artifactId>
+    <name>Saver Bot App</name>
+    <description>
+        Composition root (Guice) and the distribution: a thin saver-bot.jar (our code only)
+        + saver-launcher.jar + libs/ (third-party, repository layout) + sha256 manifest.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-platform-telegram</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-platform-vk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-platform-discord</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-platform-slack</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-platform-whatsapp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-platform-viber</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <!-- only for exec-based manifest generation at build time -->
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-launcher</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>saver-bot</finalName>
+        <plugins>
+            <!-- 1) third-party dependencies into target/libs in repository layout -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-libs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>runtime</includeScope>
+                            <excludeGroupIds>eu.neydev.saver</excludeGroupIds>
+                            <useRepositoryLayout>true</useRepositoryLayout>
+                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 2) relpath|sha256 manifest from the actual libs/ contents -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-libs-manifest</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>eu.neydev.saver.launcher.ManifestGenerator</mainClass>
+                            <classpathScope>compile</classpathScope>
+                            <arguments>
+                                <argument>${project.build.directory}/libs</argument>
+                                <argument>${project.build.directory}/dist/libs-manifest.txt</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 3) thin jar: ONLY our modules, no library code -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <include>eu.neydev.saver:saver-core</include>
+                                    <include>eu.neydev.saver:saver-platform-telegram</include>
+                                    <include>eu.neydev.saver:saver-platform-vk</include>
+                                    <include>eu.neydev.saver:saver-platform-discord</include>
+                                    <include>eu.neydev.saver:saver-platform-slack</include>
+                                    <include>eu.neydev.saver:saver-platform-whatsapp</include>
+                                    <include>eu.neydev.saver:saver-platform-viber</include>
+                                </includes>
+                            </artifactSet>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>eu.neydev.saver.app.Main</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 4) distribution: dist/ = launcher + thin jar + manifest + libs/ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>assemble-dist</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${project.build.directory}/saver-bot.jar"
+                                      todir="${project.build.directory}/dist"/>
+                                <copy file="${project.basedir}/../launcher/target/saver-launcher.jar"
+                                      todir="${project.build.directory}/dist"/>
+                                <copy file="${project.basedir}/src/main/resources/scripts/start.bat"
+                                      todir="${project.build.directory}/dist"/>
+                                <copy file="${project.basedir}/src/main/resources/scripts/start.sh"
+                                      todir="${project.build.directory}/dist"/>
+                                <copy todir="${project.build.directory}/dist/libs">
+                                    <fileset dir="${project.build.directory}/libs"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

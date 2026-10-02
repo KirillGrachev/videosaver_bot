@@ -1,0 +1,23 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- The trace MDC group is printed only when a trace id is present;
+                 %replace strips the empty "[] " so lines stay clean -->
+            <pattern>%d{HH:mm:ss.SSS} %-5level %replace([%X{trace}] ){'\[\] ',''}%logger{0} - %msg%n</pattern>
+            <!-- Write in the console encoding (CP866/CP1251 on Windows),
+                 otherwise non-ASCII output turns into mojibake; outside a
+                 console the stdout.encoding property is absent and UTF-8 stays -->
+            <charset>${stdout.encoding:-UTF-8}</charset>
+        </encoder>
+    </appender>
+
+    <logger name="eu.neydev.saver" level="INFO"/>
+    <logger name="net.dv8tion.jda" level="WARN"/>
+    <logger name="org.telegram" level="WARN"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
+

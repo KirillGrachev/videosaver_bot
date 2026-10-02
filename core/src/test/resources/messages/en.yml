@@ -1,0 +1,53 @@
+message:
+  start: "Start"
+  help: "Help"
+  countdown: "{days} {days|plural:one=day|other=days} left until {date}"
+  greeting: "Found {age} {age|plural:one=file|other=files}!"
+  plain: "no placeholders"
+  prompt:
+    date: "Enter date"
+  date:
+    set: "Saved {date}, {days} left"
+    invalid: "Cannot parse"
+  answer:
+    not_set: "No date"
+  settings:
+    view: "Settings"
+    not_set: "not set"
+    "on": "on"
+    "off": "off"
+  notify:
+    "on": "On"
+    "off": "Off"
+  cancelled: "Cancelled"
+  reloaded: "Reloaded"
+  about: "About {url}"
+  perm:
+    not: "Denied"
+  flood: "Too fast!"
+  delete:
+    confirm: "confirm"
+    done: "done"
+reminder:
+  countdown: "{days} {days|plural:one=day|other=days} to go"
+  done: "Done {age}!"
+  done.no_year: "All done!"
+button:
+  about: "About"
+  github: "GitHub"
+  set_date: "Date"
+  notify_on: "On"
+  notify_off: "Off"
+  days_to: "Days to"
+  days_since: "Days since"
+  settings: "Settings"
+  back: "Back"
+  time: "Time"
+  zone: "Zone"
+  zone_manual: "Enter my own"
+  language: "Language"
+  delete: "Delete my data"
+  delete_yes: "Yes, delete"
+  delete_no: "Cancel"
+  webapp: "App"
+

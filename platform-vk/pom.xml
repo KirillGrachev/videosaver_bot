@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.neydev.saver</groupId>
+        <artifactId>saver-bot-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>saver-platform-vk</artifactId>
+    <name>Saver Bot Platform: VK</name>
+    <description>
+        VK adapter: a custom thin Bots Long Poll API and messages.send client
+        on JDK HttpClient (no heavyweight SDK), VK keyboard rendering with payload actions.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+

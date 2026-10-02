@@ -1,0 +1,297 @@
+# =============================================================================
+#  Saver Bot — built-in source catalog.
+#
+#  Each entry routes a host family to the extraction technology that works best
+#  for it. The catalog is NOT a whitelist: an unrecognized host falls back to the
+#  generic web source (OpenGraph scrape -> yt-dlp generic -> direct file), so any
+#  public page with media meta is still attempted.
+#
+#  Fields:
+#    id      — stable lowercase slug (metrics, storage, sources.disabled).
+#    title   — human name for /sources.
+#    hosts   — suffix patterns; "example.com" also covers "m.example.com".
+#    backend — ytdlp | gallerydl | http | direct (tried FIRST; the chain keeps
+#              fallbacks, so a video on a gallery site is still extracted).
+#    status  — ok | limited | login (shown honestly in /sources).
+#    note    — optional one-line caveat.
+#
+#  An external config/sources.yml merges over this file: the same id overrides,
+#  a new id extends. Extraction itself is only as fresh as the installed
+#  yt-dlp / gallery-dl — keep the tools updated (Docker image does it on build).
+# =============================================================================
+sources:
+
+  # ---- video platforms ------------------------------------------------------
+  - { id: youtube, title: YouTube, backend: ytdlp, status: ok,
+      hosts: [youtube.com, youtu.be, youtube-nocookie.com] }
+  - { id: tiktok, title: TikTok, backend: ytdlp, status: ok,
+      hosts: [tiktok.com, tiktokv.com, iesdouyin.com] }
+  - { id: instagram, title: Instagram, backend: ytdlp, status: limited,
+      hosts: [instagram.com, instagr.am],
+      note: "Public posts/reels; login walls are frequent" }
+  - { id: facebook, title: Facebook, backend: ytdlp, status: limited,
+      hosts: [facebook.com, fb.watch, fb.com],
+      note: "Public videos only" }
+  - { id: x, title: X (Twitter), backend: ytdlp, status: ok,
+      hosts: [x.com, twitter.com, t.co] }
+  - { id: reddit, title: Reddit, backend: ytdlp, status: ok,
+      hosts: [reddit.com, redd.it, redgifs.com] }
+  - { id: pinterest, title: Pinterest, backend: ytdlp, status: ok,
+      hosts: [pinterest.com, pinterest.co.uk, pinterest.de, pinterest.fr, pin.it] }
+  - { id: snapchat, title: Snapchat, backend: ytdlp, status: limited,
+      hosts: [snapchat.com], note: "Public Spotlight/stories only" }
+  - { id: threads, title: Threads, backend: ytdlp, status: ok,
+      hosts: [threads.net] }
+  - { id: telegram, title: Telegram, backend: http, status: limited,
+      hosts: [t.me, telegram.me, telegram.dog],
+      note: "Public channel previews (t.me/s/...)" }
+  - { id: vk, title: VK, backend: ytdlp, status: ok,
+      hosts: [vk.com, vk.ru, vkvideo.ru, vk.link] }
+  - { id: linkedin, title: LinkedIn, backend: ytdlp, status: login,
+      hosts: [linkedin.com, lnkd.in] }
+  - { id: tumblr, title: Tumblr, backend: gallerydl, status: ok,
+      hosts: [tumblr.com, t.umblr.com] }
+  - { id: bluesky, title: Bluesky, backend: ytdlp, status: ok,
+      hosts: [bsky.app] }
+  - { id: mastodon, title: Mastodon, backend: ytdlp, status: ok,
+      hosts: [mastodon.social, mastodon.online, mastodon.xyz],
+      note: "Other instances fall back to the generic web source" }
+  - { id: likee, title: Likee, backend: ytdlp, status: ok,
+      hosts: [likee.video, likee.com] }
+  - { id: lemon8, title: Lemon8, backend: ytdlp, status: limited,
+      hosts: [lemon8-app.com] }
+  - { id: rednote, title: RedNote (Xiaohongshu), backend: ytdlp, status: limited,
+      hosts: [xiaohongshu.com, xhslink.com] }
+  - { id: clapper, title: Clapper, backend: ytdlp, status: ok,
+      hosts: [clapperapp.com] }
+  - { id: triller, title: Triller, backend: ytdlp, status: limited,
+      hosts: [triller.co, triller.tv] }
+  - { id: fanbase, title: Fanbase, backend: http, status: limited,
+      hosts: [fanbase.app] }
+  - { id: kwai, title: Kwai, backend: ytdlp, status: ok,
+      hosts: [kwai.com, kwai-video.com] }
+  - { id: josh, title: Josh, backend: http, status: limited,
+      hosts: [myjosh.com] }
+  - { id: moj, title: Moj, backend: http, status: limited,
+      hosts: [mojapp.com] }
+  - { id: chingari, title: Chingari, backend: ytdlp, status: ok,
+      hosts: [chingari.io] }
+  - { id: rizzle, title: Rizzle, backend: http, status: limited,
+      hosts: [rizzle.tv, rizzle.app] }
+  - { id: firework, title: Firework, backend: http, status: limited,
+      hosts: [firework.tv] }
+  - { id: vero, title: Vero, backend: http, status: limited,
+      hosts: [vero.co] }
+
+  # ---- photo communities ----------------------------------------------------
+  - { id: flickr, title: Flickr, backend: gallerydl, status: ok,
+      hosts: [flickr.com, flic.kr] }
+  - { id: vsco, title: VSCO, backend: gallerydl, status: limited,
+      hosts: [vsco.co] }
+  - { id: bereal, title: BeReal, backend: http, status: login,
+      hosts: [bere.al] }
+  - { id: glass, title: Glass, backend: http, status: limited,
+      hosts: [glass.photo] }
+  - { id: pixelfed, title: Pixelfed, backend: ytdlp, status: ok,
+      hosts: [pixelfed.org, pixelfed.social, pixelfed.de] }
+  - { id: 500px, title: 500px, backend: http, status: limited,
+      hosts: [500px.com] }
+  - { id: unsplash, title: Unsplash, backend: http, status: ok,
+      hosts: [unsplash.com],
+      note: "og preview may be downscaled; direct photos.unsplash.com links give the original" }
+  - { id: eyeem, title: EyeEm, backend: http, status: limited,
+      hosts: [eyeem.com] }
+  - { id: photocrowd, title: Photocrowd, backend: http, status: limited,
+      hosts: [photocrowd.com] }
+  - { id: gurushots, title: GuruShots, backend: http, status: login,
+      hosts: [gurushots.com] }
+
+  # ---- art & design ---------------------------------------------------------
+  - { id: behance, title: Behance, backend: http, status: limited,
+      hosts: [behance.net], note: "JS-rendered: only pages exposing og/JSON-LD previews" }
+  - { id: dribbble, title: Dribbble, backend: http, status: limited,
+      hosts: [dribbble.com] }
+  - { id: cara, title: Cara, backend: http, status: ok,
+      hosts: [cara.app] }
+  - { id: artstation, title: ArtStation, backend: gallerydl, status: ok,
+      hosts: [artstation.com, artstn.co] }
+  - { id: deviantart, title: DeviantArt, backend: gallerydl, status: ok,
+      hosts: [deviantart.com, fav.me, sta.sh] }
+  - { id: artfol, title: Artfol, backend: http, status: limited,
+      hosts: [artfol.co] }
+  - { id: pixiv, title: Pixiv, backend: gallerydl, status: login,
+      hosts: [pixiv.net, pixiv.me, pximg.net] }
+  - { id: newgrounds, title: Newgrounds, backend: gallerydl, status: ok,
+      hosts: [newgrounds.com] }
+  - { id: weasyl, title: Weasyl, backend: gallerydl, status: ok,
+      hosts: [weasyl.com] }
+  - { id: toyhouse, title: Toyhouse, backend: gallerydl, status: ok,
+      hosts: [toyhou.se] }
+  - { id: furaffinity, title: Fur Affinity, backend: gallerydl, status: ok,
+      hosts: [furaffinity.net] }
+
+  # ---- video hosting --------------------------------------------------------
+  - { id: niconico, title: Niconico, backend: ytdlp, status: ok,
+      hosts: [nicovideo.jp, nico.ms] }
+  - { id: bilibili, title: Bilibili, backend: ytdlp, status: ok,
+      hosts: [bilibili.com, b23.tv, bilibili.tv] }
+  - { id: dailymotion, title: Dailymotion, backend: ytdlp, status: ok,
+      hosts: [dailymotion.com, dai.ly] }
+  - { id: vimeo, title: Vimeo, backend: ytdlp, status: ok,
+      hosts: [vimeo.com] }
+  - { id: rumble, title: Rumble, backend: ytdlp, status: ok,
+      hosts: [rumble.com] }
+  - { id: odysee, title: Odysee, backend: ytdlp, status: ok,
+      hosts: [odysee.com] }
+  - { id: peertube, title: PeerTube, backend: ytdlp, status: ok,
+      hosts: [peertube.tv],
+      note: "Other instances fall back to the generic web source" }
+  - { id: veoh, title: Veoh, backend: ytdlp, status: ok,
+      hosts: [veoh.com] }
+  - { id: twitch, title: Twitch, backend: ytdlp, status: ok,
+      hosts: [twitch.tv], note: "Clips and VODs; subs need cookies" }
+  - { id: streamable, title: Streamable, backend: ytdlp, status: ok,
+      hosts: [streamable.com] }
+
+  # ---- memes & gifs ---------------------------------------------------------
+  - { id: giphy, title: GIPHY, backend: http, status: ok,
+      hosts: [giphy.com, gph.is] }
+  - { id: tenor, title: Tenor, backend: http, status: ok,
+      hosts: [tenor.com] }
+  - { id: imgur, title: Imgur, backend: gallerydl, status: ok,
+      hosts: [imgur.com] }
+  - { id: imgflip, title: Imgflip, backend: http, status: ok,
+      hosts: [imgflip.com] }
+  - { id: 9gag, title: 9GAG, backend: ytdlp, status: ok,
+      hosts: [9gag.com] }
+  - { id: memedroid, title: Memedroid, backend: http, status: limited,
+      hosts: [memedroid.com] }
+  - { id: knowyourmeme, title: Know Your Meme, backend: ytdlp, status: ok,
+      hosts: [knowyourmeme.com] }
+
+  # ---- inspiration & product ------------------------------------------------
+  - { id: designspiration, title: Designspiration, backend: http, status: limited,
+      hosts: [designspiration.com, designspiration.net] }
+  - { id: arenap, title: Are.na, backend: http, status: ok,
+      hosts: [are.na] }
+  - { id: awwwards, title: Awwwards, backend: http, status: limited,
+      hosts: [awwwards.com] }
+  - { id: figma, title: Figma Community, backend: http, status: limited,
+      hosts: [figma.com], note: "Previews only; source files need Figma" }
+  - { id: producthunt, title: Product Hunt, backend: http, status: limited,
+      hosts: [producthunt.com] }
+  - { id: indiehackers, title: Indie Hackers, backend: http, status: limited,
+      hosts: [indiehackers.com] }
+
+  # ---- blogs & text platforms (cover images / embedded media) ---------------
+  - { id: devto, title: Dev.to, backend: http, status: ok,
+      hosts: [dev.to] }
+  - { id: hashnode, title: Hashnode, backend: http, status: ok,
+      hosts: [hashnode.dev, hashnode.com] }
+  - { id: medium, title: Medium, backend: http, status: limited,
+      hosts: [medium.com], note: "Paywalled articles only expose previews" }
+  - { id: substack, title: Substack, backend: http, status: limited,
+      hosts: [substack.com], note: "Paywalled posts only expose previews" }
+  - { id: quora, title: Quora, backend: http, status: limited,
+      hosts: [quora.com] }
+  - { id: writeas, title: Write.as, backend: http, status: ok,
+      hosts: [write.as] }
+
+  # ---- fediverse & misc communities -----------------------------------------
+  - { id: discord, title: Discord, backend: direct, status: limited,
+      hosts: [discord.com, discord.gg, discordapp.com, discordapp.net],
+      note: "Attachment CDN links; message links need the bot in the channel" }
+  - { id: lemmy, title: Lemmy, backend: http, status: ok,
+      hosts: [lemmy.ml, lemmy.world] }
+  - { id: nostr, title: Nostr, backend: http, status: limited,
+      hosts: [iris.to, snort.social, primal.net] }
+  - { id: farcaster, title: Farcaster, backend: http, status: limited,
+      hosts: [warpcast.com] }
+  - { id: diaspora, title: Diaspora, backend: http, status: ok,
+      hosts: [diasp.org, joindiaspora.com] }
+  - { id: friendica, title: Friendica, backend: http, status: ok,
+      hosts: [friendica.world] }
+  - { id: misskey, title: Misskey, backend: ytdlp, status: ok,
+      hosts: [misskey.io, misskey.art] }
+  - { id: firefish, title: Firefish, backend: ytdlp, status: limited,
+      hosts: [calckey.world] }
+  - { id: pleroma, title: Pleroma, backend: http, status: ok,
+      hosts: [pleroma.social] }
+  - { id: minds, title: Minds, backend: http, status: limited,
+      hosts: [minds.com] }
+  - { id: gab, title: Gab, backend: http, status: ok,
+      hosts: [gab.com] }
+  - { id: gettr, title: Gettr, backend: http, status: limited,
+      hosts: [gettr.com] }
+  - { id: truthsocial, title: Truth Social, backend: http, status: limited,
+      hosts: [truthsocial.com] }
+
+  # ---- asia -----------------------------------------------------------------
+  - { id: linevoom, title: LINE VOOM, backend: http, status: login,
+      hosts: [voom.line.me] }
+  - { id: mildom, title: Mildom, backend: ytdlp, status: limited,
+      hosts: [mildom.com], note: "Service was shut down; archives only" }
+  - { id: fantia, title: Fantia, backend: gallerydl, status: login,
+      hosts: [fantia.jp] }
+  - { id: weibo, title: Weibo, backend: ytdlp, status: ok,
+      hosts: [weibo.com, weibo.cn] }
+  - { id: douyin, title: Douyin, backend: ytdlp, status: ok,
+      hosts: [douyin.com] }
+  - { id: kuaishou, title: Kuaishou, backend: ytdlp, status: ok,
+      hosts: [kuaishou.com] }
+  - { id: youku, title: Youku, backend: ytdlp, status: ok,
+      hosts: [youku.com] }
+  - { id: tencentvideo, title: Tencent Video, backend: ytdlp, status: limited,
+      hosts: [v.qq.com], note: "VIP titles are not downloadable" }
+  - { id: douban, title: Douban, backend: ytdlp, status: ok,
+      hosts: [douban.com] }
+  - { id: naverblog, title: Naver Blog, backend: http, status: limited,
+      hosts: [blog.naver.com] }
+  - { id: navercafe, title: Naver Cafe, backend: http, status: login,
+      hosts: [cafe.naver.com] }
+  - { id: navertv, title: Naver TV, backend: ytdlp, status: ok,
+      hosts: [tv.naver.com] }
+  - { id: kakaostory, title: KakaoStory, backend: http, status: login,
+      hosts: [story.kakao.com] }
+  - { id: soop, title: SOOP (AfreecaTV), backend: ytdlp, status: ok,
+      hosts: [sooplive.co.kr, afreecatv.com] }
+
+  # ---- india ------------------------------------------------------------------
+  - { id: sharechat, title: ShareChat, backend: ytdlp, status: limited,
+      hosts: [sharechat.com] }
+  - { id: roposo, title: Roposo, backend: http, status: limited,
+      hosts: [roposo.com], note: "Service was shut down; archives only" }
+  - { id: snackvideo, title: SnackVideo, backend: ytdlp, status: ok,
+      hosts: [snackvideo.com] }
+
+  # ---- extras: popular sources the same pipeline covers ----------------------
+  - { id: soundcloud, title: SoundCloud, backend: ytdlp, status: ok,
+      hosts: [soundcloud.com, on.soundcloud.com] }
+  - { id: rutube, title: Rutube, backend: ytdlp, status: ok,
+      hosts: [rutube.ru] }
+  - { id: okru, title: OK.ru, backend: ytdlp, status: ok,
+      hosts: [ok.ru] }
+  - { id: kick, title: Kick, backend: ytdlp, status: ok,
+      hosts: [kick.com] }
+  - { id: dzen, title: Dzen, backend: ytdlp, status: ok,
+      hosts: [dzen.ru] }
+  - { id: loom, title: Loom, backend: ytdlp, status: ok,
+      hosts: [loom.com] }
+  - { id: archiveorg, title: Internet Archive, backend: ytdlp, status: ok,
+      hosts: [archive.org] }
+  - { id: bitchute, title: BitChute, backend: ytdlp, status: ok,
+      hosts: [bitchute.com] }
+  - { id: pikabu, title: Pikabu, backend: http, status: ok,
+      hosts: [pikabu.ru] }
+  - { id: patreon, title: Patreon, backend: ytdlp, status: login,
+      hosts: [patreon.com] }
+  - { id: boosty, title: Boosty, backend: ytdlp, status: login,
+      hosts: [boosty.to] }
+  - { id: bandcamp, title: Bandcamp, backend: ytdlp, status: ok,
+      hosts: [bandcamp.com] }
+  - { id: mixcloud, title: Mixcloud, backend: ytdlp, status: ok,
+      hosts: [mixcloud.com] }
+  - { id: audiomack, title: Audiomack, backend: ytdlp, status: ok,
+      hosts: [audiomack.com] }
+  - { id: instructables, title: Instructables, backend: http, status: ok,
+      hosts: [instructables.com] }

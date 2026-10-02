@@ -1,0 +1,29 @@
+# Golden corpus of REAL yt-dlp error lines (collected from yt-dlp releases 2023-2026
+# and its issue tracker), each prefixed with the category the bot must classify it as.
+# Format: CATEGORY<TAB>error line. Lines starting with # are comments.
+#
+# This file is the anti-circularity net: the classifier patterns in YtDlpExtractor were
+# NOT written from these strings alone, but every pattern change must keep this corpus
+# green. When a yt-dlp release rewords something, add the new line HERE first.
+LOGIN_REQUIRED	ERROR: [youtube] dQw4w9WgXcQ: Sign in to confirm you're not a bot
+LOGIN_REQUIRED	ERROR: [youtube] abc123: This video is only available for registered users with a YouTube Premium account
+LOGIN_REQUIRED	ERROR: [twitch] someuser: Login required to access this content
+LOGIN_REQUIRED	ERROR: [instagram] CxYz123: Authentication required: Use --cookies
+AGE_RESTRICTED	ERROR: [youtube] xyz789: Sign in to confirm your age
+AGE_RESTRICTED	ERROR: [youtube] xyz789: Video is age restricted. Please confirm your age on the website
+PRIVATE	ERROR: [youtube] priv1: Private video. Sign in if you've been granted access to this video
+PRIVATE	ERROR: [youtube] priv2: This video is private
+GEO_BLOCKED	ERROR: [youtube] geo1: The uploader has not made this video available in your country
+GEO_BLOCKED	ERROR: [soundcloud] track1: This track is geo-blocked
+NOT_FOUND	ERROR: [youtube] gone1: Video unavailable. This video has been removed by the uploader
+NOT_FOUND	ERROR: HTTP Error 404: Not Found
+NOT_FOUND	ERROR: [vimeo] 12345: This video does not exist or has been deleted
+RATE_LIMITED	ERROR: unable to download webpage: HTTP Error 429: Too Many Requests
+RATE_LIMITED	ERROR: [tiktok] 7123: HTTP Error 429: Too Many Requests. Retrying in 5 seconds
+UNSUPPORTED	ERROR: Unsupported URL: https://example.com/some/page
+UNSUPPORTED	ERROR: [generic] somepage: Requested format is not available
+NETWORK	ERROR: unable to download video data: HTTP Error 403: Forbidden
+NETWORK	ERROR: unable to download webpage: <urlopen error [Errno 110] Connection timed out>
+NETWORK	ERROR: [download] Got error: The read operation timed out
+LIVE_STREAM	ERROR: [twitch] streamer: streamer is a live stream; use --live-from-start to download from the start
+TOO_LARGE	ERROR: The file is larger than max-filesize; skipping download

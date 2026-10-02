@@ -1,0 +1,21 @@
+<configuration>
+    <!-- Production profile: structured JSON logs with a trace field.
+         Enable with: java -Dlogback.configurationFile=logback-json.xml -jar ... -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>{"ts":"%d{ISO8601}","level":"%level","trace":"%X{trace:-}","logger":"%logger","msg":"%replace(%replace(%msg){'"', '\"'}){'[\r\n]+', ' '}"}%n</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <logger name="eu.neydev.saver" level="INFO"/>
+    <logger name="net.dv8tion.jda" level="WARN"/>
+    <logger name="org.telegram" level="WARN"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
+

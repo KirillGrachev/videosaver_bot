@@ -1,0 +1,198 @@
+# =============================================================================
+#  Saver Bot — default configuration.
+#
+#  An external config/application.yml (if present) overrides this file entirely.
+#  Secrets are NOT stored here: ${VAR:} values come from environment
+#  variables, and when those are missing — from config/.env or .env (see README).
+#  Unknown keys = startup failure (typos become visible immediately).
+# =============================================================================
+
+storage:
+  # sqlite  — file-based storage: WAL mode, HikariCP pool, zero infrastructure.
+  # postgres — for growth: set jdbc-url / username / password.
+  type: sqlite
+  sqlite-path: data/saver.db
+  # jdbc-url: jdbc:postgresql://localhost:5432/saver
+  # username: ${DB_USER:}
+  # password: ${DB_PASSWORD:}
+  pool-size: 8
+
+downloader:
+  # Concurrent download workers (virtual threads; the number bounds disk/network use).
+  workers: 4
+  # Waiting jobs beyond this are refused with an honest "server busy" instead of
+  # silently rotting in an unbounded queue.
+  queue-capacity: 200
+  # Non-terminal (queued + running) jobs per user at once.
+  per-user-concurrent: 2
+  # Galleries and playlists: how many files one request may bring.
+  max-items-per-request: 10
+  # Metadata probe and the whole download, per request.
+  extract-timeout: 2m
+  download-timeout: 15m
+  # Global per-file ceiling; the effective cap is min(this, the platform delivery cap).
+  max-file-size: 500mb
+  # best | 1080 | 720 | 480 | audio — the preset until the user picks their own.
+  default-quality: best
+  # SSRF guard: false blocks private/loopback/link-local targets (keep it false on
+  # any public deployment; true only for a lab where the bot SHOULD reach the LAN).
+  allow-private-networks: false
+  # Proxy for the extraction tools and the built-in scraper, e.g. socks5://127.0.0.1:9050.
+  proxy: ${DOWNLOADER_PROXY:}
+  # Cookies for login-walled sources (Netscape format). Read the README disclaimer:
+  # the account behind the file is fully responsible for what the bot fetches with it.
+  cookies-file: ${COOKIES_FILE:}
+  # true (default): cookies attach ONLY to requests from owners - a public bot never
+  # lends the operator's logged-in identity to strangers.
+  cookies-owner-only: true
+  # Politeness: max jobs STARTED per second per source (yt-dlp makes many requests
+  # inside one job; this bounds how often we knock on one site).
+  per-source-per-second: 2
+  # yt-dlp --sleep-requests: pause between its own metadata HTTP requests.
+  sleep-requests: 500ms
+  # Job log retention (privacy + growth): rows older than this are pruned daily.
+  # 0 = keep forever. URLs are capped at 500 chars in the log either way.
+  job-log-retention: 90d
+  # On shutdown, wait up to this long for running downloads to finish before killing.
+  shutdown-drain: 30s
+  # Deliver subtitle tracks (.vtt documents) alongside videos.
+  write-subs: false
+  # AUDIO preset: also deliver the cover image (needs the source to expose one).
+  audio-thumbnail: false
+  # Extensions never delivered as files (malware-channel guard). An empty list []
+  # disables the guard; absent key = the built-in executable/script list.
+  # blocked-extensions: []
+  tools:
+    # Paths or bare names resolved via PATH. Missing tools disable only their backend.
+    yt-dlp: ${YTDLP_PATH:yt-dlp}
+    gallery-dl: ${GALLERYDL_PATH:gallery-dl}
+    ffmpeg: ${FFMPEG_PATH:ffmpeg}
+    # 0 = never auto-update (the image/package manager owns the tools); otherwise the
+    # interval of "yt-dlp -U" attempts.
+    update-interval: 0s
+  vault:
+    # Scratch space for downloads in flight.
+    dir: data/media
+    max-size: 10gb
+    # Safety net: anything older than this is swept no matter the job state.
+    ttl: 30m
+    # How long sent files survive for dispatcher retries before deletion.
+    send-grace: 10m
+
+limits:
+  # Anti-abuse: downloading is expensive, a public bot without quotas is a relay.
+  jobs-per-user-per-hour: 20
+  jobs-per-user-per-day: 200
+  bytes-per-user-per-day: 2gb
+
+delivery:
+  # Oversized file: send the direct link instead of a bare refusal.
+  link-fallback: true
+  # Per-platform caps mirror the published Bot API limits (decimal MB). A scalar is
+  # shorthand for one cap on every media kind; a map overrides per kind.
+  caps:
+    telegram: { photo: 10mb, video: 50mb, audio: 50mb, gif: 50mb, document: 50mb }
+    vk: { photo: 50mb, video: 200mb, audio: 200mb, gif: 200mb, document: 200mb }
+    discord: 25mb
+    slack: 100mb
+    whatsapp: { photo: 5mb, video: 16mb, audio: 16mb, gif: 16mb, document: 100mb }
+    # Viber fetches media by URL: picture is a static 1MB image, video 26MB, file 50MB.
+    viber: { photo: 1mb, video: 26mb, audio: 50mb, gif: 50mb, document: 50mb }
+    # Bukkit delivers to the server's own disk (plugins/SaverBot/downloads) - the cap
+    # is a sanity ceiling, not an API limit.
+    bukkit: 2048mb
+
+pipeline:
+  inbound-queue-capacity: 10000
+  worker-threads: 16
+  # Per-user anti-flood: at most N inbound events per 10-second window.
+  inbound-per-user-per-window: 8
+  outbound-workers-per-platform: 4
+  # Global platform rate limit (messages/sec) and per-chat window (messages/min).
+  outbound-global-per-second: 24
+  outbound-per-chat-per-minute: 18
+  send-timeout: 15s
+
+webapp:
+  # Service HTTP server: /healthz, /metrics, short-lived media links and platform
+  # webhooks (WhatsApp, Viber). public-url is REQUIRED for Viber media (it fetches
+  # by URL) and for webhook registration.
+  enabled: false
+  bind-host: 127.0.0.1
+  port: 8080
+  # public-url: https://saver.example.com
+  # Lifetime of the opaque /media/{token} links (Viber fetch). Short on purpose:
+  # the token IS the authorization, so the sharing window stays small.
+  media-link-ttl: 5m
+  # Protects /metrics (query ?token=... or "Authorization: Bearer ..."). Empty = open.
+  # Set it whenever bind-host is not loopback.
+  metrics-token: ${METRICS_TOKEN:}
+
+status:
+  # One INFO line with the key counters (uptime, platforms, queues, jobs, vault)
+  # every N, plus a liveness file touched on the same beat for container HEALTHCHECK.
+  heartbeat-interval: 5m
+  liveness-file: data/bot.liveness
+
+community:
+  # Public repository: /about and the main-menu button. Empty — the block is hidden.
+  github-url: ${GITHUB_URL:}
+
+locale:
+  default: ru
+  supported: [ru, en, uk]
+  display-names:
+    ru: Русский
+    en: English
+    uk: Українська
+
+sources:
+  # Catalog ids from sources.yml to refuse (URLs still resolve to a source name,
+  # jobs are rejected with an honest message). External config/sources.yml merges
+  # over the built-in catalog: same id overrides, new id extends.
+  disabled: []
+
+platforms:
+  telegram:
+    enabled: true
+    token: ${TELEGRAM_BOT_TOKEN:}
+    # Optional: base URL of a LOCAL Bot API server (github.com/tdlib/telegram-bot-api),
+    # e.g. http://127.0.0.1:8081 - raises the upload cap from 50 MB to 2 GB.
+    # Adjust delivery.caps.telegram to match when you run one.
+    id: ${TELEGRAM_API_BASE:}
+    # Proxy for api.telegram.org — needed where Telegram is blocked or throttled.
+    # Accepted forms: socks5://host:port[:user:pass], http://host:port, host:port[:user:pass].
+    proxy: ${TELEGRAM_PROXY:}
+  vk:
+    enabled: false
+    # A community access token of the group (messages scope) + the numeric group id.
+    # Long Poll API must be enabled in the group settings.
+    token: ${VK_GROUP_TOKEN:}
+    id: ${VK_GROUP_ID:}
+  discord:
+    enabled: false
+    token: ${DISCORD_BOT_TOKEN:}
+  slack:
+    enabled: false
+    token: ${SLACK_BOT_TOKEN:}
+    # xapp-... app-level token (Socket Mode) — required for inbound events.
+    id: ${SLACK_APP_TOKEN:}
+  whatsapp:
+    enabled: false
+    token: ${WHATSAPP_TOKEN:}
+    # phoneId:verifyToken[:appSecret]; appSecret enables Meta signature checks.
+    id: ${WHATSAPP_PHONE_ID:}
+    secret: ${WEBHOOK_SECRET:}
+  viber:
+    enabled: false
+    token: ${VIBER_BOT_TOKEN:}
+    secret: ${WEBHOOK_SECRET:}
+  # Minecraft server (plugin-bukkit). The adapter is active whenever the plugin jar is
+  # installed - this section only tunes it: "id" overrides the in-game chat prefix.
+  # No token: the server console is the credential.
+  bukkit:
+    enabled: true
+    id: ${BUKKIT_PREFIX:!}
+
+# Owner keys in platform:id format — for /reload and /admin.
+owners: []

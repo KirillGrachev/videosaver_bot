@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>eu.neydev.saver</groupId>
+    <artifactId>saver-bot-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>Saver Bot Parent</name>
+    <description>
+        Multi-platform media downloader bot (Telegram, VK, Discord, Slack, WhatsApp, Viber).
+        Platform-independent core + thin adapters; 100+ content sources (YouTube, TikTok,
+        Instagram, Reddit, Pixiv, ...) via a pluggable extractor chain on top of yt-dlp,
+        gallery-dl and an OpenGraph fallback; quotas, size policies and honest errors.
+    </description>
+
+    <modules>
+        <module>launcher</module>
+        <module>core</module>
+        <module>platform-telegram</module>
+        <module>platform-vk</module>
+        <module>platform-discord</module>
+        <module>platform-slack</module>
+        <module>platform-whatsapp</module>
+        <module>platform-viber</module>
+        <module>plugin-bukkit</module>
+        <module>app</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Java 21 LTS: virtual threads, records, pattern matching for switch -->
+        <maven.compiler.release>21</maven.compiler.release>
+
+        <!--
+          JaCoCo floor, instruction coverage per module. A module whose transport is hard
+          to unit-test overrides it in its own pom (the achieved level, not zero) instead
+          of hiding classes behind an exclude.
+        -->
+        <jacoco.instruction.minimum>0.55</jacoco.instruction.minimum>
+
+        <!-- Dependency versions (aligned with the birthday-bot baseline, 2026-10) -->
+        <telegrambots.version>10.3.0</telegrambots.version>
+        <jda.version>6.7.0</jda.version>
+        <guice.version>7.0.0</guice.version>
+        <sqlite.version>3.53.4.0</sqlite.version>
+        <postgresql.version>42.7.13</postgresql.version>
+        <hikari.version>7.1.0</hikari.version>
+        <snakeyaml.version>2.7</snakeyaml.version>
+        <jackson.version>2.22.3</jackson.version>
+        <jsoup.version>1.21.2</jsoup.version>
+        <slf4j.version>2.0.20</slf4j.version>
+        <logback.version>1.5.38</logback.version>
+        <annotations.version>26.1.0</annotations.version>
+        <junit.version>6.1.3</junit.version>
+        <assertj.version>3.27.7</assertj.version>
+
+        <!-- Plugin versions -->
+        <compiler-plugin.version>3.14.1</compiler-plugin.version>
+        <surefire-plugin.version>3.6.0</surefire-plugin.version>
+        <shade-plugin.version>3.6.2</shade-plugin.version>
+        <jar-plugin.version>3.4.2</jar-plugin.version>
+        <jacoco-plugin.version>0.8.15</jacoco-plugin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Internal modules -->
+            <dependency>
+                <groupId>eu.neydev.saver</groupId>
+                <artifactId>saver-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.neydev.saver</groupId>
+                <artifactId>saver-platform-telegram</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.neydev.saver</groupId>
+                <artifactId>saver-platform-vk</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.neydev.saver</groupId>
+                <artifactId>saver-platform-discord</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.neydev.saver</groupId>
+                <artifactId>saver-platform-slack</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.neydev.saver</groupId>
+                <artifactId>saver-platform-whatsapp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.neydev.saver</groupId>
+                <artifactId>saver-platform-viber</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.neydev.saver</groupId>
+                <artifactId>saver-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.neydev.saver</groupId>
+                <artifactId>saver-plugin-bukkit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Platforms -->
+            <dependency>
+                <groupId>org.telegram</groupId>
+                <artifactId>telegrambots-longpolling</artifactId>
+                <version>${telegrambots.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.telegram</groupId>
+                <artifactId>telegrambots-client</artifactId>
+                <version>${telegrambots.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.dv8tion</groupId>
+                <artifactId>JDA</artifactId>
+                <version>${jda.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
+
+            <!-- Storage -->
+            <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>${sqlite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikari.version}</version>
+            </dependency>
+
+            <!-- Config / serialization / parsing / logging -->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <!-- HTML parsing for the OpenGraph/direct extractors: small, standard, offline-safe -->
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${annotations.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Tests -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <!-- Coverage is measured per module; report in target/site/jacoco -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${compiler-plugin.version}</version>
+                    <configuration>
+                        <compilerArgs>
+                            <arg>-Xlint:all,-serial</arg>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${jar-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${shade-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>check</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                                <!--
+                                  The threshold is kept at the achieved level: dropping below it
+                                  means new code arrived without tests. The floor is a property so
+                                  a module whose transport is genuinely hard to unit-test can set
+                                  its own (see platform-discord/pom.xml) instead of being hidden
+                                  by an exclude. Excluded only: the composition root and the
+                                  JRE/process network bootstrap of the launcher - they are covered
+                                  by the CI smoke run and real provisioning, not by unit tests.
+                                -->
+                                <excludes>
+                                    <exclude>eu/neydev/saver/app/Main*</exclude>
+                                    <exclude>eu/neydev/saver/launcher/Launcher*</exclude>
+                                    <exclude>eu/neydev/saver/launcher/RuntimeProvisioner*</exclude>
+                                    <exclude>eu/neydev/saver/launcher/ConsoleEncoding*</exclude>
+                                </excludes>
+                                <rules>
+                                    <rule>
+                                        <element>BUNDLE</element>
+                                        <limits>
+                                            <limit>
+                                                <counter>INSTRUCTION</counter>
+                                                <value>COVEREDRATIO</value>
+                                                <minimum>${jacoco.instruction.minimum}</minimum>
+                                            </limit>
+                                        </limits>
+                                    </rule>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

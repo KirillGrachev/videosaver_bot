@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.neydev.saver</groupId>
+        <artifactId>saver-bot-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>saver-platform-discord</artifactId>
+    <name>Saver Bot Platform: Discord</name>
+    <description>
+        Discord adapter (JDA 6): slash commands, buttons and modal dialogs,
+        locale from the Discord user profile.
+    </description>
+
+    <properties>
+        <!--
+          The gateway loop (JDA event stream) is not unit-testable; the floor is the
+          achieved level so the gate still catches regressions in the mappable parts.
+        -->
+        <jacoco.instruction.minimum>0.20</jacoco.instruction.minimum>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.neydev.saver</groupId>
+            <artifactId>saver-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+

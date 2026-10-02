@@ -1,0 +1,141 @@
+# English messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Send me a link, I will bring the file.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo and more than a hundred other sites: videos, shorts, photos, albums, GIFs, music."
+    - ""
+    - "Just paste the link into the chat. No command needed."
+  help:
+    command: "*{command}* {description}"
+    tip: "And the simplest thing of all: just send me a link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "A multi-platform media downloader: {sources} sources in the catalog plus any public page as a fallback."
+    - ""
+    - "Version: {version}"
+    - "Please respect copyright and the terms of the sites: save only what you are allowed to save."
+  settings:
+    - "*Settings*"
+    - ""
+    - "Quality: {quality}"
+    - "Language: {language}"
+  quality:
+    title: "Pick the quality for downloads. It applies to all new requests."
+    set: "Quality: *{quality}*. New downloads will use it."
+  lang:
+    choose: "Choose your language:"
+    set: "Language switched."
+  sources:
+    title: "*Supported sources: {count}*"
+    legend: "✓ works · ⚠ partially (public links only, breaks often) · 🔒 account needed. Any other public page is attempted via the generic extractor."
+    search:
+      prompt: "Type part of a site name, for example `tiktok` or `pixiv`. Empty message returns the list."
+      empty: "Nothing found for “{query}”. The generic extractor may still handle the site: just send the link."
+      found: "Found: {count}. Page through with the arrows, or refine the query."
+  stats:
+    - "*Your usage*"
+    - ""
+    - "Last hour: {jobs_hour} jobs"
+    - "Today: {jobs_today} jobs, {bytes_today}"
+  stats.recent: "Recent:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Engine: {tools}"
+    - "Jobs: {active} active, {queued} queued"
+    - "Vault: {vault}"
+    - "Users: {users}"
+  reload:
+    done: "Message bundles and the source catalog reloaded ({sources} sources)."
+  flood: "Too many messages too fast. Give me a few seconds."
+  warning:
+    audio_raw: "Note: ffmpeg is not installed on the server, so the audio was delivered in its original container instead of mp3."
+  pointer:
+    dm: "Opened in your DM with the bot."
+  hint:
+    no_url: "I did not find a link in that message. Paste a URL like `https://youtube.com/watch?v=…` and I will fetch the media."
+  prompt:
+    url: "Send me the link you want to save. Cancel with /stop."
+  cancel:
+    none: "You have no active downloads to cancel."
+    done: "Cancelled downloads: {count}."
+  status:
+    queued: "🔎 Saving from *{host}*…"
+    files: "📁 Files delivered so far: {count}"
+    progress: "⬇️ Downloading… {percent}%"
+    done: "✅ Done in {seconds} s · files: {count} · {size}"
+  error:
+    not_owner: "This command is for the bot owner."
+    unknown_command: "Unknown command. Send /help for the list."
+    invalid_url: "That does not look like a valid http(s) link."
+    queue_full: "The download queue is full right now. Try again in a minute."
+    concurrent: "You already have {count} downloads in flight. Wait for them or press Stop."
+    quota_hour: "Hourly limit reached ({limit} downloads). Please try again later."
+    quota_day: "Daily limit reached ({limit} downloads). See you tomorrow."
+    quota_bytes: "Daily traffic limit reached ({limit}). See you tomorrow."
+    source_disabled: "The source “{title}” is disabled on this bot by the administrator."
+    vault_full: "The server disk vault is full. Try again later."
+    blocked_type: "The file “{file}” is an executable/script type - I do not deliver those."
+    too_large: "The file is too large for this platform: {size} (limit {cap})."
+    too_large_link:
+      - "The file is too large to send here: {size} (limit {cap})."
+      - ""
+      - "Direct link: {url}"
+    cat:
+      unsupported: "😕 This link is not supported: no extractor could handle it."
+      login_required: "🔒 This content requires an account on the site. I can only save public pages."
+      age_restricted: "🔞 Age-restricted content: the site refuses to show it without login."
+      private: "🔒 This content is private or deleted by the author."
+      not_found: "🤷 The page or media was not found (404). Check the link."
+      geo_blocked: "🌍 This content is blocked in the server's region."
+      live_stream: "📡 This is a live stream. Send the link again after the broadcast ends."
+      rate_limited: "⏳ The source is rate-limiting the bot right now. Try again in a few minutes."
+      too_large: "The file exceeds the size limit and no smaller format is available."
+      timeout: "⌛ The download timed out. Huge or slow source? Try again, maybe with a lower quality."
+      tool_missing: "🛠 The extraction tool is missing on the server. This one is for the administrator."
+      network: "🌐 Network error while talking to the source. Try again."
+      cancelled: "Download cancelled."
+      unknown: "Something went wrong during the download. Try again, and if it repeats, tell the administrator."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} of {total}"
+    truncated: "First {count} items only, the rest is on the page"
+
+button:
+  back: "⬅️ Back"
+  settings: "⚙️ Settings"
+  sources: "📚 Sources"
+  language: "🌐 Language"
+  about: "ℹ️ About"
+  help: "❓ Help"
+  stats: "📊 My stats"
+  quality_menu: "🎞 Quality"
+  stop: "🛑 Stop"
+  search: "🔍 Search"
+  original: "🔗 Original"
+  github: "⭐ GitHub"
+  reload: "♻️ Reload messages"
+  open_link: "🔗 Open link"
+  quality:
+    best: "Best"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+
+command:
+  desc:
+    start: "main menu"
+    help: "what I can do"
+    save: "download by link (or just send the link)"
+    stop: "cancel active downloads"
+    quality: "video quality / audio-only"
+    settings: "your settings"
+    sources: "list of supported sites"
+    stats: "your usage and recent jobs"
+    lang: "language"
+    about: "about the bot"
+    admin: "engine status (owner)"
+    reload: "reload message bundles (owner)"

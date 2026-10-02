@@ -1,0 +1,43 @@
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      VK_GROUP_TOKEN: ${VK_GROUP_TOKEN:-}
+      VK_GROUP_ID: ${VK_GROUP_ID:-}
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      # yt-dlp gets outdated by the WEEK (site redesigns); rebuild the image often
+      # or mount a newer binary over the packaged one:
+      #   - ./bin/yt-dlp:/usr/local/bin/yt-dlp:ro
+    volumes:
+      - bot-data:/app/data
+      # Optional: external message/catalog/config edits without rebuilding
+      - ./config:/app/config:ro
+    ports:
+      # /healthz + /metrics + media links + webhooks; expose via a reverse proxy with TLS
+      - "127.0.0.1:8080:8080"
+    # Same liveness contract as the Dockerfile HEALTHCHECK: the bot touches
+    # data/bot.liveness on every heartbeat, a stale file means a hung JVM.
+    healthcheck:
+      test: ["CMD-SHELL", "f=/app/data/bot.liveness; test -f \"$f\" && [ $(($(date +%s%3N) - $(cut -d' ' -f1 \"$f\"))) -lt 900000 ]"]
+      interval: 30s
+      timeout: 5s
+      start_period: 120s
+      retries: 3
+
+  # Optional PostgreSQL: storage.type=postgres in config/application.yml
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: saver
+      POSTGRES_USER: saver
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change-me}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    profiles: ["postgres"]
+
+volumes:
+  bot-data:
+  pg-data:

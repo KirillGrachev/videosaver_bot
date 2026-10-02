@@ -1,0 +1,22 @@
+# Build
+target/
+dependency-reduced-pom.xml
+
+# IDE
+*.iml
+.idea/
+.vscode/
+
+# Local data and secrets (project root only!)
+/data/
+/config/
+.env
+
+# Logs and OS
+*.log
+.DS_Store
+
+# liveness file of the status heartbeat, wherever the process runs from
+bot.liveness
+bot.liveness.tmp
+
