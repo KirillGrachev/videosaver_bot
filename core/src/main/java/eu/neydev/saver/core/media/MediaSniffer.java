@@ -3,8 +3,10 @@ package eu.neydev.saver.core.media;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -23,6 +25,16 @@ import java.util.Optional;
 public final class MediaSniffer {
 
     private static final int HEADER_BYTES = 16;
+
+    /** How much of a download is read to decide whether it is a saved web page. */
+    private static final int PAGE_HEADER_BYTES = 64;
+
+    /** Lowercase ascii page openings; svg/xml deliberately absent (an SVG is media). */
+    private static final List<byte[]> HTML_SIGNATURES = List.of(
+            "<!doctype".getBytes(StandardCharsets.UTF_8),
+            "<html".getBytes(StandardCharsets.UTF_8),
+            "<head".getBytes(StandardCharsets.UTF_8),
+            "<body".getBytes(StandardCharsets.UTF_8));
 
     private MediaSniffer() {
     }
@@ -146,6 +158,65 @@ public final class MediaSniffer {
         int dot = name.lastIndexOf('.');
 
         return dot > 0 && dot < name.length() - 1;
+
+    }
+
+    /**
+     * Whether the file is a saved WEB PAGE rather than media: a mis-pointed og:video
+     * or a JSON-LD embedUrl downloads with HTTP 200 and text/html, and nothing but the
+     * first bytes of the answer can tell a player shell from a video. Only the page
+     * signatures match - {@code <?xml} and {@code <svg>} deliberately do not, an SVG
+     * IS media.
+     */
+    public static boolean isHtmlPage(Path file) {
+
+        byte[] header;
+
+        try (var in = Files.newInputStream(file)) {
+            header = in.readNBytes(PAGE_HEADER_BYTES);
+        } catch (IOException e) {
+            // No opinion on an unreadable file: the delivery path keeps its own rules.
+            return false;
+        }
+
+        int at = 0;
+
+        // UTF-8 BOM, then any whitespace a hand-written page opens with.
+        if (startsWith(header, 0, 0xEF, 0xBB, 0xBF)) {
+            at = 3;
+        }
+
+        while (at < header.length && (header[at] == ' ' || header[at] == '\t'
+                || header[at] == '\r' || header[at] == '\n')) {
+            at++;
+        }
+
+        for (byte[] signature : HTML_SIGNATURES) {
+
+            if (header.length - at < signature.length) {
+                continue;
+            }
+
+            boolean matches = true;
+
+            for (int i = 0; i < signature.length; i++) {
+
+                byte lower = (byte) Character.toLowerCase((char) (header[at + i] & 0xFF));
+
+                if (lower != signature[i]) {
+                    matches = false;
+                    break;
+                }
+
+            }
+
+            if (matches) {
+                return true;
+            }
+
+        }
+
+        return false;
 
     }
 

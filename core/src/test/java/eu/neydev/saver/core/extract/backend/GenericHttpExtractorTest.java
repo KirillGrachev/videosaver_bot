@@ -437,6 +437,62 @@ class GenericHttpExtractorTest {
 
     }
 
+    /**
+     * The YouTube regression, round two: the watch page's JSON-LD offers embedUrl (the
+     * PLAYER PAGE) and no contentUrl. Collecting it shipped a saved embed page (~143 KB
+     * of HTML) as "the video", and opening that file showed the player error 152-4.
+     * embedUrl is not media; the poster guard is the honest answer here.
+     */
+    @Test
+    void aJsonLdEmbedUrlIsAPlayerPageNotMedia(@TempDir Path dir) {
+
+        file("/poster.jpg", "image/jpeg", new byte[]{9});
+        page("/embed/KLz17Yc9shs",
+                "<!DOCTYPE html><html><body>player shell</body></html>");
+        page("/shorts/KLz17Yc9shs", """
+                <html><head>
+                <meta property="og:title" content="Some short">
+                <meta property="og:image" content="/poster.jpg">
+                <script type="application/ld+json">
+                {"@type":"VideoObject","name":"Some short",
+                 "embedUrl":"/embed/KLz17Yc9shs"}
+                </script>
+                </head></html>
+                """);
+
+        assertThatThrownBy(() -> extractor().extract(request(dir, "/shorts/KLz17Yc9shs", 1_000_000)))
+                .isInstanceOf(ExtractionException.class)
+                .extracting(e -> ((ExtractionException) e).category())
+                .isEqualTo(Category.UNSUPPORTED);
+
+    }
+
+    /**
+     * A mis-pointed og:video (some CMS put the PLAYER page url in there) must not
+     * deliver a saved web page: the download succeeds with HTTP 200 and text/html, so
+     * the first bytes of the answer are the only witness - and they veto it.
+     */
+    @Test
+    void aMediaUrlThatServesAnHtmlPageIsRefused(@TempDir Path dir) throws IOException {
+
+        page("/player/123",
+                "<!DOCTYPE html><html><head><title>player</title></head></html>");
+        page("/watch", """
+                <html><head><meta property="og:video" content="/player/123"></head></html>
+                """);
+
+        assertThatThrownBy(() -> extractor().extract(request(dir, "/watch", 1_000_000)))
+                .isInstanceOf(ExtractionException.class)
+                .extracting(e -> ((ExtractionException) e).category())
+                .isEqualTo(Category.UNSUPPORTED);
+
+        // The rejected page must not linger in the work dir as a deliverable file.
+        try (var leftovers = Files.list(dir)) {
+            assertThat(leftovers.toList()).isEmpty();
+        }
+
+    }
+
     @Test
     void anAgeGatedVideoIsAnAgeGateNotALoginWall(@TempDir Path dir) {
 

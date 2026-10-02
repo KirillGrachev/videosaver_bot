@@ -11,6 +11,7 @@ import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -276,9 +277,23 @@ public final class FileVault implements AutoCloseable {
 
             }
 
+        } catch (NoSuchFileException e) {
+            // The base dir vanished mid-run (an external cleanup, a moved or remounted
+            // bot home): heal it so the NEXT sweep - and the next download - sees a
+            // vault again, instead of warning once a minute while orphans accumulate.
+            try {
+                Files.createDirectories(baseDir);
+                log.info("Vault directory {} was missing; recreated", baseDir);
+            } catch (IOException recreate) {
+                log.warn("Vault sweep cannot recreate {}: {} ({})", baseDir,
+                        recreate.getMessage(), recreate.getClass().getSimpleName());
+            }
         } catch (IOException | RuntimeException e) {
             // The sweeper must never die: a dead sweeper is a slowly filling disk.
-            log.warn("Vault sweep failed: {}", e.getMessage());
+            // The exception class travels with the message: a bare path alone left
+            // the operator guessing whether the dir is missing, unreadable or gone.
+            log.warn("Vault sweep failed: {} ({})", e.getMessage(),
+                    e.getClass().getSimpleName());
         }
 
     }

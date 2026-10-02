@@ -39,12 +39,15 @@ import java.util.Set;
  * yt-dlp's job, and the chain gives yt-dlp its chance; when it already ran and failed,
  * a manifest-only page honestly reports UNSUPPORTED.
  *
- * <p>Two guards keep the scraper honest on pages whose media is gone or was never
+ * <p>Three guards keep the scraper honest on pages whose media is gone or was never
  * scrapable: the page's own player verdict ({@code ytInitialPlayerResponse} on YouTube)
  * is read BEFORE any candidate, so a deleted or age-gated video reports UNAVAILABLE
- * instead of "success with the poster"; and a page that DECLARES video/audio but
- * exposes no downloadable media file never degrades to its poster image - the poster
- * of a 60 MB video is not the video, shipping it as one is a lie.
+ * instead of "success with the poster"; a page that DECLARES video/audio but exposes
+ * no downloadable media file never degrades to its poster image - the poster of a
+ * 60 MB video is not the video, shipping it as one is a lie; and a candidate whose
+ * download turns out to be an HTML page (a player shell named by og:video or by a
+ * JSON-LD embedUrl) is rejected after the fact - the first bytes of the answer are
+ * the witness, because such pages arrive with HTTP 200 and text/html.
  */
 public final class GenericHttpExtractor implements Extractor {
 
@@ -200,6 +203,18 @@ public final class GenericHttpExtractor implements Extractor {
 
         long bytes = http.download(mediaUrl, destination, request.maxFileBytes(), BACKEND_ID);
 
+        // A mis-pointed og:video / JSON-LD url can still name a PLAYER PAGE instead of
+        // a file: the download itself succeeds (HTTP 200, text/html) and the user would
+        // receive a saved web page as "the video". The first bytes of the answer are
+        // the only witness - they veto the candidate and keep the work dir clean.
+        if (MediaSniffer.isHtmlPage(destination)) {
+
+            deleteQuietly(destination);
+
+            throw new ExtractionException(Category.UNSUPPORTED, BACKEND_ID,
+                    "Media url served an HTML player page instead of a file: " + mediaUrl);
+        }
+
         // A CDN url often ends in an id instead of a name (…/KLz17Yc9shs): without an
         // extension the file would reach the user as an anonymous document card, so
         // the header gets the last word on what the file is.
@@ -209,6 +224,16 @@ public final class GenericHttpExtractor implements Extractor {
 
         return new ExtractedItem(kind, destination, bytes, null, null, null, null,
                 mediaUrl.toString());
+
+    }
+
+    private static void deleteQuietly(Path file) {
+
+        try {
+            Files.deleteIfExists(file);
+        } catch (IOException e) {
+            log.debug("Cannot delete {}: {}", file, e.getMessage());
+        }
 
     }
 
@@ -501,7 +526,7 @@ public final class GenericHttpExtractor implements Extractor {
 
     }
 
-    /** Minimal JSON-LD walk: finds contentUrl/embedUrl of the requested object types. */
+    /** Minimal JSON-LD walk: finds contentUrl of the requested object types. */
     private static List<URI> jsonLd(Document document, URI base, String... types) {
 
         Set<String> urls = new LinkedHashSet<>();
@@ -554,16 +579,19 @@ public final class GenericHttpExtractor implements Extractor {
 
         if (matches) {
 
-            for (String field : List.of("contentUrl", "embedUrl")) {
+            // contentUrl ONLY. schema.org defines embedUrl as the URL of a PLAYER PAGE,
+            // not of a media file - and YouTube's JSON-LD carries exactly that:
+            // https://www.youtube.com/embed/<id>. Collecting it made the bot download
+            // the player page (a ~143 KB HTML document) and ship it as "the video",
+            // with the Original button leading to a page whose player reports an
+            // error. A player page is never the content; the poster guard below is
+            // the honest answer for pages whose only "video" URL is a player.
+            String value = node.path("contentUrl").asText("");
 
-                String value = node.path(field).asText("");
-
-                // Absolute or site-relative: resolveAll() turns both into URIs, and
-                // relative contentUrls are the COMMON case in hand-written JSON-LD.
-                if (!value.isBlank() && (value.startsWith("http") || value.startsWith("/"))) {
-                    sink.add(value);
-                }
-
+            // Absolute or site-relative: resolveAll() turns both into URIs, and
+            // relative contentUrls are the COMMON case in hand-written JSON-LD.
+            if (!value.isBlank() && (value.startsWith("http") || value.startsWith("/"))) {
+                sink.add(value);
             }
 
         }

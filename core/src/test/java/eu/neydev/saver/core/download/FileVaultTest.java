@@ -188,4 +188,27 @@ class FileVaultTest {
 
     }
 
+    /**
+     * The operator-facing regression: an external cleanup deleted the vault dir
+     * mid-run, and the sweeper answered with "Vault sweep failed: data/media" once a
+     * minute forever while the TTL cleanup silently never ran. The sweep must heal
+     * the dir instead of reporting a bare path.
+     */
+    @Test
+    void sweepRecreatesAVanishedBaseDir(@TempDir Path dir) throws IOException {
+
+        FileVault vault = vault(dir, 1_000_000, Duration.ofMinutes(30), Duration.ofMinutes(10));
+        vault.start();
+
+        Files.deleteIfExists(dir.resolve(".lock"));
+        Files.deleteIfExists(dir);
+
+        assertThat(Files.exists(dir)).isFalse();
+
+        vault.sweep();
+        assertThat(Files.isDirectory(dir)).isTrue();
+        vault.close();
+
+    }
+
 }

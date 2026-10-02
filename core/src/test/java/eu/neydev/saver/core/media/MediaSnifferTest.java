@@ -65,4 +65,25 @@ class MediaSnifferTest {
 
     }
 
+    @Test
+    void htmlPageSignaturesMatchAndMediaDoesNot() throws IOException {
+
+        assertThat(MediaSniffer.isHtmlPage(file(
+                "<!DOCTYPE html><html><head></head></html>".getBytes()))).isTrue();
+        assertThat(MediaSniffer.isHtmlPage(file(
+                "  \n  <HTML><BODY>player shell</BODY></HTML>".getBytes()))).isTrue();
+        assertThat(MediaSniffer.isHtmlPage(file(new byte[]{
+                (byte) 0xEF, (byte) 0xBB, (byte) 0xBF, '<', 'b', 'o', 'd', 'y', '>'})))
+                .isTrue();
+
+        // An SVG opens with xml/svg markup and IS media: it must not read as a page.
+        assertThat(MediaSniffer.isHtmlPage(file(
+                "<?xml version=\"1.0\"?><svg xmlns=\"http://www.w3.org/2000/svg\"/>"
+                        .getBytes()))).isFalse();
+        assertThat(MediaSniffer.isHtmlPage(file(new byte[]{
+                (byte) 0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70,
+                0x69, 0x73, 0x6F, 0x6D, 0, 0, 0, 0}))).isFalse();
+
+    }
+
 }
