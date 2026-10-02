@@ -206,7 +206,9 @@ class FileVaultTest {
         assertThat(Files.exists(dir)).isFalse();
 
         vault.sweep();
+
         assertThat(Files.isDirectory(dir)).isTrue();
+
         vault.close();
 
     }

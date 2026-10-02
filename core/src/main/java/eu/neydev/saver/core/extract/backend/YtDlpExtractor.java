@@ -214,6 +214,16 @@ public final class YtDlpExtractor implements Extractor {
         this.metrics = metrics;
     }
 
+    /**
+     * The proxy address baked into this backend's command lines (null = direct).
+     * Exposed so the wiring test can prove the SSRF filter proxy port was already
+     * live when these options were built - the port -1 incident must not be able to
+     * come back silently.
+     */
+    public @Nullable String proxyUrl() {
+        return options.proxy();
+    }
+
     @Override
     public String backendId() {
         return BACKEND_ID;

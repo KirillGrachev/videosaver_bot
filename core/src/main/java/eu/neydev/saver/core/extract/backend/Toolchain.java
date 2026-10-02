@@ -27,7 +27,10 @@ import java.util.Map;
  *       extraction bug report;</li>
  *   <li>RE-probing: {@link #reprobe()} re-runs the fingerprints after a tool update, so
  *       /healthz never lies about the version actually on disk;</li>
- *   <li>degradation: a missing tool disables only its backend, never the bot.</li>
+ *   <li>degradation: a missing tool disables only its backend, never the bot;</li>
+ *   <li>self-provisioning hook: {@link #redirect(Map)} re-points a missing tool at the
+ *       path where {@link ToolProvisioner} is about to place it, so the re-probe after
+ *       the download flips the tool to present without a restart.</li>
  * </ul>
  */
 public final class Toolchain {
@@ -54,10 +57,10 @@ public final class Toolchain {
 
     }
 
-    private final String ytDlpPath;
-    private final String galleryDlPath;
-    private final String ffmpegPath;
-    private final String ffprobePath;
+    private volatile String ytDlpPath;
+    private volatile String galleryDlPath;
+    private volatile String ffmpegPath;
+    private volatile String ffprobePath;
 
     private volatile Map<String, ToolState> tools;
 
@@ -104,10 +107,42 @@ public final class Toolchain {
 
     /**
      * Re-fingerprints every tool and swaps the snapshot atomically. Called by the
-     * {@link ToolUpdater} after a self-update run; readers (healthz, extractors) see
-     * either the old or the new consistent state, never a half-updated map.
+     * {@link ToolUpdater} after a self-update run and by the {@link ToolProvisioner}
+     * after each landed download; readers (healthz, extractors) see either the old or
+     * the new consistent state, never a half-updated map.
      */
     public synchronized void reprobe() {
+        rescan();
+    }
+
+    /**
+     * Re-points tool ids at new paths (the self-provisioner's target directory) and
+     * re-probes in one atomic step: a tool whose download has already landed flips to
+     * present immediately, one still in flight stays MISSING until its reprobe.
+     */
+    public synchronized void redirect(Map<String, String> targets) {
+
+        if (targets.containsKey("ytdlp")) {
+            ytDlpPath = targets.get("ytdlp");
+        }
+        if (targets.containsKey("gallerydl")) {
+            galleryDlPath = targets.get("gallerydl");
+        }
+        if (targets.containsKey("ffmpeg")) {
+            ffmpegPath = targets.get("ffmpeg");
+        }
+        if (targets.containsKey("ffprobe")) {
+            ffprobePath = targets.get("ffprobe");
+        }
+
+        log.info("Toolchain: redirected {} to the provision dir - waiting for the downloads",
+                String.join(", ", targets.keySet()));
+
+        rescan();
+
+    }
+
+    private void rescan() {
 
         Map<String, ToolState> before = tools;
         Map<String, ToolState> after = probeAll();

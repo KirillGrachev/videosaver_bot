@@ -34,7 +34,8 @@ final class TestConfigs {
                         Duration.ofSeconds(2), false, false,
                         AppConfig.Downloader.DEFAULT_BLOCKED_EXTENSIONS,
                         new AppConfig.Downloader.Tools("missing-ytdlp", "missing-gallerydl",
-                                "missing-ffmpeg", "missing-ffprobe", Duration.ZERO),
+                                "missing-ffmpeg", "missing-ffprobe", Duration.ZERO,
+                                false, "tools"),
                         new AppConfig.Downloader.Vault(tempDir.resolve("vault").toString(),
                                 ByteFormat.parse("100mb", "t"), Duration.ofMinutes(5),
                                 Duration.ofSeconds(1))),
@@ -49,6 +50,35 @@ final class TestConfigs {
                 Map.of(),
                 List.of(),
                 // no liveness file in tests: the heartbeat must not write into the tree
+                new AppConfig.Status(Duration.ofMinutes(5), null));
+
+    }
+
+    /** The same graph shape with an operator-set extraction proxy. */
+    static AppConfig minimalWithProxy(Path tempDir, String proxy) {
+
+        AppConfig.Downloader d = minimal(tempDir).downloader();
+
+        return new AppConfig(
+                new AppConfig.Storage(AppConfig.Storage.Type.SQLITE,
+                        tempDir.resolve("di-proxy.db").toString(), null, null, null, 2),
+                new AppConfig.Downloader(d.workers(), d.queueCapacity(), d.perUserConcurrent(),
+                        d.maxItemsPerRequest(), d.extractTimeout(), d.downloadTimeout(),
+                        d.maxFileBytes(), d.defaultQuality(), d.allowPrivateNetworks(),
+                        proxy, d.cookiesFile(), d.cookiesOwnerOnly(), d.perSourcePerSecond(),
+                        d.sleepRequests(), d.jobLogRetention(), d.shutdownDrain(),
+                        d.writeSubs(), d.audioThumbnail(), d.blockedExtensions(),
+                        d.tools(), d.vault()),
+                AppConfig.Limits.DEFAULT,
+                new AppConfig.Delivery(Map.of(), true),
+                new AppConfig.Pipeline(100, 2, 50, 1, 50, 50, Duration.ofSeconds(5)),
+                new AppConfig.WebApp(false, "127.0.0.1", 18081, null,
+                        Duration.ofMinutes(5), null),
+                new AppConfig.Locale("ru", Set.of("ru", "en")),
+                new AppConfig.Sources(List.of()),
+                new AppConfig.Community("https://github.com/example/repo"),
+                Map.of(),
+                List.of(),
                 new AppConfig.Status(Duration.ofMinutes(5), null));
 
     }

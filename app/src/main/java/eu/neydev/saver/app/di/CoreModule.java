@@ -23,6 +23,7 @@ import eu.neydev.saver.core.extract.backend.GalleryDlExtractor;
 import eu.neydev.saver.core.extract.backend.GenericHttpExtractor;
 import eu.neydev.saver.core.extract.backend.SafeHttp;
 import eu.neydev.saver.core.extract.backend.ToolUpdater;
+import eu.neydev.saver.core.extract.backend.ToolProvisioner;
 import eu.neydev.saver.core.extract.backend.Toolchain;
 import eu.neydev.saver.core.extract.backend.YtDlpExtractor;
 import eu.neydev.saver.core.media.MediaProbe;
@@ -50,6 +51,7 @@ import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -129,12 +131,30 @@ public final class CoreModule extends AbstractModule {
 
     @Provides
     @Singleton
-    Toolchain toolchain(AppConfig config) {
+    Toolchain toolchain(AppConfig config, MetricsRegistry metrics) {
 
         AppConfig.Downloader.Tools tools = config.downloader().tools();
 
-        return Toolchain.probe(tools.ytDlp(), tools.galleryDl(), tools.ffmpeg(),
-                tools.ffprobe());
+        Toolchain toolchain = Toolchain.probe(tools.ytDlp(), tools.galleryDl(),
+                tools.ffmpeg(), tools.ffprobe());
+
+        if (!tools.provision()) {
+            return toolchain;
+        }
+
+        // Self-provisioning: missing tools get pointed at their future home in the
+        // provision dir NOW, so the re-probe after each landed download flips them to
+        // present without a restart; the downloads themselves run in the background,
+        // because startup must never wait for a 150 MB archive.
+        ToolProvisioner provisioner = new ToolProvisioner(tools, metrics);
+        Map<String, String> missing = provisioner.plan(toolchain);
+
+        if (!missing.isEmpty()) {
+            toolchain.redirect(missing);
+            provisioner.installAsync(missing, toolchain::reprobe);
+        }
+
+        return toolchain;
 
     }
 
@@ -186,8 +206,28 @@ public final class CoreModule extends AbstractModule {
 
     @Provides
     @Singleton
-    SsrfFilterProxy ssrfFilterProxy(SsrfGuard guard, MetricsRegistry metrics) {
-        return new SsrfFilterProxy(guard, metrics);
+    SsrfFilterProxy ssrfFilterProxy(SsrfGuard guard, MetricsRegistry metrics, AppConfig config) {
+
+        SsrfFilterProxy proxy = new SsrfFilterProxy(guard, metrics);
+
+        // The extractors bake this address into their options AT GRAPH CONSTRUCTION
+        // TIME, i.e. before Bootstrap.start() runs. Constructing without listening
+        // handed them http://127.0.0.1:-1 and every tool request died on an
+        // unroutable proxy (the 2026-10 TOOL_MISSING-follow-up incident). start() is
+        // idempotent, so the call left in Bootstrap.start() is a harmless no-op.
+        if (!config.downloader().allowPrivateNetworks()) {
+
+            try {
+                proxy.start();
+            } catch (java.io.IOException e) {
+                throw new com.google.inject.ProvisionException(
+                        "SSRF filter proxy cannot bind its loopback port", e);
+            }
+
+        }
+
+        return proxy;
+
     }
 
     @Provides

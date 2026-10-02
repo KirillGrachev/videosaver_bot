@@ -125,11 +125,10 @@ public final class Bootstrap {
         metrics.gauge("users_total", userService::count);
         platformHealth.register(metrics, adapters.stream().map(PlatformAdapter::platform).toList());
 
-        // The filter proxy must listen BEFORE the extractors can run: the tools are
-        // configured with its address at graph construction time.
-        if (!config.downloader().allowPrivateNetworks()) {
-            ssrfFilterProxy.start();
-        }
+        // The SSRF filter proxy is ALREADY listening: CoreModule starts it inside the
+        // provider, because the extractors bake its address into their options at graph
+        // construction time - starting it here would hand them port -1.
+        // (ssrfFilterProxy.start() is idempotent; nothing to do at this point.)
 
         toolUpdater.start();
 

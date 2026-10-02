@@ -61,7 +61,8 @@ public record ConfigLoader(Function<String, String> environment) {
             "status", Set.of("heartbeat-interval", "liveness-file"));
 
     private static final Set<String> TOOLS_KEYS =
-            Set.of("yt-dlp", "gallery-dl", "ffmpeg", "ffprobe", "update-interval");
+            Set.of("yt-dlp", "gallery-dl", "ffmpeg", "ffprobe", "update-interval",
+                    "provision", "provision-dir");
 
     private static final Set<String> VAULT_KEYS =
             Set.of("dir", "max-size", "ttl", "send-grace");
@@ -197,7 +198,9 @@ public record ConfigLoader(Function<String, String> environment) {
                         str(tools, "gallery-dl", "gallery-dl"),
                         str(tools, "ffmpeg", "ffmpeg"),
                         str(tools, "ffprobe", "ffprobe"),
-                        duration(tools, "update-interval", Duration.ZERO)),
+                        duration(tools, "update-interval", Duration.ZERO),
+                        bool(tools, "provision", true),
+                        str(tools, "provision-dir", "tools")),
                 new AppConfig.Downloader.Vault(
                         str(vault, "dir", "data/media"),
                         size(vault, "max-size", "downloader.vault.max-size",

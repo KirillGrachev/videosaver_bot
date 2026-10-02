@@ -111,10 +111,12 @@ public record AppConfig(@NotNull Storage storage,
                             @NotNull String galleryDl,
                             @NotNull String ffmpeg,
                             @NotNull String ffprobe,
-                            Duration updateInterval) {
+                            Duration updateInterval,
+                            boolean provision,
+                            @NotNull String provisionDir) {
 
             public static final Tools DEFAULT = new Tools("yt-dlp", "gallery-dl", "ffmpeg",
-                    "ffprobe", Duration.ZERO);
+                    "ffprobe", Duration.ZERO, true, "tools");
 
             /** Zero means "never auto-update"; the tools belong to the image/package manager. */
             public boolean autoUpdates() {

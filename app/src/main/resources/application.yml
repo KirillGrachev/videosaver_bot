@@ -70,6 +70,15 @@ downloader:
     # 0 = never auto-update (the image/package manager owns the tools); otherwise the
     # interval of "yt-dlp -U" attempts.
     update-interval: 0s
+    # Self-install of the toolchain: a tool that is MISSING at startup gets its official
+    # static build downloaded on a background thread (SHA-256 verified against the
+    # release checksum file) into provision-dir, then a re-probe flips it to present -
+    # no restart, no manual step. Sources: yt-dlp GitHub release binary, ffmpeg/ffprobe
+    # one BtbN static archive (~150 MB, once, on a bare host), gallery-dl Codeberg
+    # release binary. A download failure degrades to the current honest TOOL_MISSING.
+    provision: true
+    # Where provisioned binaries live, relative to the working directory.
+    provision-dir: tools
   vault:
     # Scratch space for downloads in flight.
     dir: data/media

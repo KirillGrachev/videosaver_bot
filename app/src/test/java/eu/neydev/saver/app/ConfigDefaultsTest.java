@@ -48,6 +48,9 @@ class ConfigDefaultsTest {
         assertThat(d.writeSubs()).isFalse();
         assertThat(d.audioThumbnail()).isFalse();
         assertThat(d.blockedExtensions()).contains("exe", "bat", "ps1");
+        assertThat(d.tools().provision()).isTrue();
+        assertThat(d.tools().provisionDir()).isEqualTo("tools");
+        assertThat(d.tools().updateInterval()).isZero();
 
     }
 

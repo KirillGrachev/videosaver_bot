@@ -58,6 +58,11 @@ public final class GalleryDlExtractor implements Extractor {
         this.options = options;
     }
 
+    /** The proxy address baked into this backend's command lines (null = direct). */
+    public @Nullable String proxyUrl() {
+        return options.proxy();
+    }
+
     @Override
     public String backendId() {
         return BACKEND_ID;
