@@ -54,16 +54,21 @@ class YtDlpExtractorTest {
                     echo "yt-dlp 2099.01.01 (fake)"; exit 0
                   fi
                 done
-                WORKDIR="."; PRINT=0; JSON=0
+                WORKDIR="."; HAS_P=0; PRINT=0; JSON=0
                 prev=""
                 for a in "$@"; do
                   [ "$a" = "--print" ] && PRINT=1
                   [ "$a" = "-J" ] && JSON=1
-                  if [ "$prev" = "-P" ]; then WORKDIR="$a"; fi
+                  if [ "$prev" = "-P" ]; then WORKDIR="$a"; HAS_P=1; fi
                   prev="$a"
                 done
                 mkdir -p "$WORKDIR" 2>/dev/null
-                echo "$@" >> "$WORKDIR/.cmd-args.txt" 2>/dev/null || true
+                # Dump args ONLY for the download invocation (-P seen). Probe
+                # invocations carry no -P, so without this guard their args would
+                # pile up in a stray .cmd-args.txt under the surefire cwd.
+                if [ "$HAS_P" = "1" ]; then
+                  echo "$@" >> "$WORKDIR/.cmd-args.txt" 2>/dev/null || true
+                fi
                 """;
 
         String script = switch (mode) {

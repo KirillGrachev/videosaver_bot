@@ -1,88 +1,112 @@
 package eu.neydev.saver.plugin.bukkit;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import eu.neydev.saver.app.di.Bootstrap;
-import eu.neydev.saver.app.di.CoreModule;
-import eu.neydev.saver.app.di.PlatformsModule;
-import eu.neydev.saver.core.config.AppConfig;
-import eu.neydev.saver.core.config.ConfigLoader;
-import eu.neydev.saver.core.i18n.MessageBundleHolder;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
-import java.time.Clock;
-import java.util.logging.Level;
+import java.util.Locale;
 
 /**
- * The plugin entry point: the Minecraft server becomes just another host for the whole
- * bot. Configuration is the same {@code application.yml} as everywhere else - external
- * copy lives at {@code plugins/SaverBot/application.yml}, and when it is absent the
- * bundled defaults (plus environment variables) apply, exactly like the standalone jar.
+ * The Bukkit entry point: reads {@code config.yml}, owns the single supervised
+ * {@link BotProcess} and registers {@code /saverbot}.
  *
- * <p>Lifecycle mirrors {@code Main}: CoreModule -> child(PlatformsModule + BukkitModule)
- * -> Bootstrap. {@code onDisable} stops the bot (drains downloads, closes the database)
- * without taking the server JVM down; Bootstrap.stop() is idempotent, so a later JVM
- * shutdown hook is a no-op.
+ * <p>The plugin is a launcher and nothing more: the bot stays a separate program with
+ * its own config, storage and platforms, so the very same folder works from
+ * {@code start.bat}, {@code start.sh} or a service manager without the server.
  */
 public final class SaverBotPlugin extends JavaPlugin {
 
-    private Bootstrap bootstrap;
+    private BotProcess process;
 
     @Override
     public void onEnable() {
 
-        try {
+        saveDefaultConfig();
 
-            Path dataFolder = getDataFolder().toPath();
-            Files.createDirectories(dataFolder);
+        process = new BotProcess(botHome(),
+                getConfig().getString("launcher-jar", "saver-launcher.jar"),
+                javaBinary(),
+                getConfig().getBoolean("restart-on-crash", true),
+                getConfig().getLong("stop-timeout-seconds", 15L),
+                new ServerLog());
 
-            Path external = dataFolder.resolve("application.yml");
-            AppConfig config = new ConfigLoader().load(Files.isReadable(external) ? external : null);
+        PluginCommand command = getCommand("saverbot");
 
-            if (!Files.isReadable(external)) {
-                getLogger().info("No plugins/SaverBot/application.yml - running on bundled "
-                        + "defaults + environment variables. Copy config/application.yml from "
-                        + "the repository next to this jar to configure the bot.");
-            }
+        if (command != null) {
+            BotCommand executor = new BotCommand(process);
+            command.setExecutor(executor);
+            command.setTabCompleter(executor);
+        }
 
-            Injector injector = Guice.createInjector(new CoreModule(config, Clock.systemUTC()));
-            injector = injector.createChildInjector(
-                    new PlatformsModule(config, injector.getInstance(MessageBundleHolder.class)),
-                    new BukkitModule(this, config));
+        if (!process.launcherJarPath().toFile().isFile()) {
+            getLogger().warning("No " + process.launcherJarPath().getFileName()
+                    + " in " + process.launcherJarPath().getParent().toAbsolutePath()
+                    + ": copy the bot distribution there, then /saverbot start");
+            return;
+        }
 
-            bootstrap = injector.getInstance(Bootstrap.class);
-            bootstrap.start();
-
-            getLogger().info("Saver Bot is running inside this server. In-game chat: "
-                    + "\"!save <url>\", \"!help\"; downloads -> "
-                    + dataFolder.resolve("downloads"));
-
-        } catch (Exception e) {
-
-            getLogger().log(Level.SEVERE, "Saver Bot did not start - the server continues "
-                    + "without it", e);
-            getServer().getPluginManager().disablePlugin(this);
-
+        if (getConfig().getBoolean("start-on-enable", true)) {
+            process.start();
         }
 
     }
 
     @Override
     public void onDisable() {
+        if (process != null) {
+            process.stop();
+        }
+    }
 
-        Bootstrap running = bootstrap;
-        bootstrap = null;
+    /** A relative {@code bot-home} resolves against the server root, next to {@code plugins/}. */
+    private Path botHome() {
 
-        if (running != null) {
+        String configured = getConfig().getString("bot-home", "saver-bot");
+        Path path = Path.of(configured == null || configured.isBlank() ? "saver-bot" : configured);
 
-            try {
-                running.stop();
-            } catch (RuntimeException e) {
-                getLogger().log(Level.WARNING, "Error while stopping Saver Bot", e);
-            }
+        return path.isAbsolute() ? path : getServer().getWorldContainer().toPath().resolve(path);
 
+    }
+
+    /** Empty {@code java-binary} means the java of this server; the launcher upgrades itself to 21. */
+    private String javaBinary() {
+
+        String configured = getConfig().getString("java-binary", "");
+
+        if (configured != null && !configured.isBlank()) {
+            return configured;
+        }
+
+        String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        String executable = os.contains("win") ? "java.exe" : "java";
+
+        return System.getProperty("java.home") + File.separator + "bin" + File.separator + executable;
+
+    }
+
+    /** The child console inside the server log: one prefix, both streams, no interleaving loss. */
+    private final class ServerLog implements BotProcess.Log {
+
+        @Override
+        public void info(String line) {
+            getLogger().info(line);
+        }
+
+        @Override
+        public void warn(String line) {
+            getLogger().warning(line);
+        }
+
+        @Override
+        public void error(String line) {
+            getLogger().severe(line);
+        }
+
+        /** Below the default console verbosity: the periodic heartbeat lives here. */
+        @Override
+        public void debug(String line) {
+            getLogger().fine(line);
         }
 
     }

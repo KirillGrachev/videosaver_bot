@@ -11,122 +11,61 @@
     </parent>
 
     <artifactId>saver-plugin-bukkit</artifactId>
-    <name>Saver Bot Plugin: Bukkit</name>
+    <packaging>jar</packaging>
+
+    <name>Saver Bot Plugin: Bukkit launcher</name>
     <description>
-        Bukkit/Paper plugin that hosts the whole Saver Bot inside a Minecraft server:
-        players send links in the in-game chat (prefixed, "!save https://..."), the bot
-        downloads the media with the shared core and stores it under
-        plugins/SaverBot/downloads/&lt;player-uuid&gt;/, answering in chat. All other
-        platforms (Telegram, VK, ...) keep working side by side from the same jar.
+        A Bukkit plugin that supervises the standalone saver bot as a child process
+        of the Minecraft server: the plugin jar goes to plugins/, the bot distribution
+        to a folder next to it. No coupling in either direction - the same distribution
+        keeps working from start.bat, start.sh or a service manager.
     </description>
 
     <properties>
-        <!--
-          The Bukkit glue (JavaPlugin lifecycle, live gateway) only runs inside a real
-          server and is not unit-testable; the mapper and the adapter (everything with
-          logic) are tested through the BukkitGateway seam. The floor is the achieved
-          level, not zero - the same policy as platform-discord.
-        -->
-        <jacoco.instruction.minimum>0.55</jacoco.instruction.minimum>
-        <paper-api.version>1.21.4-R0.1-SNAPSHOT</paper-api.version>
+        <!-- Minecraft 1.20+ servers run on Java 17+, older API bytecode needlessly limits them -->
+        <maven.compiler.release>17</maven.compiler.release>
+        <!-- The supervisor drives real OS processes and pipes: unit coverage gate does not apply -->
+        <jacoco.skip>true</jacoco.skip>
+        <spigot-api.version>1.20.1-R0.1-SNAPSHOT</spigot-api.version>
     </properties>
 
     <repositories>
         <repository>
-            <id>papermc</id>
-            <url>https://repo.papermc.io/repository/maven-public/</url>
+            <id>spigotmc-snapshots</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
     <dependencies>
-        <!-- The whole bot: core + composition root + every platform adapter. -->
         <dependency>
-            <groupId>eu.neydev.saver</groupId>
-            <artifactId>saver-app</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <!--
-                  Paper ships its own SLF4J provider (log4j bridge). Two providers on
-                  one classpath = whichever wins is luck; the server's logger must win.
-                -->
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Provided by the server at runtime - never shaded into the plugin jar. -->
-        <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>${paper-api.version}</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot-api.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>saver-bot-bukkit</finalName>
-        <plugins>
-            <!--
-              A Bukkit plugin must be ONE self-contained jar: no launcher, no libs/
-              directory on a game server. Everything (core, platforms, Guice, Jackson,
-              JDBC drivers, chat-platform SDKs) is shaded in; paper-api stays provided.
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <artifactSet>
-                                <excludes>
-                                    <!--
-                                      Paper provides slf4j-api (with its log4j bridge as the
-                                      provider). A shaded private copy could win class loading and
-                                      end up provider-less = silently mute the whole bot.
-                                    -->
-                                    <exclude>org.slf4j:slf4j-api</exclude>
-                                    <exclude>ch.qos.logback:*</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>module-info.class</exclude>
-                                        <exclude>META-INF/versions/*/module-info.class</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+        <finalName>saver-bot-launcher-plugin</finalName>
+        <resources>
+            <!-- plugin.yml takes its version from this pom -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>

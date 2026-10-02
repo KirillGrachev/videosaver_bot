@@ -26,6 +26,12 @@
         <module>platform-slack</module>
         <module>platform-whatsapp</module>
         <module>platform-viber</module>
+        <!--
+          plugin-bukkit is built before app on purpose: app assembles the
+          distribution and copies the launcher plugin jar into dist/minecraft/.
+          Nothing depends on it in code, so the declaration order is the only
+          thing that keeps the reactor ahead of the assembly.
+        -->
         <module>plugin-bukkit</module>
         <module>app</module>
     </modules>
@@ -104,16 +110,6 @@
             <dependency>
                 <groupId>eu.neydev.saver</groupId>
                 <artifactId>saver-platform-viber</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>eu.neydev.saver</groupId>
-                <artifactId>saver-app</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>eu.neydev.saver</groupId>
-                <artifactId>saver-plugin-bukkit</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

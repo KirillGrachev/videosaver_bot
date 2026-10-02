@@ -98,9 +98,6 @@ delivery:
     whatsapp: { photo: 5mb, video: 16mb, audio: 16mb, gif: 16mb, document: 100mb }
     # Viber fetches media by URL: picture is a static 1MB image, video 26MB, file 50MB.
     viber: { photo: 1mb, video: 26mb, audio: 50mb, gif: 50mb, document: 50mb }
-    # Bukkit delivers to the server's own disk (plugins/SaverBot/downloads) - the cap
-    # is a sanity ceiling, not an API limit.
-    bukkit: 2048mb
 
 pipeline:
   inbound-queue-capacity: 10000
@@ -129,9 +126,17 @@ webapp:
   metrics-token: ${METRICS_TOKEN:}
 
 status:
-  # One INFO line with the key counters (uptime, platforms, queues, jobs, vault)
-  # every N, plus a liveness file touched on the same beat for container HEALTHCHECK.
+  # Observability without an open port - what a game-server host or a container
+  # supervisor can actually see.
+  # One line with the key counters (uptime, platform state, inbound/outbound,
+  # downloads, jobs, vault) every N. The line goes to the bot log and touches the
+  # liveness file; the Minecraft launcher plugin reads it from the child console to
+  # tell a live bot from a hung one, yet echoes it to the server console only when a
+  # platform changes state, so a quiet bot keeps the host log quiet. Keep the
+  # interval well below the plugin's stale threshold of 15 minutes.
   heartbeat-interval: 5m
+  # Touched on every heartbeat; a container HEALTHCHECK looks at its mtime.
+  # Relative to the working directory. Empty = do not write the file.
   liveness-file: data/bot.liveness
 
 community:
@@ -187,12 +192,6 @@ platforms:
     enabled: false
     token: ${VIBER_BOT_TOKEN:}
     secret: ${WEBHOOK_SECRET:}
-  # Minecraft server (plugin-bukkit). The adapter is active whenever the plugin jar is
-  # installed - this section only tunes it: "id" overrides the in-game chat prefix.
-  # No token: the server console is the credential.
-  bukkit:
-    enabled: true
-    id: ${BUKKIT_PREFIX:!}
 
 # Owner keys in platform:id format — for /reload and /admin.
 owners: []

@@ -277,9 +277,6 @@ public record ConfigLoader(Function<String, String> environment) {
             case WHATSAPP -> mb(16);
             case VIBER -> mb(26);
             case SLACK -> mb(100);
-            // Bukkit delivers to the server's own disk, not a chat API: the cap is
-            // a sanity ceiling, not a platform limit.
-            case BUKKIT -> mb(2048);
         };
 
         long defaultPhoto = switch (platform) {

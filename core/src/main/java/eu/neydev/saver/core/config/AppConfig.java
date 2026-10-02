@@ -171,13 +171,8 @@ public record AppConfig(@NotNull Storage storage,
         }
 
         public SizeCaps capsFor(Platform platform) {
-            // Absent platforms get a conservative 8 MB chat-API-ish default. Bukkit is
-            // the exception: it "delivers" by copying files to the server's own disk,
-            // so its unconfigured cap matches the parseCaps default (2 GB), not 8 MB.
-            SizeCaps fallback = platform == Platform.BUKKIT
-                    ? SizeCaps.uniform(2_048L * 1024 * 1024)
-                    : SizeCaps.uniform(8_000_000);
-            return caps.getOrDefault(platform, fallback);
+            // Absent platforms get a conservative 8 MB chat-API-ish default.
+            return caps.getOrDefault(platform, SizeCaps.uniform(8_000_000));
         }
 
     }

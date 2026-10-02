@@ -59,9 +59,9 @@ public final class Main {
         }
 
         // A non-zero code is the only signal a supervisor gets. Returning normally from
-        // main exits with 0, and an external watcher would read 0 as "exited on its own"
-        // and not restart - a fatal configuration error would kill the bot forever
-        // under a calm log line.
+        // main exits with 0, and the Minecraft launcher plugin reads 0 as "exited on its
+        // own" and does not restart - a fatal configuration error would kill the bot
+        // forever under a calm log line.
         if (exitCode != 0) {
             System.exit(exitCode);
         }

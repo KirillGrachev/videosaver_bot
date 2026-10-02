@@ -93,12 +93,12 @@ class DiGraphTest {
 
     @Test
     void platformEnumCoversAllShippedAdapters() {
-        // BUKKIT is the one adapter PlatformsModule does not ship: it lives in
-        // plugin-bukkit (bound by BukkitModule inside the Minecraft server), which
-        // depends on this module - a dependency the other way round would be a cycle.
+        // The Minecraft launcher plugin (plugin-bukkit) is deliberately absent here:
+        // it supervises the bot as a child process and ships no adapter - the bot
+        // never learns it runs inside a game server.
         assertThat(Platform.values()).containsExactly(
                 Platform.TELEGRAM, Platform.VK, Platform.DISCORD,
-                Platform.SLACK, Platform.WHATSAPP, Platform.VIBER, Platform.BUKKIT);
+                Platform.SLACK, Platform.WHATSAPP, Platform.VIBER);
     }
 
 }

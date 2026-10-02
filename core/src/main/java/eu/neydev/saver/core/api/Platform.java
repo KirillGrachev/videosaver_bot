@@ -11,9 +11,7 @@ public enum Platform {
     DISCORD("discord"),
     SLACK("slack"),
     WHATSAPP("whatsapp"),
-    VIBER("viber"),
-    /** In-game chat of a Bukkit/Paper Minecraft server (plugin-bukkit module). */
-    BUKKIT("bukkit");
+    VIBER("viber");
 
     private final String id;
 

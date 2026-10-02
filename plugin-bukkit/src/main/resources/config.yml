@@ -1,0 +1,20 @@
+# Home of the standalone bot distribution: the folder that holds saver-launcher.jar,
+# libs/ and config/ (application.yml, .env). Relative paths resolve against the server root
+# (the folder that contains plugins/).
+bot-home: saver-bot
+
+# Launcher jar name inside bot-home.
+launcher-jar: saver-launcher.jar
+
+# Java binary of the child process. Empty means the java that runs this server;
+# when that java is older than 21 the launcher downloads its own JRE, as always.
+java-binary: ''
+
+# Start the bot together with the server.
+start-on-enable: true
+
+# Restart the child process when it dies with a non-zero exit code.
+restart-on-crash: true
+
+# Grace period for a clean shutdown before the process is killed.
+stop-timeout-seconds: 15

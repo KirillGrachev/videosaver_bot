@@ -1,10 +1,15 @@
-name: SaverBot
-version: '1.0.0'
+name: SaverBotLauncher
 main: eu.neydev.saver.plugin.bukkit.SaverBotPlugin
-api-version: '1.21'
-description: >-
-  Saver Bot inside the Minecraft server: send "!save <url>" (or any other bot
-  command with the "!" prefix) in chat and the downloaded media lands in
-  plugins/SaverBot/downloads/<your-uuid>/. All messenger platforms configured in
-  plugins/SaverBot/application.yml keep working from the same jar.
+version: ${project.version}
+api-version: '1.20'
+description: Supervises the standalone saver bot as a child process of this server.
 author: neydev
+commands:
+  saverbot:
+    description: Control the saver bot child process
+    usage: /saverbot status|start|stop|restart
+    permission: saverbotlauncher.admin
+permissions:
+  saverbotlauncher.admin:
+    description: Start, stop and inspect the saver bot child process
+    default: op

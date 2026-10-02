@@ -164,7 +164,10 @@ public final class OutboundDispatcher implements AutoCloseable {
 
         }
 
-        return CompletableFuture.allOf(parts.toArray(new CompletableFuture[0]))
+        // The wildcarded array type matters: allOf() takes CompletableFuture<?>..., and
+        // a raw CompletableFuture[] here would compile with a raw-type warning while
+        // saying nothing a reviewer could trust about what the array actually holds.
+        return CompletableFuture.allOf(parts.toArray(new CompletableFuture<?>[0]))
                 .thenApply(done -> parts.get(0).join());
 
     }

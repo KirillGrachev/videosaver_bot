@@ -14,7 +14,8 @@
     <name>Saver Bot App</name>
     <description>
         Composition root (Guice) and the distribution: a thin saver-bot.jar (our code only)
-        + saver-launcher.jar + libs/ (third-party, repository layout) + sha256 manifest.
+        + saver-launcher.jar + libs/ (third-party, repository layout) + sha256 manifest
+        + minecraft/ (the optional Bukkit launcher plugin and its install notes).
     </description>
 
     <dependencies>
@@ -155,7 +156,10 @@
                 </executions>
             </plugin>
 
-            <!-- 4) distribution: dist/ = launcher + thin jar + manifest + libs/ -->
+            <!--
+              4) distribution: dist/ = launcher + thin jar + manifest + libs/
+                 + minecraft/ (the optional Bukkit launcher plugin and its README)
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -168,7 +172,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <target>
+                            <target xmlns:if="ant:if" xmlns:unless="ant:unless">
                                 <copy file="${project.build.directory}/saver-bot.jar"
                                       todir="${project.build.directory}/dist"/>
                                 <copy file="${project.basedir}/../launcher/target/saver-launcher.jar"
@@ -180,6 +184,28 @@
                                 <copy todir="${project.build.directory}/dist/libs">
                                     <fileset dir="${project.build.directory}/libs"/>
                                 </copy>
+
+                                <!--
+                                  The Minecraft launcher plugin rides along in dist/minecraft/.
+                                  plugin-bukkit is declared before app in the reactor, so a full
+                                  build always has the jar. A partial build (-pl app -am) does not
+                                  build it: warn instead of failing the dev loop, and let CI check
+                                  the release layout.
+                                -->
+                                <available property="bukkit.plugin.built"
+                                           file="${project.basedir}/../plugin-bukkit/target/saver-bot-launcher-plugin.jar"/>
+                                <echo unless:set="bukkit.plugin.built" level="warning">
+                                    [dist] saver-bot-launcher-plugin.jar was not built in this
+                                    reactor run, so dist/minecraft/ is skipped. Build the plugin
+                                    once (mvn -o package -pl plugin-bukkit) or run a full build
+                                    from the repository root to get it into the distribution.
+                                </echo>
+                                <copy if:set="bukkit.plugin.built"
+                                      file="${project.basedir}/../plugin-bukkit/target/saver-bot-launcher-plugin.jar"
+                                      todir="${project.build.directory}/dist/minecraft"/>
+                                <copy if:set="bukkit.plugin.built"
+                                      file="${project.basedir}/src/main/resources/minecraft/README.txt"
+                                      todir="${project.build.directory}/dist/minecraft"/>
                             </target>
                         </configuration>
                     </execution>

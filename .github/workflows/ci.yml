@@ -38,7 +38,9 @@ jobs:
             "$DIST/saver-bot.jar" \
             "$DIST/libs-manifest.txt" \
             "$DIST/start.bat" \
-            "$DIST/start.sh"; do
+            "$DIST/start.sh" \
+            "$DIST/minecraft/saver-bot-launcher-plugin.jar" \
+            "$DIST/minecraft/README.txt"; do
             if [ ! -f "$f" ]; then
               echo "::error::missing $f"
               exit 1
@@ -48,6 +50,10 @@ jobs:
             echo "::error::libs/ is missing or empty"
             exit 1
           fi
+          # plugin.yml must carry the filtered version, not the raw placeholder
+          python3 -c "import sys,zipfile,re; y=zipfile.ZipFile(sys.argv[1]).read('plugin.yml').decode(); sys.exit(0 if re.search(r'^version: [0-9]', y, re.M) else 1)" \
+            "$DIST/minecraft/saver-bot-launcher-plugin.jar" \
+            || { echo "::error::plugin.yml version was not filtered"; exit 1; }
           # the launcher must find every library listed in the manifest
           while IFS='|' read -r rel sum || [ -n "$rel" ]; do
             case "$rel" in '' | '#'*) continue ;; esac
