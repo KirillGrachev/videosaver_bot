@@ -1,0 +1,143 @@
+# Irish messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Seol nasc chugam agus tabharfaidh mé an comhad.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo agus breis is céad suíomh eile: físeáin, gearrthóga, grianghraif, albaim, GIF-anna, ceol."
+    - ""
+    - "Greamaigh an nasc sa chomhrá amháin. Ní theastaíonn ordú ar bith."
+  help:
+    command: "*{command}* {description}"
+    tip: "Agus an rud is simplí ar fad: seol nasc chugam."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Íoslódálaí meán ilardáin: {sources} foinse sa chatalóg móide aon leathanach poiblí mar chúlthaca."
+    - ""
+    - "Leagan: {version}"
+    - "Meas ar chóipcheart agus ar rialacha na suíomhanna: ná sábháil ach an méid a bhfuil cead agat sábháil."
+  settings:
+    - "*Socruithe*"
+    - ""
+    - "Cáilíocht: {quality}"
+    - "Teanga: {language}"
+  quality:
+    title: "Roghnaigh cáilíocht na n-íoslódálacha. Baineann sí le gach iarratas nua."
+    set: "Cáilíocht: *{quality}*. Bainfidh íoslódálacha nua úsáid aisti."
+  lang:
+    choose: "Roghnaigh do theanga:"
+    set: "Teanga athraithe."
+  sources:
+    title: "*Foinsí a dtacaítear leo: {count}*"
+    legend: "[ok] oibríonn sé · [limited] go páirteach (naisc phoiblí amháin, bristear go minic é) · [login] cuntas de dhíth. Déantar iarracht ar aon leathanach poiblí eile leis an eastóscóir ginearálta."
+    search:
+      prompt: "Clóscríobh cuid d'ainm an tsuímh, mar shampla `tiktok` nó `pixiv`. Filleann teachtaireacht fholamh an liosta."
+      empty: "Níor aimsíodh faic do „{query}“. Seans go n-éireoidh leis an eastóscóir ginearálta fós: seol an nasc amháin."
+      found: "Aimsíodh: {count}. Déan leathanach leis na saigheada nó beachtaigh an cheist."
+  stats:
+    - "*Do chuid úsáide*"
+    - ""
+    - "An uair dheireanach: {jobs_hour} íoslódáil"
+    - "Inniu: {jobs_today} íoslódáil, {bytes_today}"
+  stats.recent: "Le déanaí:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Inneall: {tools}"
+    - "Jabanna: {active} gníomhach, {queued} sa scuaine"
+    - "Stóras: {vault}"
+    - "Úsáideoirí: {users}"
+  reload:
+    done: "Athlódáladh na téacsanna agus catalóg na bhfoinsí ({sources} foinse)."
+  flood: "An iomarca teachtaireachtaí as a chéile. Tabhair cúpla soicind dom."
+  warning:
+    audio_raw: "Nóta: níl ffmpeg suiteáilte ar an bhfreastalaí, mar sin seachadadh an fhuaim ina coimeádán bunaidh in ionad mp3."
+  pointer:
+    dm: "Oscailte i do chomhrá príobháideach leis an bot."
+  hint:
+    no_url: "Níor aimsíodh nasc sa teachtaireacht sin. Greamaigh URL ar nós `https://youtube.com/watch?v=…` agus gheobhaidh mé an meán."
+  prompt:
+    url: "Seol chugam an nasc is mian leat sábháil. Cealaigh le /stop."
+  cancel:
+    none: "Níl aon íoslódáil ghníomhach agat le cealú."
+    done: "Íoslódálacha cealaithe: {count}."
+  status:
+    queued: "Sábháilim ó *{host}*…"
+    files: "Comhaid a seachadadh go dtí seo: {count}"
+    progress: "Á íoslódáil… {percent}%"
+    done: "Déanta in {seconds} s · comhaid: {count} · {size}"
+  error:
+    not_owner: "Is do shealbhóir an bot an t-ordú seo."
+    unknown_command: "Ordú anaithnid. Seolann /help an liosta."
+    invalid_url: "Ní cosúil le nasc bailí http(s) é sin."
+    queue_full: "Tá scuaine na n-íoslódálacha lán faoi láthair. Bain triail as ar ball beag."
+    concurrent: "Tá {count} íoslódáil ar siúl agat cheana. Fan leo nó brúigh Stop."
+    quota_hour: "Sroicheadh an teorainn uairiúil ({limit} íoslódáil). Bain triail as níos déanaí."
+    quota_day: "Sroicheadh an teorainn laethúil ({limit} íoslódáil). Amárach arís."
+    quota_bytes: "Sroicheadh teorainn laethúil an tráchta ({limit}). Amárach arís."
+    source_disabled: "Tá an fhoinse „{title}“ díchumasaithe ar an bot seo ag an riarthóir."
+    vault_full: "Tá stóras diosc an fhreastalaí lán. Bain triail as níos déanaí."
+    blocked_type: "Is cineál inrite nó script é an comhad „{file}“ - ní sheachadaim a leithéid."
+    too_large: "Tá an comhad rómhór don ardán seo: {size} (teorainn {cap})."
+    too_large_link:
+      - "Tá an comhad rómhór le seoladh anseo: {size} (teorainn {cap})."
+      - ""
+      - "Nasc díreach: {url}"
+    cat:
+      unsupported: "Ní thacaítear leis an nasc seo: níor éirigh le haon eastóscóir é a thógáil."
+      login_required: "Éilíonn an t-inneachar seo cuntas ar an suíomh. Ní shábhálaim ach leathanaigh phoiblí."
+      age_restricted: "Inneachar le teorainn aoise: ní thaispeánann an suíomh é gan logáil isteach."
+      private: "Tá an t-inneachar seo príobháideach nó scriosta ag an údar."
+      not_found: "Níor aimsíodh an leathanach nó an meán (404). Seiceáil an nasc."
+      unavailable: "Níl an meán ar fáil: scriosadh nó falaíodh é ag an údar."
+      geo_blocked: "Tá an t-inneachar seo blocáilte i réigiún an fhreastalaí."
+      live_stream: "Sruth beo atá ann. Seol an nasc arís nuair a bheidh an craoladh thart."
+      rate_limited: "Tá an fhoinse ag teorannú an bot faoi láthair. Bain triail as i gceann cúpla nóiméad."
+      too_large: "Sáraíonn an comhad an teorainn agus níl formáid níos lú ar fáil."
+      timeout: "Sháraigh an íoslódáil an teorainn ama. Foinse ollmhór nó mall? Bain triail eile as, b'fhéidir le cáilíocht níos ísle."
+      tool_missing: "Tá an uirlis eastósctha in easnamh ar an bhfreastalaí. Baineann sé seo leis an riarthóir."
+      network: "Earráid líonra agus an fhoinse á labhairt. Bain triail eile as."
+      cancelled: "Íoslódáil cealaithe."
+      unknown: "Chuaigh rud éigin in aimhreas le linn na híoslódála. Bain triail eile as agus inis don riarthóir é má tharlaíonn arís é."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} as {total}"
+    truncated: "Na chéad {count} mír amháin, tá an chuid eile ar an leathanach"
+
+button:
+  back: "Siar"
+  settings: "Socruithe"
+  sources: "Foinsí"
+  language: "Teanga"
+  about: "Maidir leis an bot"
+  help: "Cabhair"
+  stats: "Mo chuid staitisticí"
+  quality_menu: "Cáilíocht"
+  stop: "Stop"
+  search: "Cuardach"
+  original: "Bunleagan"
+  github: "GitHub"
+  reload: "Athlódáil na téacsanna"
+  open_link: "Oscail an nasc"
+  quality:
+    best: "Is fearr"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Fuaim (mp3)"
+    current_suffix: " (reatha)"
+
+command:
+  desc:
+    start: "príomh-roghchlár"
+    help: "cad atá uaim"
+    save: "íoslódáil de réir naisc (nó seol an nasc amháin)"
+    stop: "cealaigh íoslódálacha gníomhacha"
+    quality: "cáilíocht físe / fuaim amháin"
+    settings: "do chuid socruithe"
+    sources: "liosta na suíomhanna a dtacaítear leo"
+    stats: "do chuid úsáide agus jabanna le déanaí"
+    lang: "teanga"
+    about: "maidir leis an bot"
+    admin: "stádas an innill (sealbhóir)"
+    reload: "athlódáil na téacsanna (sealbhóir)"

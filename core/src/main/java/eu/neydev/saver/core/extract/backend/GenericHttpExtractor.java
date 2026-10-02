@@ -1,5 +1,6 @@
 package eu.neydev.saver.core.extract.backend;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import eu.neydev.saver.core.extract.ExtractedItem;
 import eu.neydev.saver.core.extract.ExtractionException;
 import eu.neydev.saver.core.extract.ExtractionException.Category;
@@ -7,13 +8,16 @@ import eu.neydev.saver.core.extract.ExtractionRequest;
 import eu.neydev.saver.core.extract.ExtractionResult;
 import eu.neydev.saver.core.extract.Extractor;
 import eu.neydev.saver.core.media.MediaKind;
+import eu.neydev.saver.core.media.MediaSniffer;
 import eu.neydev.saver.core.media.MimeTypes;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,6 +38,13 @@ import java.util.Set;
  * video was found. Streaming manifests (.m3u8/.mpd) are NOT downloaded here - they are
  * yt-dlp's job, and the chain gives yt-dlp its chance; when it already ran and failed,
  * a manifest-only page honestly reports UNSUPPORTED.
+ *
+ * <p>Two guards keep the scraper honest on pages whose media is gone or was never
+ * scrapable: the page's own player verdict ({@code ytInitialPlayerResponse} on YouTube)
+ * is read BEFORE any candidate, so a deleted or age-gated video reports UNAVAILABLE
+ * instead of "success with the poster"; and a page that DECLARES video/audio but
+ * exposes no downloadable media file never degrades to its poster image - the poster
+ * of a 60 MB video is not the video, shipping it as one is a lie.
  */
 public final class GenericHttpExtractor implements Extractor {
 
@@ -79,6 +90,12 @@ public final class GenericHttpExtractor implements Extractor {
 
         Document document = Jsoup.parse(response.bodyAsString(), response.finalUrl().toString());
 
+        // A watch page of a deleted, private or age-gated video still answers HTTP 200:
+        // the verdict lives inside the page's own player response. Reading it first is
+        // the difference between "the media is unavailable" and a bogus poster delivery.
+        JsonNode player = playerResponse(document);
+        checkPlayability(player);
+
         String title = firstNonBlank(
                 meta(document, "og:title"),
                 meta(document, "twitter:title"),
@@ -108,6 +125,15 @@ public final class GenericHttpExtractor implements Extractor {
                     "Page exposes only streaming manifests (m3u8/mpd); needs yt-dlp");
         }
 
+        // The poster guard: og:image of a video page is the COVER of the content, not
+        // the content. Delivering it as "the video" (a 143 KB image instead of a 63 MB
+        // clip) is worse than an honest error, because the user sees a green success.
+        if (videoFiles.isEmpty() && declaresVideoOrAudio(document, player)) {
+            throw new ExtractionException(Category.UNSUPPORTED, BACKEND_ID,
+                    "Page declares video/audio but exposes no downloadable media file; "
+                            + "needs a tool backend");
+        }
+
         List<URI> chosen = !videoFiles.isEmpty() ? videoFiles : dedupe(images);
 
         if (chosen.isEmpty()) {
@@ -125,7 +151,7 @@ public final class GenericHttpExtractor implements Extractor {
             }
 
             try {
-                items.add(downloadOne(request, mediaUrl, items.size()));
+                items.add(downloadOne(request, mediaUrl, items.size(), null));
                 request.progress().onProgress(null, null, items.size(), chosen.size());
             } catch (ExtractionException e) {
 
@@ -158,19 +184,26 @@ public final class GenericHttpExtractor implements Extractor {
     private ExtractionResult directDownload(ExtractionRequest request, URI finalUrl,
                                             String contentType) throws ExtractionException {
 
-        ExtractedItem item = downloadOne(request, finalUrl, 0);
+        ExtractedItem item = downloadOne(request, finalUrl, 0, contentType);
 
         return new ExtractionResult(request.source(), BACKEND_ID, List.of(item),
                 null, null, finalUrl.toString(), false);
 
     }
 
-    private ExtractedItem downloadOne(ExtractionRequest request, URI mediaUrl, int index) {
+    private ExtractedItem downloadOne(ExtractionRequest request, URI mediaUrl, int index,
+                                      String contentType) {
 
-        String guessedName = fileNameFrom(mediaUrl, index, null);
+        String guessedName = fileNameFrom(mediaUrl, index,
+                contentType == null || contentType.isBlank() ? null : contentType);
         Path destination = uniquePath(request.workDir(), guessedName);
 
         long bytes = http.download(mediaUrl, destination, request.maxFileBytes(), BACKEND_ID);
+
+        // A CDN url often ends in an id instead of a name (…/KLz17Yc9shs): without an
+        // extension the file would reach the user as an anonymous document card, so
+        // the header gets the last word on what the file is.
+        destination = ensureExtension(destination);
 
         MediaKind kind = MediaKind.fromExtension(destination.getFileName().toString());
 
@@ -179,7 +212,253 @@ public final class GenericHttpExtractor implements Extractor {
 
     }
 
+    /** Renames an extensionless download to what its own header promises, best effort. */
+    static Path ensureExtension(Path file) {
+
+        if (MediaSniffer.hasExtension(file.getFileName().toString())) {
+            return file;
+        }
+
+        return MediaSniffer.extension(file).map(ext -> {
+
+            Path renamed = uniquePath(file.getParent(),
+                    file.getFileName().toString() + "." + ext);
+
+            try {
+                Files.move(file, renamed);
+                return renamed;
+            } catch (IOException e) {
+                log.debug("Cannot rename {} to {}: {}", file, renamed, e.getMessage());
+                return file;
+            }
+
+        }).orElse(file);
+
+    }
+
     // ---- page parsing ---------------------------------------------------------
+
+    /**
+     * The YouTube player response embedded in watch/shorts pages, or null on any other
+     * site. The object is minified JSON assigned to a global variable, so it is cut out
+     * by brace matching instead of a regex over the whole script blob.
+     */
+    private static @Nullable JsonNode playerResponse(Document document) {
+
+        for (Element script : document.select("script")) {
+
+            String data = script.data();
+            int marker = data.indexOf("ytInitialPlayerResponse");
+
+            if (marker < 0) {
+                continue;
+            }
+
+            int open = data.indexOf('{', marker);
+            int close = open < 0 ? -1 : matchBrace(data, open);
+
+            if (close < 0) {
+                continue;
+            }
+
+            try {
+                return MAPPER.readTree(data.substring(open, close + 1));
+            } catch (Exception ignored) {
+                // A half-written player response is not worth failing the parse over;
+                // the meta-tag candidates below still get their chance.
+            }
+
+        }
+
+        return null;
+    }
+
+    /** Index of the brace closing the object opened at {@code open}, strings respected. */
+    private static int matchBrace(String json, int open) {
+
+        int depth = 0;
+        boolean inString = false;
+        boolean escaped = false;
+
+        for (int i = open; i < json.length(); i++) {
+
+            char c = json.charAt(i);
+
+            if (inString) {
+
+                if (escaped) {
+                    escaped = false;
+                } else if (c == '\\') {
+                    escaped = true;
+                } else if (c == '"') {
+                    inString = false;
+                }
+
+                continue;
+            }
+
+            if (c == '"') {
+                inString = true;
+            } else if (c == '{') {
+                depth++;
+            } else if (c == '}') {
+
+                depth--;
+
+                if (depth == 0) {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * The page's own verdict on its media: YouTube's playabilityStatus knows the video
+     * is deleted, private, age-gated or region-locked long before any scraper guesses
+     * it from missing tags. Unknown statuses are NOT a veto - only the explicit "no"
+     * answers are, everything else falls through to the normal candidate search.
+     */
+    private static void checkPlayability(@Nullable JsonNode player) throws ExtractionException {
+
+        if (player == null) {
+            return;
+        }
+
+        JsonNode playability = player.path("playabilityStatus");
+        String status = playability.path("status").asText("");
+        String reason = playability.path("reason").asText("");
+
+        Category category = switch (status) {
+
+            // yt-dlp's own wording for the age gate is "Sign in to confirm your age":
+            // the login form is the symptom, the age check is the reason.
+            case "LOGIN_REQUIRED" -> reason.toLowerCase(Locale.ROOT).contains("age")
+                    ? Category.AGE_RESTRICTED
+                    : Category.LOGIN_REQUIRED;
+            case "UNPLAYABLE", "ERROR" -> unplayableCategory(reason);
+            case "LIVE_STREAM_OFFLINE" -> Category.LIVE_STREAM;
+            default -> null;
+        };
+
+        if (category != null) {
+            throw new ExtractionException(category, BACKEND_ID,
+                    "The page's own player reports " + status + ": " + reason);
+        }
+    }
+
+    private static Category unplayableCategory(String reason) {
+
+        String lower = reason.toLowerCase(Locale.ROOT);
+
+        if (lower.contains("private")) {
+            return Category.PRIVATE;
+        }
+
+        if (lower.contains("country") || lower.contains("region")) {
+            return Category.GEO_BLOCKED;
+        }
+
+        return Category.UNAVAILABLE;
+    }
+
+    /**
+     * Whether the page presents itself as video/audio content: og:type, the twitter
+     * player card, a {@code <video>} element, a JSON-LD VideoObject or an embedded
+     * player response. Such a page without a single downloadable media URL has nothing
+     * for the scraper - its images are posters, not content.
+     */
+    private static boolean declaresVideoOrAudio(Document document, @Nullable JsonNode player) {
+
+        if (player != null) {
+            return true;
+        }
+
+        for (Element meta : document.select("meta[property=og:type]")) {
+
+            String type = meta.attr("content").toLowerCase(Locale.ROOT);
+
+            if (type.startsWith("video") || type.startsWith("audio")
+                    || type.startsWith("music.")) {
+                return true;
+            }
+        }
+
+        for (Element meta : document.select("meta[name=twitter:card]")) {
+
+            if (meta.attr("content").equalsIgnoreCase("player")) {
+                return true;
+            }
+        }
+
+        if (document.selectFirst("video") != null) {
+            return true;
+        }
+
+        for (Element script : document.select("script[type=application/ld+json]")) {
+
+            if (ldDeclaresType(script.data(), Set.of("VideoObject", "AudioObject"), 0)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean ldDeclaresType(String json, Set<String> wanted, int depth) {
+
+        if (depth > 4 || json == null || json.isBlank()) {
+            return false;
+        }
+
+        try {
+            return ldNodeDeclaresType(MAPPER.readTree(json), wanted, depth);
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    private static boolean ldNodeDeclaresType(JsonNode node, Set<String> wanted, int depth) {
+
+        if (node == null || depth > 4) {
+            return false;
+        }
+
+        if (node.isArray()) {
+
+            for (JsonNode child : node) {
+
+                if (ldNodeDeclaresType(child, wanted, depth + 1)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        if (!node.isObject()) {
+            return false;
+        }
+
+        JsonNode type = node.path("@type");
+
+        if (type.isTextual() && wanted.contains(type.asText())) {
+            return true;
+        }
+
+        if (type.isArray()) {
+
+            for (JsonNode one : type) {
+
+                if (one.isTextual() && wanted.contains(one.asText())) {
+                    return true;
+                }
+            }
+        }
+
+        return ldNodeDeclaresType(node.path("@graph"), wanted, depth + 1);
+    }
 
     private static List<URI> candidates(Document document, URI base, String... metaNames) {
 
@@ -458,7 +737,10 @@ public final class GenericHttpExtractor implements Extractor {
             name = "media-" + (index + 1);
         }
 
-        if (!name.contains(".") && contentType != null) {
+        // application/octet-stream is the server saying "no idea": stamping .bin from
+        // it would bury the magic-byte sniff that actually knows the container.
+        if (!name.contains(".") && contentType != null
+                && !contentType.startsWith("application/octet-stream")) {
             name = name + "." + MimeTypes.extensionFor(contentType);
         }
 

@@ -1,0 +1,143 @@
+# Turkmen messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Maňa link iber, men faýly getirerin.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo we ýüzden gowrak başga saýt: wideo, shorts, suratlar, alboomlar, GIF, saz."
+    - ""
+    - "Linki diňe çata goý. Buýruk gerek däl."
+  help:
+    command: "*{command}* {description}"
+    tip: "Iň aňsady: maňa diňe link iber."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Köp platformaly media ýükleyiji: katalogda {sources} çeşme, üstüne ätiýaçlyk hökmünde islendik jemgyýetçilik sahypasy."
+    - ""
+    - "Wersiýa: {version}"
+    - "Awtorlyk hukugyna we saýtlaryň düzgünlerine hormat goý: diňe rugsadyň bolan zady sakla."
+  settings:
+    - "*Sazlamalar*"
+    - ""
+    - "Hil: {quality}"
+    - "Dil: {language}"
+  quality:
+    title: "Ýüklemeleriň hilini saýla. Ol ähli täze taleplere ulanylýar."
+    set: "Hil: *{quality}*. Täze ýüklemeler muny ulanar."
+  lang:
+    choose: "Diliňi saýla:"
+    set: "Dil çalşyryldy."
+  sources:
+    title: "*Goldanylýan çeşmeler: {count}*"
+    legend: "[ok] işleýär · [limited] bölekleýin (diňe jemgyýetçilik linkleri, ýygy döwülýär) · [login] hasap gerek. Başga islendik jemgyýetçilik sahypasyny umumy ekstraktor bilen synanyşýaryn."
+    search:
+      prompt: "Saýtyň adynyň bir bölegini ýaz, mysal üçin `tiktok` ýa-da `pixiv`. Boş habar sanawy gaýtarýar."
+      empty: "«{query}» üçin hiç zat tapylmady. Umumy ekstraktor ýene-de hökman başarar biler: diňe linki iber."
+      found: "Tapylan: {count}. Oklar bilen sahypa geç ýa-da talaby takykla."
+  stats:
+    - "*Seniň ulanyşyň*"
+    - ""
+    - "Soňky sagat: {jobs_hour} ýükleme"
+    - "Şu gün: {jobs_today} ýükleme, {bytes_today}"
+  stats.recent: "Soňkular:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motor: {tools}"
+    - "Işler: {active} işjeň, {queued} nobatda"
+    - "Ammar: {vault}"
+    - "Ulanyjylar: {users}"
+  reload:
+    done: "Tekstler we çeşme katalogy täzeden ýüklendi ({sources} çeşme)."
+  flood: "Birbada gaty köp habar. Maňa birnäçe sekunt ber."
+  warning:
+    audio_raw: "Bellik: serwerde ffmpeg gurnalan däl, şonuň üçin ses mp3 ýerine asyl gapda getirildi."
+  pointer:
+    dm: "Bot bilen şahsy gürrüňiňde açyldy."
+  hint:
+    no_url: "Ol habarda link tapmadym. `https://youtube.com/watch?v=…` ýaly URL goý, men mediýany alaryn."
+  prompt:
+    url: "Saklamak isleýän linkiňi iber. Ýatyrmak: /stop."
+  cancel:
+    none: "Ýatyrmaga işjeň ýüklemeleriň ýok."
+    done: "Ýatyrylan ýüklemeler: {count}."
+  status:
+    queued: "*{host}* çeşmesinden saklanýar…"
+    files: "Şu wagta çenli getirilen faýllar: {count}"
+    progress: "Ýüklenýär… {percent}%"
+    done: "{seconds} s-da taýýar · faýllar: {count} · {size}"
+  error:
+    not_owner: "Buýruk botuň eýesi üçin."
+    unknown_command: "Näbelli buýruk. /help sanawy iberýär."
+    invalid_url: "Bu dogry http(s) linkine meňzemeýär."
+    queue_full: "Ýükleme nobaty häzir doly. Bir minutdan soň synanyş."
+    concurrent: "Eýýäm {count} ýüklemesi dowam edýär. Olara garaş ýa-da Stop bas."
+    quota_hour: "Sagatlyk limite ýetildi ({limit} ýükleme). Soňrak synanyş."
+    quota_day: "Gündelik limite ýetildi ({limit} ýükleme). Ertire görüşýänçäk."
+    quota_bytes: "Gündelik traffik limite ýetildi ({limit}). Ertire görüşýänçäk."
+    source_disabled: "«{title}» çeşmesi bu botda administrator tarapyndan öçürilen."
+    vault_full: "Serweriň disk ammary doly. Soňrak synanyş."
+    blocked_type: "«{file}» faýly ýerine ýetirilýän görnüş ýa-da skript - beýleleri getirmeýärin."
+    too_large: "Faýl bu platforma üçin gaty uly: {size} (limit {cap})."
+    too_large_link:
+      - "Faýl şu ýere ibermek üçin gaty uly: {size} (limit {cap})."
+      - ""
+      - "Göni link: {url}"
+    cat:
+      unsupported: "Bu link goldanylmaýar: ony hiç bir ekstraktor alyp bilmedi."
+      login_required: "Bu mazmun saýtda hasap talap edýär. Men diňe jemgyýetçilik sahypalaryny saklaýaryn."
+      age_restricted: "Ýaş çäklendirmeli mazmun: saýt ony girişsiz görkezmeýär."
+      private: "Bu mazmun şahsy ýa-da awtor öçüren."
+      not_found: "Sahypa ýa-da mediýa tapylmady (404). Linki barla."
+      unavailable: "Media elýeterli däl: ony awtor pozdy ýa-da gizledi."
+      geo_blocked: "Bu mazmun serweriň sebitinde petiklenen."
+      live_stream: "Bu göni ýaýlym. Ýaýlym gutaranda linki täzeden iber."
+      rate_limited: "Çeşme häzir boty çäklendirýär. Birnäçe minutdan soň synanyş."
+      too_large: "Faýl limitden geçýär we kiçi format elýeterli däl."
+      timeout: "Ýükleme wagt limitinden geçdi. Ägirt uly ýa-da haýal çeşme mi? Täzeden synanyş, belki pes hil bilen."
+      tool_missing: "Serwerde ekstrakksiýa guraly ýok. Bu administrator üçin."
+      network: "Çeşme bilen habarlaşanda tor ýalňyşy. Täzeden synanyş."
+      cancelled: "Ýükleme ýatyryldy."
+      unknown: "Ýükleme wagty bir zat nädogry boldy. Täzeden synanyş we gaýtalansa, administratora aýt."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} / {total}"
+    truncated: "Diňe ilkinji {count} element, galany sahypada"
+
+button:
+  back: "Yza"
+  settings: "Sazlamalar"
+  sources: "Çeşmeler"
+  language: "Dil"
+  about: "Bot barada"
+  help: "Kömek"
+  stats: "Meniň statistikam"
+  quality_menu: "Hil"
+  stop: "Stop"
+  search: "Gözleg"
+  original: "Asyl"
+  github: "GitHub"
+  reload: "Tekstleri täzeden ýükle"
+  open_link: "Linki aç"
+  quality:
+    best: "Iň gowy"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Ses (mp3)"
+    current_suffix: " (häzirki)"
+
+command:
+  desc:
+    start: "esasy menýu"
+    help: "men näme edip bilýärin"
+    save: "link bilen ýükle (ýa-da diňe linki iber)"
+    stop: "işjeň ýüklemeleri ýatyr"
+    quality: "wideo hili / diňe ses"
+    settings: "seniň sazlamalaryň"
+    sources: "goldanylýan saýtlaryň sanawy"
+    stats: "seniň ulanyşyň we soňky işler"
+    lang: "dil"
+    about: "bot barada"
+    admin: "motoryň ýagdaýy (eýesi)"
+    reload: "tekstleri täzeden ýükle (eýesi)"

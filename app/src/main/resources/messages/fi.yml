@@ -1,0 +1,143 @@
+# Finnish messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Lähetä minulle linkki, niin tuon tiedoston.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo ja yli sata muuta sivustoa: videot, shortit, kuvat, albumit, GIFit, musiikki."
+    - ""
+    - "Liitä linkki vain chattiin. Komentoa ei tarvita."
+  help:
+    command: "*{command}* {description}"
+    tip: "Ja kaikkein yksinkertaisin: lähetä minulle linkki."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Monialustainen median lataaja: {sources} lähdettä luettelossa sekä mikä tahansa julkinen sivu varavaihtoehtona."
+    - ""
+    - "Versio: {version}"
+    - "Kunnioita tekijänoikeuksia ja sivustojen sääntöjä: tallenna vain sitä, mitä sinulla on lupa tallentaa."
+  settings:
+    - "*Asetukset*"
+    - ""
+    - "Laatu: {quality}"
+    - "Kieli: {language}"
+  quality:
+    title: "Valitse latausten laatu. Se koskee kaikkia uusia pyyntöjä."
+    set: "Laatu: *{quality}*. Uudet lataukset käyttävät sitä."
+  lang:
+    choose: "Valitse kielesi:"
+    set: "Kieli vaihdettu."
+  sources:
+    title: "*Tuetut lähteet: {count}*"
+    legend: "[ok] toimii · [limited] osittain (vain julkiset linkit, hajoaa usein) · [login] tarvitsee tilin. Muita julkisia sivuja yritän geneerisellä purkajalla."
+    search:
+      prompt: "Kirjoita osa sivuston nimestä, esimerkiksi `tiktok` tai `pixiv`. Tyhjä viesti palauttaa luettelon."
+      empty: "Mitään ei löytynyt haulle „{query}“. Geneerinen purkaja saattaa silti selvitä sivustosta: lähetä vain linkki."
+      found: "Löytyi: {count}. Selaa nuolilla tai tarkenna hakua."
+  stats:
+    - "*Oma käyttösi*"
+    - ""
+    - "Viime tunti: {jobs_hour} latausta"
+    - "Tänään: {jobs_today} latausta, {bytes_today}"
+  stats.recent: "Viimeisimmät:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Moottori: {tools}"
+    - "Työt: {active} aktiivista, {queued} jonossa"
+    - "Holvi: {vault}"
+    - "Käyttäjät: {users}"
+  reload:
+    done: "Tekstit ja lähdeluettelo ladattu uudelleen ({sources} lähdettä)."
+  flood: "Liikaa viestejä peräkkäin. Anna minulle muutama sekunti."
+  warning:
+    audio_raw: "Huomio: palvelimelle ei ole asennettu ffmpeg:ää, joten ääni toimitettiin alkuperäisessä säiliössään mp3:n sijaan."
+  pointer:
+    dm: "Avattu yksityisessä keskustelussasi botin kanssa."
+  hint:
+    no_url: "En löytänyt linkkiä tuosta viestistä. Liitä URL kuten `https://youtube.com/watch?v=…`, niin haen median."
+  prompt:
+    url: "Lähetä linkki, jonka haluat tallentaa. Peruutus komennolla /stop."
+  cancel:
+    none: "Sinulla ei ole aktiivisia latauksia peruutettavaksi."
+    done: "Peruutetut lataukset: {count}."
+  status:
+    queued: "Tallennan lähteestä *{host}*…"
+    files: "Toimitetut tiedostot tähän mennessä: {count}"
+    progress: "Lataan… {percent}%"
+    done: "Valmis {seconds} s · tiedostot: {count} · {size}"
+  error:
+    not_owner: "Tämä komento on botin omistajalle."
+    unknown_command: "Tuntematon komento. /help antaa luettelon."
+    invalid_url: "Tuo ei näytä kelvolliselta http(s)-linkiltä."
+    queue_full: "Latausjono on nyt täynnä. Kokeile minuutin kuluttua."
+    concurrent: "Sinulla on jo {count} latausta käynnissä. Odota ne tai paina Stop."
+    quota_hour: "Tuntiraja saavutettu ({limit} latausta). Kokeile myöhemmin."
+    quota_day: "Päiväraja saavutettu ({limit} latausta). Huomiseen."
+    quota_bytes: "Päivän liikenneraja saavutettu ({limit}). Huomiseen."
+    source_disabled: "Ylläpitäjä on kytkennyt lähteen „{title}“ pois tästä botista."
+    vault_full: "Palvelimen levyholvi on täynnä. Kokeile myöhemmin."
+    blocked_type: "Tiedosto „{file}“ on suoritettava tyyppi tai skripti - sellaisia en toimita."
+    too_large: "Tiedosto on liian suuri tälle alustalle: {size} (raja {cap})."
+    too_large_link:
+      - "Tiedosto on liian suuri lähetettäväksi tänne: {size} (raja {cap})."
+      - ""
+      - "Suora linkki: {url}"
+    cat:
+      unsupported: "Tätä linkkiä ei tueta: mikään purkaja ei saanut sitä kiinni."
+      login_required: "Tämä sisältö vaatii tilin sivustolla. Tallennan vain julkisia sivuja."
+      age_restricted: "Ikärajoitettu sisältö: sivusto ei näytä sitä ilman kirjautumista."
+      private: "Tämä sisältö on yksityinen tai tekijän poistama."
+      not_found: "Sivua tai mediaa ei löytynyt (404). Tarkista linkki."
+      unavailable: "Media ei ole saatavilla: tekijä on poistanut tai piilottanut sen."
+      geo_blocked: "Tämä sisältö on estetty palvelimen alueella."
+      live_stream: "Tämä on suora lähetys. Lähetä linkki uudelleen, kun lähetys päättyy."
+      rate_limited: "Lähde rajoittaa bottia juuri nyt. Kokeile muutaman minuutin kuluttua."
+      too_large: "Tiedosto ylittää rajan, eikä pienempää muotoa ole saatavilla."
+      timeout: "Lataus ylitti aikarajan. Valtava tai hidas lähde? Kokeile uudelleen, ehkä pienemmällä laadulla."
+      tool_missing: "Purkutyökalu puuttuu palvelimelta. Tämä on ylläpitäjälle."
+      network: "Verkkovirhe puhuttaessa lähteen kanssa. Kokeile uudelleen."
+      cancelled: "Lataus peruutettu."
+      unknown: "Jokin meni pieleen latauksen aikana. Kokeile uudelleen ja kerro ylläpitäjälle, jos se toistuu."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} / {total}"
+    truncated: "Vain ensimmäiset {count} kohtaa, loput ovat sivulla"
+
+button:
+  back: "Takaisin"
+  settings: "Asetukset"
+  sources: "Lähteet"
+  language: "Kieli"
+  about: "Tietoa botista"
+  help: "Ohje"
+  stats: "Omat tilastoni"
+  quality_menu: "Laatu"
+  stop: "Stop"
+  search: "Haku"
+  original: "Alkuperäinen"
+  github: "GitHub"
+  reload: "Lataa tekstit uudelleen"
+  open_link: "Avaa linkki"
+  quality:
+    best: "Paras"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Ääni (mp3)"
+    current_suffix: " (nykyinen)"
+
+command:
+  desc:
+    start: "päävalikko"
+    help: "mitä osa"
+    save: "lataa linkistä (tai lähetä vain linkki)"
+    stop: "peru aktiiviset lataukset"
+    quality: "videon laatu / pelkkä ääni"
+    settings: "omat asetuksesi"
+    sources: "luettelo tuetuista sivustoista"
+    stats: "käyttösi ja viimeisimmät työt"
+    lang: "kieli"
+    about: "tietoa botista"
+    admin: "moottorin tila (omistaja)"
+    reload: "lataa tekstit uudelleen (omistaja)"

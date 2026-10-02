@@ -1,0 +1,143 @@
+# French messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Envoie-moi un lien, je rapporte le fichier.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo et plus d'une centaine de sites : vidéos, shorts, photos, albums, GIF, musique."
+    - ""
+    - "Colle simplement le lien dans le chat. Aucune commande nécessaire."
+  help:
+    command: "*{command}* {description}"
+    tip: "Et le plus simple de tout : envoie-moi un lien."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Un téléchargeur de médias multiplateforme : {sources} sources au catalogue plus toute page publique en secours."
+    - ""
+    - "Version : {version}"
+    - "Respecte le droit d'auteur et les règles des sites : n'enregistre que ce que tu as le droit d'enregistrer."
+  settings:
+    - "*Réglages*"
+    - ""
+    - "Qualité : {quality}"
+    - "Langue : {language}"
+  quality:
+    title: "Choisis la qualité des téléchargements. Elle s'applique à toutes les nouvelles demandes."
+    set: "Qualité : *{quality}*. Les nouveaux téléchargements l'utiliseront."
+  lang:
+    choose: "Choisis ta langue :"
+    set: "Langue changée."
+  sources:
+    title: "*Sources prises en charge : {count}*"
+    legend: "[ok] fonctionne · [limited] partiel (liens publics seulement, casse souvent) · [login] compte requis. Toute autre page publique est tentée via l'extracteur générique."
+    search:
+      prompt: "Tape une partie du nom du site, par exemple `tiktok` ou `pixiv`. Un message vide renvoie la liste."
+      empty: "Rien trouvé pour « {query} ». L'extracteur générique peut peut-être gérer le site : envoie simplement le lien."
+      found: "Trouvés : {count}. Feuillette avec les flèches ou précise la recherche."
+  stats:
+    - "*Ton utilisation*"
+    - ""
+    - "Dernière heure : {jobs_hour} téléchargements"
+    - "Aujourd'hui : {jobs_today} téléchargements, {bytes_today}"
+  stats.recent: "Récents :"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Moteur : {tools}"
+    - "Tâches : {active} actives, {queued} en file"
+    - "Coffre : {vault}"
+    - "Utilisateurs : {users}"
+  reload:
+    done: "Textes et catalogue de sources rechargés ({sources} sources)."
+  flood: "Trop de messages d'affilée. Laisse-moi quelques secondes."
+  warning:
+    audio_raw: "Remarque : ffmpeg n'est pas installé sur le serveur, l'audio a donc été livré dans son conteneur d'origine au lieu de mp3."
+  pointer:
+    dm: "Ouvert dans ta conversation privée avec le bot."
+  hint:
+    no_url: "Je n'ai pas trouvé de lien dans ce message. Colle une URL comme `https://youtube.com/watch?v=…` et j'irai chercher le média."
+  prompt:
+    url: "Envoie-moi le lien à enregistrer. Annulation avec /stop."
+  cancel:
+    none: "Tu n'as aucun téléchargement actif à annuler."
+    done: "Téléchargements annulés : {count}."
+  status:
+    queued: "Enregistrement depuis *{host}*…"
+    files: "Fichiers déjà livrés : {count}"
+    progress: "Téléchargement… {percent}%"
+    done: "Terminé en {seconds} s · fichiers : {count} · {size}"
+  error:
+    not_owner: "Cette commande est réservée au propriétaire du bot."
+    unknown_command: "Commande inconnue. /help donne la liste."
+    invalid_url: "Cela ne ressemble pas à un lien http(s) valide."
+    queue_full: "La file de téléchargement est pleine en ce moment. Réessaie dans une minute."
+    concurrent: "Tu as déjà {count} téléchargements en cours. Attends-les ou appuie sur Stop."
+    quota_hour: "Limite horaire atteinte ({limit} téléchargements). Réessaie plus tard."
+    quota_day: "Limite quotidienne atteinte ({limit} téléchargements). À demain."
+    quota_bytes: "Limite quotidienne de trafic atteinte ({limit}). À demain."
+    source_disabled: "La source « {title} » est désactivée sur ce bot par l'administrateur."
+    vault_full: "Le coffre disque du serveur est plein. Réessaie plus tard."
+    blocked_type: "Le fichier « {file} » est un exécutable ou un script - je ne livre pas cela."
+    too_large: "Le fichier est trop gros pour cette plateforme : {size} (limite {cap})."
+    too_large_link:
+      - "Le fichier est trop gros pour être envoyé ici : {size} (limite {cap})."
+      - ""
+      - "Lien direct : {url}"
+    cat:
+      unsupported: "Ce lien n'est pas pris en charge : aucun extracteur n'a pu le traiter."
+      login_required: "Ce contenu exige un compte sur le site. Je n'enregistre que les pages publiques."
+      age_restricted: "Contenu soumis à une limite d'âge : le site refuse de le montrer sans connexion."
+      private: "Ce contenu est privé ou supprimé par son auteur."
+      not_found: "Page ou média introuvable (404). Vérifie le lien."
+      unavailable: "Le média n'est pas disponible : il a été supprimé ou masqué par l'auteur."
+      geo_blocked: "Ce contenu est bloqué dans la région du serveur."
+      live_stream: "C'est un direct. Renvoie le lien quand la diffusion sera terminée."
+      rate_limited: "La source limite le bot en ce moment. Réessaie dans quelques minutes."
+      too_large: "Le fichier dépasse la limite et aucun format plus petit n'est disponible."
+      timeout: "Le téléchargement a dépassé le délai. Source énorme ou lente ? Réessaie, peut-être avec une qualité plus basse."
+      tool_missing: "L'outil d'extraction manque sur le serveur. C'est une question pour l'administrateur."
+      network: "Erreur réseau en parlant à la source. Réessaie."
+      cancelled: "Téléchargement annulé."
+      unknown: "Quelque chose a mal tourné pendant le téléchargement. Réessaie, et si cela se répète, dis-le à l'administrateur."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} sur {total}"
+    truncated: "Seulement les {count} premiers éléments, le reste est sur la page"
+
+button:
+  back: "Retour"
+  settings: "Réglages"
+  sources: "Sources"
+  language: "Langue"
+  about: "À propos"
+  help: "Aide"
+  stats: "Mes stats"
+  quality_menu: "Qualité"
+  stop: "Stop"
+  search: "Recherche"
+  original: "Original"
+  github: "GitHub"
+  reload: "Recharger les textes"
+  open_link: "Ouvrir le lien"
+  quality:
+    best: "Meilleure"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (actuel)"
+
+command:
+  desc:
+    start: "menu principal"
+    help: "ce que je sais faire"
+    save: "télécharger par lien (ou envoie simplement le lien)"
+    stop: "annuler les téléchargements actifs"
+    quality: "qualité vidéo / audio seul"
+    settings: "tes réglages"
+    sources: "liste des sites pris en charge"
+    stats: "ton utilisation et tâches récentes"
+    lang: "langue"
+    about: "à propos du bot"
+    admin: "état du moteur (propriétaire)"
+    reload: "recharger les textes (propriétaire)"

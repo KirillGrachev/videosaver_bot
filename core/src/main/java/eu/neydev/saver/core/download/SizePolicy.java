@@ -13,8 +13,10 @@ import eu.neydev.saver.core.media.MediaKind;
  *   <li>fits the kind's cap -> send as is;</li>
  *   <li>a video/audio/gif too big for its native type but within the DOCUMENT cap ->
  *       send as a document (Telegram/VK users get the file instead of a refusal);</li>
- *   <li>still too big -> the link fallback (the user gets the direct media URL plus
- *       the honest reason), unless the operator disabled the fallback.</li>
+ *   <li>still too big -> the link fallback (the user gets a link to the file: our own
+ *       public vault link when the webapp is published, otherwise the direct source
+ *       media URL, plus the honest reason), unless the operator disabled the
+ *       fallback.</li>
  * </ol>
  */
 public final class SizePolicy {

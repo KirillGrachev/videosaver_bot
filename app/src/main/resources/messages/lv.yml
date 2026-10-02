@@ -1,0 +1,143 @@
+# Latvian messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Atsūti man saiti, un es atnesīšu failu.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo un vēl vairāk nekā simts vietņu: video, shorti, foto, albumi, GIF, mūzika."
+    - ""
+    - "Vienkārtši ielīmē saiti čatā. Komanda nav vajadzīga."
+  help:
+    command: "*{command}* {description}"
+    tip: "Un vienkāršākais no visa: atsūti man saiti."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Vairākplatformu mediju lejupielādētājs: {sources} avoti katalogā plus jebkura publiska lapa kā rezerve."
+    - ""
+    - "Versija: {version}"
+    - "Ievēro autortiesības un vietņu noteikumus: saglabā tikai to, ko drīksti saglabāt."
+  settings:
+    - "*Iestatījumi*"
+    - ""
+    - "Kvalitāte: {quality}"
+    - "Valoda: {language}"
+  quality:
+    title: "Izvēlies lejupielāžu kvalitāti. Tā attiecas uz visiem jaunajiem pieprasījumiem."
+    set: "Kvalitāte: *{quality}*. Jaunās lejupielādes to izmantos."
+  lang:
+    choose: "Izvēlies savu valodu:"
+    set: "Valoda pārslēgta."
+  sources:
+    title: "*Atbalstītie avoti: {count}*"
+    legend: "[ok] strādā · [limited] daļēji (tikai publiskas saites, bieži lūst) · [login] vajadzīgs konts. Jebkuru citu publisku lapu mēģinu ar vispārīgo ekstraktoru."
+    search:
+      prompt: "Ieraksti daļu no vietnes nosaukuma, piemēram `tiktok` vai `pixiv`. Tukšs ziņojums atgriež sarakstu."
+      empty: "Nekas nav atrasts vaicājumam „{query}“. Vispārīgais ekstraktors varbūt tik un tā tiks galā: vienkārši atsūti saiti."
+      found: "Atrasti: {count}. Šķirsti ar bultiņām vai precizē vaicājumu."
+  stats:
+    - "*Tavs lietojums*"
+    - ""
+    - "Pēdējā stunda: {jobs_hour} lejupielādes"
+    - "Šodien: {jobs_today} lejupielādes, {bytes_today}"
+  stats.recent: "Nesenie:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Dzinējs: {tools}"
+    - "Darbi: {active} aktīvi, {queued} rindā"
+    - "Glabātava: {vault}"
+    - "Lietotāji: {users}"
+  reload:
+    done: "Teksti un avotu katalogs pārlādēti ({sources} avoti)."
+  flood: "Pārāk daudz ziņojumu pēc kārtas. Dod man dažas sekundes."
+  warning:
+    audio_raw: "Piezīme: serverī nav ffmpeg, tāpēc audio tika piegādāts sākotnējā konteinerā, nevis mp3."
+  pointer:
+    dm: "Atvērts tavā privātajā sarunā ar botu."
+  hint:
+    no_url: "Es neatradu saiti šajā ziņojumā. Ielīmē URL kā `https://youtube.com/watch?v=…`, un es paņemšu mediju."
+  prompt:
+    url: "Atsūti saiti, ko vēlies saglabāt. Atcelšana ar /stop."
+  cancel:
+    none: "Tev nav aktīvu lejupielāžu, ko atcelt."
+    done: "Atceltas lejupielādes: {count}."
+  status:
+    queued: "Saglabāju no *{host}*…"
+    files: "Līdz šim piegādātie faili: {count}"
+    progress: "Lejupielādēju… {percent}%"
+    done: "Gatavs {seconds} s · faili: {count} · {size}"
+  error:
+    not_owner: "Šī komanda ir bota īpašniekam."
+    unknown_command: "Nezināma komanda. /help atsūta sarakstu."
+    invalid_url: "Tas neizskatās pēc derīgas http(s) saites."
+    queue_full: "Lejupielāžu rinda šobrīd ir pilna. Pamēģini pēc minūtes."
+    concurrent: "Tev jau ir {count} lejupielādes procesā. Sagaidi tās vai spied Stop."
+    quota_hour: "Stundas limits sasniegts ({limit} lejupielādes). Pamēģini vēlāk."
+    quota_day: "Dienas limits sasniegts ({limit} lejupielādes). Līdz rītdienai."
+    quota_bytes: "Dienas trafika limits sasniegts ({limit}). Līdz rītdienai."
+    source_disabled: "Avotu „{title}“ šajā botā ir izslēdzis administrators."
+    vault_full: "Servera diska glabātava ir pilna. Pamēģini vēlāk."
+    blocked_type: "Fails „{file}“ ir izpildāms tips vai skripts - tādus es nepiegādāju."
+    too_large: "Fails ir par lielu šai platformai: {size} (limits {cap})."
+    too_large_link:
+      - "Fails ir par lielu, lai to sūtītu šeit: {size} (limits {cap})."
+      - ""
+      - "Tiešā saite: {url}"
+    cat:
+      unsupported: "Šī saite netiek atbalstīta: neviens ekstraktors to nespēja paņemt."
+      login_required: "Šim saturam vajadzīgs konts vietnē. Es saglabāju tikai publiskas lapas."
+      age_restricted: "Saturs ar vecuma ierobežojumu: vietne to nerāda bez ielogošanās."
+      private: "Šis saturs ir privāts vai autors to izdzēsis."
+      not_found: "Lapa vai medijs nav atrasts (404). Pārbaudi saiti."
+      unavailable: "Medijs nav pieejams: autors to ir dzēsis vai paslēpis."
+      geo_blocked: "Šis saturs ir bloķēts servera reģionā."
+      live_stream: "Tā ir tiešraide. Atsūti saiti vēlreiz, kad pārraide beigsies."
+      rate_limited: "Avots šobrīd ierobežo botu. Pamēģini pēc dažām minūtēm."
+      too_large: "Fails pārsniedz limitu, un mazāks formāts nav pieejams."
+      timeout: "Lejupielāde pārsniedza laika limitu. Milzīgs vai lēns avots? Pamēģini vēlreiz, varbūt ar zemāku kvalitāti."
+      tool_missing: "Serverī trūkst ekstrakcijas rīka. Tas ir administratora jautājums."
+      network: "Tīkla kļūda, sazinoties ar avotu. Pamēģini vēlreiz."
+      cancelled: "Lejupielāde atcelta."
+      unknown: "Kaut kas lejupielādes laikā nogāja greizi. Pamēģini vēlreiz un atkārtojoties pastāsti administratoram."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} no {total}"
+    truncated: "Tikai pirmie {count} vienumi, pārējie ir lapā"
+
+button:
+  back: "Atpakaļ"
+  settings: "Iestatījumi"
+  sources: "Avoti"
+  language: "Valoda"
+  about: "Par botu"
+  help: "Palīdzība"
+  stats: "Mana statistika"
+  quality_menu: "Kvalitāte"
+  stop: "Stop"
+  search: "Meklēt"
+  original: "Oriģināls"
+  github: "GitHub"
+  reload: "Pārlādēt tekstus"
+  open_link: "Atvērt saiti"
+  quality:
+    best: "Labākā"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (pašreizējā)"
+
+command:
+  desc:
+    start: "galvenā izvēlne"
+    help: "ko es protu"
+    save: "lejupielādēt pēc saites (vai vienkārši atsūti saiti)"
+    stop: "atcelt aktīvās lejupielādes"
+    quality: "video kvalitāte / tikai audio"
+    settings: "tavi iestatījumi"
+    sources: "atbalstīto vietņu saraksts"
+    stats: "tavs lietojums un nesenie darbi"
+    lang: "valoda"
+    about: "par botu"
+    admin: "dzinēja stāvoklis (īpašnieks)"
+    reload: "pārlādēt tekstus (īpašnieks)"

@@ -1,0 +1,143 @@
+# Danish messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Send mig et link, så henter jeg filen.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo og over hundrede andre sider: video, shorts, fotos, albummer, GIF'er, musik."
+    - ""
+    - "Indsæt bare linket i chatten. Ingen kommando nødvendig."
+  help:
+    command: "*{command}* {description}"
+    tip: "Og det enkleste af alt: send mig et link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "En multiplatform medie-downloader: {sources} kilder i kataloget plus enhver offentlig side som reserve."
+    - ""
+    - "Version: {version}"
+    - "Respekter ophavsret og sidernes regler: gem kun det, du må gemme."
+  settings:
+    - "*Indstillinger*"
+    - ""
+    - "Kvalitet: {quality}"
+    - "Sprog: {language}"
+  quality:
+    title: "Vælg kvaliteten for downloads. Den gælder for alle nye forespørgsler."
+    set: "Kvalitet: *{quality}*. Nye downloads bruger den."
+  lang:
+    choose: "Vælg dit sprog:"
+    set: "Sprog skiftet."
+  sources:
+    title: "*Understøttede kilder: {count}*"
+    legend: "[ok] virker · [limited] delvist (kun offentlige links, bryder ofte) · [login] konto nødvendig. Enhver anden offentlig side forsøges med den generiske extractor."
+    search:
+      prompt: "Skriv en del af sidens navn, for eksempel `tiktok` eller `pixiv`. En tom besked giver listen."
+      empty: "Intet fundet for „{query}“. Den generiske extractor kan måske stadig klare siden: send bare linket."
+      found: "Fundet: {count}. Bladr med pilene eller præciser søgningen."
+  stats:
+    - "*Dit forbrug*"
+    - ""
+    - "Sidste time: {jobs_hour} downloads"
+    - "I dag: {jobs_today} downloads, {bytes_today}"
+  stats.recent: "Seneste:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motor: {tools}"
+    - "Jobs: {active} aktive, {queued} i kø"
+    - "Hvælving: {vault}"
+    - "Brugere: {users}"
+  reload:
+    done: "Tekster og kildekatalog genindlæst ({sources} kilder)."
+  flood: "Alt for mange beskeder i træk. Giv mig et par sekunder."
+  warning:
+    audio_raw: "Bemærk: ffmpeg er ikke installeret på serveren, så lyden blev leveret i sin originale container i stedet for mp3."
+  pointer:
+    dm: "Åbnet i din private samtale med botten."
+  hint:
+    no_url: "Jeg fandt ikke noget link i den besked. Indsæt en URL som `https://youtube.com/watch?v=…`, så henter jeg mediet."
+  prompt:
+    url: "Send mig det link, du vil gemme. Afbryd med /stop."
+  cancel:
+    none: "Du har ingen aktive downloads at afbryde."
+    done: "Afbrudte downloads: {count}."
+  status:
+    queued: "Gemmer fra *{host}*…"
+    files: "Filer leveret indtil videre: {count}"
+    progress: "Downloader… {percent}%"
+    done: "Færdig på {seconds} s · filer: {count} · {size}"
+  error:
+    not_owner: "Denne kommando er til bottens ejer."
+    unknown_command: "Ukendt kommando. /help giver listen."
+    invalid_url: "Det ligner ikke et gyldigt http(s)-link."
+    queue_full: "Downloadkøen er fuld lige nu. Prøv om et minut."
+    concurrent: "Du har allerede {count} downloads i gang. Vent på dem eller tryk Stop."
+    quota_hour: "Timelimitten er nået ({limit} downloads). Prøv senere."
+    quota_day: "Dagslimitten er nået ({limit} downloads). Vi ses i morgen."
+    quota_bytes: "Dagslimitten for trafik er nået ({limit}). Vi ses i morgen."
+    source_disabled: "Kilden „{title}“ er deaktiveret på denne bot af administratoren."
+    vault_full: "Serverens diskhvælving er fuld. Prøv senere."
+    blocked_type: "Filen „{file}“ er en kørbar type eller et script - den slags leverer jeg ikke."
+    too_large: "Filen er for stor til denne platform: {size} (grænse {cap})."
+    too_large_link:
+      - "Filen er for stor til at sende her: {size} (grænse {cap})."
+      - ""
+      - "Direkte link: {url}"
+    cat:
+      unsupported: "Dette link understøttes ikke: ingen extractor kunne tage det."
+      login_required: "Dette indhold kræver en konto på siden. Jeg gemmer kun offentlige sider."
+      age_restricted: "Indhold med aldersgrænse: siden viser det ikke uden login."
+      private: "Dette indhold er privat eller slettet af forfatteren."
+      not_found: "Siden eller mediet blev ikke fundet (404). Tjek linket."
+      unavailable: "Mediet er ikke tilgængeligt: det er slettet eller skjult af forfatteren."
+      geo_blocked: "Dette indhold er blokeret i serverens region."
+      live_stream: "Dette er en livestream. Send linket igen, når udsendelsen slutter."
+      rate_limited: "Kilden begrænser botten lige nu. Prøv om et par minutter."
+      too_large: "Filen overstiger grænsen, og der findes ikke et mindre format."
+      timeout: "Downloaden overskred tidsgrænsen. Enorm eller langsom kilde? Prøv igen, måske med lavere kvalitet."
+      tool_missing: "Extraktionsværktøjet mangler på serveren. Den er til administratoren."
+      network: "Netværksfejl under talen med kilden. Prøv igen."
+      cancelled: "Download afbrudt."
+      unknown: "Noget gik galt under downloaden. Prøv igen, og sig det til administratoren, hvis det gentager sig."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} af {total}"
+    truncated: "Kun de første {count} elementer, resten er på siden"
+
+button:
+  back: "Tilbage"
+  settings: "Indstillinger"
+  sources: "Kilder"
+  language: "Sprog"
+  about: "Om botten"
+  help: "Hjælp"
+  stats: "Min statistik"
+  quality_menu: "Kvalitet"
+  stop: "Stop"
+  search: "Søg"
+  original: "Original"
+  github: "GitHub"
+  reload: "Genindlæs tekster"
+  open_link: "Åbn link"
+  quality:
+    best: "Bedste"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Lyd (mp3)"
+    current_suffix: " (aktuel)"
+
+command:
+  desc:
+    start: "hovedmenu"
+    help: "hvad jeg kan"
+    save: "download via link (eller send bare linket)"
+    stop: "afbryd aktive downloads"
+    quality: "videokvalitet / kun lyd"
+    settings: "dine indstillinger"
+    sources: "liste over understøttede sider"
+    stats: "dit forbrug og seneste jobs"
+    lang: "sprog"
+    about: "om botten"
+    admin: "motorens tilstand (ejer)"
+    reload: "genindlæs tekster (ejer)"

@@ -1,0 +1,143 @@
+# Polish messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Wyślij mi link, a przyniosę plik.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo i ponad sto innych stron: wideo, shorty, zdjęcia, albumy, GIF-y, muzyka."
+    - ""
+    - "Po prostu wklej link na czacie. Żadna komenda nie jest potrzebna."
+  help:
+    command: "*{command}* {description}"
+    tip: "A najprościej ze wszystkiego: po prostu wyślij mi link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Wieloplatformowy pobieracz mediów: {sources} źródeł w katalogu plus dowolna publiczna strona jako zapas."
+    - ""
+    - "Wersja: {version}"
+    - "Szanuj prawa autorskie i regulaminy stron: zapisuj tylko to, co wolno ci zapisywać."
+  settings:
+    - "*Ustawienia*"
+    - ""
+    - "Jakość: {quality}"
+    - "Język: {language}"
+  quality:
+    title: "Wybierz jakość pobierania. Obowiązuje dla wszystkich nowych żądań."
+    set: "Jakość: *{quality}*. Nowe pobrania będą jej używać."
+  lang:
+    choose: "Wybierz swój język:"
+    set: "Język przełączony."
+  sources:
+    title: "*Obsługiwane źródła: {count}*"
+    legend: "[ok] działa · [limited] częściowo (tylko publiczne linki, często się łamie) · [login] wymaga konta. Każdą inną publiczną stronę spróbuję obsłużyć ekstraktorem uniwersalnym."
+    search:
+      prompt: "Wpisz część nazwy strony, na przykład `tiktok` lub `pixiv`. Pusta wiadomość zwróci listę."
+      empty: "Nic nie znaleziono dla „{query}”. Uniwersalny ekstraktor może mimo to dać radę: po prostu wyślij link."
+      found: "Znaleziono: {count}. Przewijaj strzałkami lub zawęź zapytanie."
+  stats:
+    - "*Twoje użycie*"
+    - ""
+    - "Ostatnia godzina: {jobs_hour} pobrań"
+    - "Dzisiaj: {jobs_today} pobrań, {bytes_today}"
+  stats.recent: "Ostatnie:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Silnik: {tools}"
+    - "Zadania: {active} aktywne, {queued} w kolejce"
+    - "Magazyn: {vault}"
+    - "Użytkownicy: {users}"
+  reload:
+    done: "Teksty i katalog źródeł przeładowane ({sources} źródeł)."
+  flood: "Za dużo wiadomości naraz. Daj mi kilka sekund."
+  warning:
+    audio_raw: "Uwaga: na serwerze nie ma ffmpeg, więc audio dostarczono w oryginalnym kontenerze zamiast mp3."
+  pointer:
+    dm: "Otwarto w prywatnej rozmowie z botem."
+  hint:
+    no_url: "Nie znalazłem linku w tej wiadomości. Wklej URL w rodzaju `https://youtube.com/watch?v=…`, a pobiorę materiał."
+  prompt:
+    url: "Wyślij link, który chcesz zapisać. Anulujesz przez /stop."
+  cancel:
+    none: "Nie masz aktywnych pobrań do anulowania."
+    done: "Anulowane pobrania: {count}."
+  status:
+    queued: "Zapisuję z *{host}*…"
+    files: "Pliki dostarczone do tej pory: {count}"
+    progress: "Pobieram… {percent}%"
+    done: "Gotowe w {seconds} s · pliki: {count} · {size}"
+  error:
+    not_owner: "Ta komenda jest dla właściciela bota."
+    unknown_command: "Nieznana komenda. /help poda listę."
+    invalid_url: "To nie wygląda na poprawny link http(s)."
+    queue_full: "Kolejka pobrań jest teraz pełna. Spróbuj za minutę."
+    concurrent: "Masz już {count} trwające pobrania. Poczekaj na nie lub naciśnij Stop."
+    quota_hour: "Limit godzinowy osiągnięty ({limit} pobrań). Spróbuj później."
+    quota_day: "Limit dzienny osiągnięty ({limit} pobrań). Do jutra."
+    quota_bytes: "Dzienny limit transferu osiągnięty ({limit}). Do jutra."
+    source_disabled: "Źródło „{title}” jest wyłączone na tym bocie przez administratora."
+    vault_full: "Magazyn dyskowy serwera jest pełny. Spróbuj później."
+    blocked_type: "Plik „{file}” to typ wykonywalny lub skrypt - takich nie dostarczam."
+    too_large: "Plik jest za duży dla tej platformy: {size} (limit {cap})."
+    too_large_link:
+      - "Plik jest za duży, by wysłać go tutaj: {size} (limit {cap})."
+      - ""
+      - "Bezpośredni link: {url}"
+    cat:
+      unsupported: "Ten link nie jest obsługiwany: żaden ekstraktor nie dał rady go zabrać."
+      login_required: "Ta treść wymaga konta na stronie. Zapisuję tylko publiczne strony."
+      age_restricted: "Treść z ograniczeniem wiekowym: strona nie pokaże jej bez zalogowania."
+      private: "Ta treść jest prywatna lub usunięta przez autora."
+      not_found: "Nie znaleziono strony lub materiału (404). Sprawdź link."
+      unavailable: "Materiał jest niedostępny: został usunięty lub ukryty przez autora."
+      geo_blocked: "Ta treść jest zablokowana w regionie serwera."
+      live_stream: "To transmisja na żywo. Wyślij link ponownie, gdy transmisja się zakończy."
+      rate_limited: "Źródło ogranicza teraz bota. Spróbuj za kilka minut."
+      too_large: "Plik przekracza limit i nie ma mniejszego formatu."
+      timeout: "Pobranie przekroczyło limit czasu. Ogromne lub wolne źródło? Spróbuj ponownie, może z niższą jakością."
+      tool_missing: "Na serwerze brakuje narzędzia ekstrakcji. To sprawa dla administratora."
+      network: "Błąd sieci przy rozmowie ze źródłem. Spróbuj ponownie."
+      cancelled: "Pobranie anulowane."
+      unknown: "Coś poszło nie tak podczas pobierania. Spróbuj ponownie, a przy powtórce powiedz administratorowi."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} z {total}"
+    truncated: "Tylko pierwsze {count} elementów, reszta jest na stronie"
+
+button:
+  back: "Wstecz"
+  settings: "Ustawienia"
+  sources: "Źródła"
+  language: "Język"
+  about: "O bocie"
+  help: "Pomoc"
+  stats: "Moje statystyki"
+  quality_menu: "Jakość"
+  stop: "Stop"
+  search: "Szukaj"
+  original: "Oryginał"
+  github: "GitHub"
+  reload: "Przeładuj teksty"
+  open_link: "Otwórz link"
+  quality:
+    best: "Najlepsza"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (bieżące)"
+
+command:
+  desc:
+    start: "menu główne"
+    help: "co umiem"
+    save: "pobierz z linku (albo po prostu wyślij link)"
+    stop: "anuluj aktywne pobrania"
+    quality: "jakość wideo / samo audio"
+    settings: "twoje ustawienia"
+    sources: "lista obsługiwanych stron"
+    stats: "twoje użycie i ostatnie zadania"
+    lang: "język"
+    about: "o bocie"
+    admin: "stan silnika (właściciel)"
+    reload: "przeładuj teksty (właściciel)"

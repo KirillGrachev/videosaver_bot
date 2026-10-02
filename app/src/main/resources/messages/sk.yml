@@ -1,0 +1,143 @@
+# Slovak messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Pošli mi odkaz a ja prinesiem súbor.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo a viac ako stovka ďalších stránok: videá, shorty, fotky, albumy, GIFy, hudba."
+    - ""
+    - "Stačí vložiť odkaz do chatu. Žiadny príkaz nie je potrebný."
+  help:
+    command: "*{command}* {description}"
+    tip: "A to najjednoduchšie zo všetkého: pošli mi odkaz."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Viacplatformový sťahovač médií: {sources} zdrojov v katalógu plus ľubovoľná verejná stránka ako záloha."
+    - ""
+    - "Verzia: {version}"
+    - "Rešpektuj autorské práva a pravidlá stránok: ukladaj len to, čo ukladať smieš."
+  settings:
+    - "*Nastavenia*"
+    - ""
+    - "Kvalita: {quality}"
+    - "Jazyk: {language}"
+  quality:
+    title: "Vyber kvalitu sťahovania. Platí pre všetky nové požiadavky."
+    set: "Kvalita: *{quality}*. Nové sťahovania ju použijú."
+  lang:
+    choose: "Vyber svoj jazyk:"
+    set: "Jazyk prepnutý."
+  sources:
+    title: "*Podporované zdroje: {count}*"
+    legend: "[ok] funguje · [limited] čiastočne (len verejné odkazy, často sa láme) · [login] vyžaduje účet. Akúkoľvek inú verejnú stránku skúsim univerzálnym extraktorom."
+    search:
+      prompt: "Napíš časť názvu stránky, napríklad `tiktok` alebo `pixiv`. Prázdna správa vráti zoznam."
+      empty: "Nič sa nenašlo pre „{query}“. Univerzálny extraktor si s stránkou možno poradí: proste pošli odkaz."
+      found: "Nájdené: {count}. Listuj šípkami alebo upresni dotaz."
+  stats:
+    - "*Tvoje využitie*"
+    - ""
+    - "Posledná hodina: {jobs_hour} sťahovaní"
+    - "Dnes: {jobs_today} sťahovaní, {bytes_today}"
+  stats.recent: "Nedávne:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motor: {tools}"
+    - "Úlohy: {active} aktívne, {queued} vo fronte"
+    - "Trezor: {vault}"
+    - "Používatelia: {users}"
+  reload:
+    done: "Texty a katalóg zdrojov znovu načítané ({sources} zdrojov)."
+  flood: "Príliš veľa správ za sebou. Daj mi pár sekúnd."
+  warning:
+    audio_raw: "Poznámka: na serveri chýba ffmpeg, audio teda bolo doručené v pôvodnom kontajneri namiesto mp3."
+  pointer:
+    dm: "Otvorené v súkromnej konverzácii s botom."
+  hint:
+    no_url: "V tejto správe som nenašiel odkaz. Vlož URL ako `https://youtube.com/watch?v=…` a ja médium stiahnem."
+  prompt:
+    url: "Pošli mi odkaz, ktorý chceš uložiť. Zrušenie cez /stop."
+  cancel:
+    none: "Nemáš žiadne aktívne sťahovania na zrušenie."
+    done: "Zrušené sťahovania: {count}."
+  status:
+    queued: "Ukladám z *{host}*…"
+    files: "Zatiaľ doručené súbory: {count}"
+    progress: "Sťahujem… {percent}%"
+    done: "Hotovo za {seconds} s · súbory: {count} · {size}"
+  error:
+    not_owner: "Tento príkaz je pre vlastníka bota."
+    unknown_command: "Neznámy príkaz. /help pošle zoznam."
+    invalid_url: "Toto nevyzerá ako platný http(s) odkaz."
+    queue_full: "Fronta sťahovania je teraz plná. Skús to o minútu."
+    concurrent: "Už máš {count} prebiehajúcich sťahovaní. Počkaj na ne alebo stlač Stop."
+    quota_hour: "Hodinový limit dosiahnutý ({limit} sťahovaní). Skús to neskôr."
+    quota_day: "Denný limit dosiahnutý ({limit} sťahovaní). Do zajtra."
+    quota_bytes: "Denný limit prevádzky dosiahnutý ({limit}). Do zajtra."
+    source_disabled: "Zdroj „{title}“ je na tomto botovi vypnutý administrátorom."
+    vault_full: "Diskový trezor servera je plný. Skús to neskôr."
+    blocked_type: "Súbor „{file}“ je spustiteľný typ alebo skript - také nedoručujem."
+    too_large: "Súbor je pre túto platformu príliš veľký: {size} (limit {cap})."
+    too_large_link:
+      - "Súbor je príliš veľký na odoslanie sem: {size} (limit {cap})."
+      - ""
+      - "Priamy odkaz: {url}"
+    cat:
+      unsupported: "Tento odkaz nie je podporovaný: žiadny extraktor si s ním neporadil."
+      login_required: "Tento obsah vyžaduje účet na stránke. Ukladám len verejné stránky."
+      age_restricted: "Obsah s vekovým obmedzením: stránka ho bez prihlásenia neukáže."
+      private: "Tento obsah je súkromný alebo ho autor zmazal."
+      not_found: "Stránka alebo médium nenájdené (404). Skontroluj odkaz."
+      unavailable: "Médium nie je dostupné: bolo vymazané alebo skryté autorom."
+      geo_blocked: "Tento obsah je v regióne servera blokovaný."
+      live_stream: "Toto je živý prenos. Pošli odkaz znova, keď sa vysielanie skončí."
+      rate_limited: "Zdroj bota práve obmedzuje. Skús to o pár minút."
+      too_large: "Súbor prekračuje limit a menší formát nie je dostupný."
+      timeout: "Sťahovanie prekročilo časový limit. Obrovský alebo pomalý zdroj? Skús to znova, možno s nižšou kvalitou."
+      tool_missing: "Na serveri chýba extrakčný nástroj. Toto je pre administrátora."
+      network: "Sieťová chyba pri komunikácii so zdrojom. Skús to znova."
+      cancelled: "Sťahovanie zrušené."
+      unknown: "Pri sťahovaní sa niečo pokazilo. Skús to znova, a ak sa to opakuje, povedz to administrátorovi."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} z {total}"
+    truncated: "Len prvých {count} položiek, zvyšok je na stránke"
+
+button:
+  back: "Späť"
+  settings: "Nastavenia"
+  sources: "Zdroje"
+  language: "Jazyk"
+  about: "O botovi"
+  help: "Pomoc"
+  stats: "Moje štatistiky"
+  quality_menu: "Kvalita"
+  stop: "Stop"
+  search: "Hľadať"
+  original: "Originál"
+  github: "GitHub"
+  reload: "Znovu načítať texty"
+  open_link: "Otvoriť odkaz"
+  quality:
+    best: "Najlepšia"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (aktuálne)"
+
+command:
+  desc:
+    start: "hlavné menu"
+    help: "čo umiem"
+    save: "stiahnuť z odkazu (alebo proste pošli odkaz)"
+    stop: "zrušiť aktívne sťahovania"
+    quality: "kvalita videa / iba audio"
+    settings: "tvoje nastavenia"
+    sources: "zoznam podporovaných stránok"
+    stats: "tvoje využitie a nedávne úlohy"
+    lang: "jazyk"
+    about: "o botovi"
+    admin: "stav motora (vlastník)"
+    reload: "znovu načítať texty (vlastník)"

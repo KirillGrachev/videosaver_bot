@@ -1,0 +1,143 @@
+# Lithuanian messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Atsiųsk man nuorodą ir aš atnešiu failą.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo ir dar daugiau nei šimtas svetainių: vaizdo įrašai, shortai, nuotraukos, albumai, GIF, muzika."
+    - ""
+    - "Tiesiog įklijuok nuorodą į pokalbį. Komandos nereikia."
+  help:
+    command: "*{command}* {description}"
+    tip: "O paprasčiausia iš visko: atsiųsk man nuorodą."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Daugiaplatformis medijos siuntiklis: {sources} šaltinių kataloge plius bet kuris viešas puslapis kaip atsarga."
+    - ""
+    - "Versija: {version}"
+    - "Gerbk autorių teises ir svetainių taisykles: saugok tik tai, ką tau leidžiama saugoti."
+  settings:
+    - "*Nustatymai*"
+    - ""
+    - "Kokybė: {quality}"
+    - "Kalba: {language}"
+  quality:
+    title: "Pasirink atsisiuntimų kokybę. Ji taikoma visoms naujoms užklausoms."
+    set: "Kokybė: *{quality}*. Nauji atsisiuntimai ją naudos."
+  lang:
+    choose: "Pasirink savo kalbą:"
+    set: "Kalba perjungta."
+  sources:
+    title: "*Palaikomi šaltiniai: {count}*"
+    legend: "[ok] veikia · [limited] iš dalies (tik viešos nuorodos, dažnai lūžta) · [login] reikia paskyros. Bet kurį kitą viešą puslapį bandysiu universaliu ekstraktoriumi."
+    search:
+      prompt: "Įrašyk dalį svetainės pavadinimo, pavyzdžiui `tiktok` ar `pixiv`. Tuščia žinutė grąžins sąrašą."
+      empty: "Nieko nerasta užklausai „{query}“. Universalus ekstraktorius galbūt vis tiek susitvarkys: tiesiog atsiųsk nuorodą."
+      found: "Rasta: {count}. Vartyk rodyklėmis arba patikslink užklausą."
+  stats:
+    - "*Tavo naudojimas*"
+    - ""
+    - "Paskutinė valanda: {jobs_hour} atsisiuntimai"
+    - "Šiandien: {jobs_today} atsisiuntimai, {bytes_today}"
+  stats.recent: "Naujausi:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Variklis: {tools}"
+    - "Darbai: {active} aktyvūs, {queued} eilėje"
+    - "Saugykla: {vault}"
+    - "Naudotojai: {users}"
+  reload:
+    done: "Tekstai ir šaltinių katalogas perkrauti ({sources} šaltinių)."
+  flood: "Per daug žinučių iš eilės. Duok man kelias sekundes."
+  warning:
+    audio_raw: "Pastaba: serveryje nėra ffmpeg, todėl garso įrašas pristatytas pradiniame konteineryje, o ne mp3."
+  pointer:
+    dm: "Atidaryta tavo asmeniniame pokalbyje su botu."
+  hint:
+    no_url: "Toje žinutėje neradau nuorodos. Įklijuok URL kaip `https://youtube.com/watch?v=…` ir aš paimsiu mediją."
+  prompt:
+    url: "Atsiųsk nuorodą, kurią nori išsaugoti. Atšaukimas per /stop."
+  cancel:
+    none: "Neturi aktyvių atsisiuntimų, kuriuos atšaukti."
+    done: "Atšaukti atsisiuntimai: {count}."
+  status:
+    queued: "Saugoju iš *{host}*…"
+    files: "Iki šiol pristatyti failai: {count}"
+    progress: "Atsisiunčiama… {percent}%"
+    done: "Baigta per {seconds} s · failai: {count} · {size}"
+  error:
+    not_owner: "Ši komanda skirta boto savininkui."
+    unknown_command: "Nežinoma komanda. /help atsiųs sąrašą."
+    invalid_url: "Tai neatrodo kaip tinkama http(s) nuoroda."
+    queue_full: "Atsisiuntimų eilė dabar pilna. Pabandyk po minutės."
+    concurrent: "Tu jau turi {count} vykstančius atsisiuntimus. Palauk jų arba spausk Stop."
+    quota_hour: "Valandos limitas pasiektas ({limit} atsisiuntimai). Pabandyk vėliau."
+    quota_day: "Dienos limitas pasiektas ({limit} atsisiuntimai). Iki rytojaus."
+    quota_bytes: "Dienos srauto limitas pasiektas ({limit}). Iki rytojaus."
+    source_disabled: "Šaltinį „{title}“ šiame bote išjungė administratorius."
+    vault_full: "Serverio disko saugykla pilna. Pabandyk vėliau."
+    blocked_type: "Failas „{file}“ yra vykdomasis tipas ar skriptas - tokių nepristatau."
+    too_large: "Failas per didelis šiai platformai: {size} (riba {cap})."
+    too_large_link:
+      - "Failas per didelis siųsti čia: {size} (riba {cap})."
+      - ""
+      - "Tiesioginė nuoroda: {url}"
+    cat:
+      unsupported: "Ši nuoroda nepalaikoma: joks ekstraktorius negalėjo jos paimti."
+      login_required: "Šiam turiniui reikia paskyros svetainėje. Saugau tik viešus puslapius."
+      age_restricted: "Turinys su amžiaus ribojimu: svetainė jo nerodo be prisijungimo."
+      private: "Šis turinys privatus arba autoriaus ištrintas."
+      not_found: "Puslapis ar medija nerasta (404). Patikrink nuorodą."
+      unavailable: "Medija nepasiekiama: autorius ją ištrynė arba paslėpė."
+      geo_blocked: "Šis turinys užblokuotas serverio regione."
+      live_stream: "Tai tiesioginė transliacija. Atsiųsk nuorodą dar kartą, kai transliacija baigsis."
+      rate_limited: "Šaltinis dabar riboja botą. Pabandyk po kelių minučių."
+      too_large: "Failas viršija ribą ir mažesnio formato nėra."
+      timeout: "Atsisiuntimas viršijo laiko ribą. Milžiniškas ar lėtas šaltinis? Pabandyk dar kartą, gal su žemesne kokybe."
+      tool_missing: "Serveryje trūksta ekstrakcijos įrankio. Tai administratoriaus reikalas."
+      network: "Tinklo klaida kalbant su šaltiniu. Pabandyk dar kartą."
+      cancelled: "Atsisiuntimas atšauktas."
+      unknown: "Kažkas atsisiuntimo metu nepavyko. Pabandyk dar kartą ir pasikartojus papasakok administratoriui."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} iš {total}"
+    truncated: "Tik pirmi {count} elementai, likusi dalis puslapyje"
+
+button:
+  back: "Atgal"
+  settings: "Nustatymai"
+  sources: "Šaltiniai"
+  language: "Kalba"
+  about: "Apie botą"
+  help: "Pagalba"
+  stats: "Mano statistika"
+  quality_menu: "Kokybė"
+  stop: "Stop"
+  search: "Paieška"
+  original: "Originalas"
+  github: "GitHub"
+  reload: "Perkrauti tekstus"
+  open_link: "Atidaryti nuorodą"
+  quality:
+    best: "Geriausia"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Garsas (mp3)"
+    current_suffix: " (dabartinė)"
+
+command:
+  desc:
+    start: "pagrindinis meniu"
+    help: "ką aš moku"
+    save: "atsisiųsti pagal nuorodą (arba tiesiog atsiųsk nuorodą)"
+    stop: "atšaukti aktyvius atsisiuntimus"
+    quality: "vaizdo kokybė / tik garsas"
+    settings: "tavo nustatymai"
+    sources: "palaikomų svetainių sąrašas"
+    stats: "tavo naudojimas ir naujausi darbai"
+    lang: "kalba"
+    about: "apie botą"
+    admin: "variklio būsena (savininkas)"
+    reload: "perkrauti tekstus (savininkas)"

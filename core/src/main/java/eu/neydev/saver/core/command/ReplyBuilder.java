@@ -422,12 +422,18 @@ public final class ReplyBuilder {
 
     // ---- formatting helpers -------------------------------------------------------------
 
+    /**
+     * Plain-text status tokens, deliberately not symbols: the source list and the job
+     * history are read in thirty-five languages, and a bracketed latin token is the one
+     * marker that renders identically in every font, every client and every terminal.
+     * The legend key ({@code message.sources.legend}) spells out each token.
+     */
     private String statusMark(Source source) {
 
         return switch (source.status()) {
-            case OK -> "✓";
-            case LIMITED -> "⚠";
-            case LOGIN -> "\uD83D\uDD12";
+            case OK -> "[ok]";
+            case LIMITED -> "[limited]";
+            case LOGIN -> "[login]";
         };
 
     }
@@ -435,10 +441,10 @@ public final class ReplyBuilder {
     private String statusMark(String status) {
 
         return switch (status == null ? "" : status) {
-            case "SUCCEEDED" -> "✓";
-            case "FAILED", "INTERRUPTED" -> "✗";
-            case "CANCELLED" -> "⊘";
-            default -> "…";
+            case "SUCCEEDED" -> "[ok]";
+            case "FAILED", "INTERRUPTED" -> "[fail]";
+            case "CANCELLED" -> "[cancel]";
+            default -> "[wait]";
         };
 
     }

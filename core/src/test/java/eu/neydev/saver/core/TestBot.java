@@ -78,6 +78,11 @@ public final class TestBot implements AutoCloseable {
             jobsOverride;
 
     private TestBot(AppConfig config, Path vaultDir, List<Extractor> extractors) {
+        this(config, vaultDir, extractors, new MediaLinkServer(null, Duration.ofMinutes(5)));
+    }
+
+    private TestBot(AppConfig config, Path vaultDir, List<Extractor> extractors,
+                    MediaLinkServer mediaLinks) {
 
         this.config = config;
 
@@ -115,8 +120,7 @@ public final class TestBot implements AutoCloseable {
                 new UrlIntake(), new ExtractorChain(extractors), vault,
                 new SizePolicy(config.delivery()), new MediaProbe(null), tools,
                 jobRepo, storage.usage(),
-                dispatcher, jobReplies, metrics, clock,
-                new MediaLinkServer(null, Duration.ofMinutes(5)));
+                dispatcher, jobReplies, metrics, clock, mediaLinks);
         jobManager.start();
 
         MenuHandlers menuHandlers = new MenuHandlers(replies);
@@ -145,6 +149,13 @@ public final class TestBot implements AutoCloseable {
 
     public static TestBot with(Path dir, AppConfig config, List<Extractor> extractors) {
         return new TestBot(config, vaultDir(dir), extractors);
+    }
+
+    /** A bot whose webapp is publicly reachable: oversized files fall back to our link. */
+    public static TestBot withPublicMediaLinks(Path dir, AppConfig config,
+                                                 List<Extractor> extractors, String publicUrl) {
+        return new TestBot(config, vaultDir(dir), extractors,
+                new MediaLinkServer(publicUrl, Duration.ofMinutes(5)));
     }
 
     public static Path vaultDir(Path dir) {

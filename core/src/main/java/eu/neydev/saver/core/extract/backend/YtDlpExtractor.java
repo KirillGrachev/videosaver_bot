@@ -190,6 +190,10 @@ public final class YtDlpExtractor implements Extractor {
                     Category.LIVE_STREAM),
             Map.entry(Pattern.compile("unsupported url|no video formats|requested format is not available",
                     Pattern.CASE_INSENSITIVE), Category.UNSUPPORTED),
+            // "Video unavailable" is NOT a 404: the page answers 200, the media behind
+            // it is gone (deleted, hidden by the author, switched to embed-only).
+            Map.entry(Pattern.compile("(video|media|stream|clip) is unavailable|video unavailable|"
+                    + "removed by the uploader", Pattern.CASE_INSENSITIVE), Category.UNAVAILABLE),
             Map.entry(Pattern.compile("404|not found|does not exist|removed|unavailable|no such",
                     Pattern.CASE_INSENSITIVE), Category.NOT_FOUND),
             Map.entry(Pattern.compile("unable to download|network|connection|timed out|ssl|"

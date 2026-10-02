@@ -1,0 +1,143 @@
+# Romanian messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Trimite-mi un link și aduc fișierul.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo și peste o sută de alte site-uri: video, shorts, fotografii, albume, GIF-uri, muzică."
+    - ""
+    - "Lipește linkul în chat. Nu e nevoie de nicio comandă."
+  help:
+    command: "*{command}* {description}"
+    tip: "Și cel mai simplu dintre toate: trimite-mi un link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Un descărcător de media multiplatformă: {sources} surse în catalog plus orice pagină publică ca rezervă."
+    - ""
+    - "Versiune: {version}"
+    - "Respectă drepturile de autor și regulile site-urilor: salvează doar ce ai voie să salvezi."
+  settings:
+    - "*Setări*"
+    - ""
+    - "Calitate: {quality}"
+    - "Limbă: {language}"
+  quality:
+    title: "Alege calitatea descărcărilor. Se aplică tuturor cererilor noi."
+    set: "Calitate: *{quality}*. Descărcările noi o vor folosi."
+  lang:
+    choose: "Alege limba ta:"
+    set: "Limbă schimbată."
+  sources:
+    title: "*Surse acceptate: {count}*"
+    legend: "[ok] funcționează · [limited] parțial (doar linkuri publice, se strică des) · [login] necesită cont. Orice altă pagină publică este încercată cu extractorul generic."
+    search:
+      prompt: "Scrie o parte din numele site-ului, de exemplu `tiktok` sau `pixiv`. Un mesaj gol returnează lista."
+      empty: "Nu s-a găsit nimic pentru „{query}“. Extractorul generic poate totuși face față: trimite simplu linkul."
+      found: "Găsite: {count}. Răsfoiește cu săgețile sau rafinează căutarea."
+  stats:
+    - "*Utilizarea ta*"
+    - ""
+    - "Ultima oră: {jobs_hour} descărcări"
+    - "Azi: {jobs_today} descărcări, {bytes_today}"
+  stats.recent: "Recente:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motor: {tools}"
+    - "Sarcini: {active} active, {queued} în coadă"
+    - "Seif: {vault}"
+    - "Utilizatori: {users}"
+  reload:
+    done: "Textele și catalogul de surse reîncărcate ({sources} surse)."
+  flood: "Prea multe mesaje la rând. Dă-mi câteva secunde."
+  warning:
+    audio_raw: "Notă: ffmpeg nu este instalat pe server, deci audio a fost livrat în containerul original în loc de mp3."
+  pointer:
+    dm: "Deschis în conversația ta privată cu botul."
+  hint:
+    no_url: "Nu am găsit un link în mesajul acela. Lipește un URL ca `https://youtube.com/watch?v=…` și aduc media."
+  prompt:
+    url: "Trimite-mi linkul pe care vrei să-l salvezi. Anulare cu /stop."
+  cancel:
+    none: "Nu ai descărcări active de anulat."
+    done: "Descărcări anulate: {count}."
+  status:
+    queued: "Salvez de la *{host}*…"
+    files: "Fișiere livrate până acum: {count}"
+    progress: "Descarc… {percent}%"
+    done: "Gata în {seconds} s · fișiere: {count} · {size}"
+  error:
+    not_owner: "Comanda aceasta este pentru proprietarul botului."
+    unknown_command: "Comandă necunoscută. /help dă lista."
+    invalid_url: "Asta nu arată ca un link http(s) valid."
+    queue_full: "Coada de descărcări este plină acum. Încearcă într-un minut."
+    concurrent: "Ai deja {count} descărcări în curs. Așteaptă-le sau apasă Stop."
+    quota_hour: "Limita pe oră atinsă ({limit} descărcări). Încearcă mai târziu."
+    quota_day: "Limita pe zi atinsă ({limit} descărcări). Pe mâine."
+    quota_bytes: "Limita pe zi de trafic atinsă ({limit}). Pe mâine."
+    source_disabled: "Sursa „{title}“ este dezactivată pe acest bot de administrator."
+    vault_full: "Seiful de disc al serverului este plin. Încearcă mai târziu."
+    blocked_type: "Fișierul „{file}“ este un tip executabil sau script - așa ceva nu livrez."
+    too_large: "Fișierul este prea mare pentru această platformă: {size} (limită {cap})."
+    too_large_link:
+      - "Fișierul este prea mare pentru a fi trimis aici: {size} (limită {cap})."
+      - ""
+      - "Link direct: {url}"
+    cat:
+      unsupported: "Acest link nu este acceptat: niciun extractor nu l-a putut lua."
+      login_required: "Acest conținut cere un cont pe site. Salvez doar pagini publice."
+      age_restricted: "Conținut cu limită de vârstă: site-ul nu-l arată fără autentificare."
+      private: "Acest conținut este privat sau șters de autor."
+      not_found: "Pagina sau media nu a fost găsită (404). Verifică linkul."
+      unavailable: "Media nu este disponibilă: a fost ștearsă sau ascunsă de autor."
+      geo_blocked: "Acest conținut este blocat în regiunea serverului."
+      live_stream: "Acesta este un flux live. Trimite linkul din nou când se termină transmisiunea."
+      rate_limited: "Sursa limitează botul chiar acum. Încearcă peste câteva minute."
+      too_large: "Fișierul depășește limita și nu există un format mai mic."
+      timeout: "Descărcarea a depășit timpul limită. Sursă enormă sau lentă? Încearcă din nou, poate cu o calitate mai mică."
+      tool_missing: "Unealta de extracție lipsește de pe server. Asta e pentru administrator."
+      network: "Eroare de rețea în comunicarea cu sursa. Încearcă din nou."
+      cancelled: "Descărcare anulată."
+      unknown: "Ceva a mers prost în timpul descărcării. Încearcă din nou și, dacă se repetă, spune administratorului."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} din {total}"
+    truncated: "Doar primele {count} elemente, restul este pe pagină"
+
+button:
+  back: "Înapoi"
+  settings: "Setări"
+  sources: "Surse"
+  language: "Limbă"
+  about: "Despre bot"
+  help: "Ajutor"
+  stats: "Statisticile mele"
+  quality_menu: "Calitate"
+  stop: "Stop"
+  search: "Caută"
+  original: "Original"
+  github: "GitHub"
+  reload: "Reîncarcă textele"
+  open_link: "Deschide linkul"
+  quality:
+    best: "Cea mai bună"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (curentă)"
+
+command:
+  desc:
+    start: "meniu principal"
+    help: "ce știu să fac"
+    save: "descarcă după link (sau trimite simplu linkul)"
+    stop: "anulează descărcările active"
+    quality: "calitate video / doar audio"
+    settings: "setările tale"
+    sources: "lista site-urilor acceptate"
+    stats: "utilizarea ta și sarcinile recente"
+    lang: "limbă"
+    about: "despre bot"
+    admin: "starea motorului (proprietar)"
+    reload: "reîncarcă textele (proprietar)"

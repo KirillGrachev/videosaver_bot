@@ -15,7 +15,8 @@ PRIVATE	ERROR: [youtube] priv1: Private video. Sign in if you've been granted ac
 PRIVATE	ERROR: [youtube] priv2: This video is private
 GEO_BLOCKED	ERROR: [youtube] geo1: The uploader has not made this video available in your country
 GEO_BLOCKED	ERROR: [soundcloud] track1: This track is geo-blocked
-NOT_FOUND	ERROR: [youtube] gone1: Video unavailable. This video has been removed by the uploader
+UNAVAILABLE	ERROR: [youtube] gone1: Video unavailable. This video has been removed by the uploader
+UNAVAILABLE	ERROR: [youtube] KLz17Yc9shs: Video is unavailable
 NOT_FOUND	ERROR: HTTP Error 404: Not Found
 NOT_FOUND	ERROR: [vimeo] 12345: This video does not exist or has been deleted
 RATE_LIMITED	ERROR: unable to download webpage: HTTP Error 429: Too Many Requests

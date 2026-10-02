@@ -75,7 +75,11 @@ public final class DirectLinkExtractor implements Extractor {
             bytes = http.download(request.url(), destination, request.maxFileBytes(), BACKEND_ID);
         }
 
-        MediaKind kind = kindFrom(contentType, fileName);
+        // Extensionless CDN names (…/KLz17Yc9shs) become anonymous document cards on
+        // every platform; the file header knows better and renames the download.
+        destination = GenericHttpExtractor.ensureExtension(destination);
+
+        MediaKind kind = kindFrom(contentType, destination.getFileName().toString());
 
         ExtractedItem item = new ExtractedItem(kind, destination, bytes, null,
                 null, null, null, request.url().toString());

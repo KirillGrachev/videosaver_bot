@@ -145,11 +145,51 @@ community:
 
 locale:
   default: ru
-  supported: [ru, en, uk]
+  # The list order defines the button order in the language picker: the picker is
+  # paginated (eight languages per page), so the order also decides what shares a page.
+  # All EU official languages plus the CIS language family ship a message bundle.
+  supported: [ru, uk, be, en, de, es, fr, it, pt, pl, cs, sk, bg, hr, sl,
+              nl, da, sv, fi, et, lv, lt, ro, hu, el, ga, mt,
+              kk, ky, tg, tk, uz, az, ka, hy]
+  # Button captions for the language picker, each language in its own script.
+  # Every code must be listed in `supported` (anything else fails the startup);
+  # a supported language without a caption shows its code on the button.
   display-names:
     ru: Русский
-    en: English
     uk: Українська
+    be: Беларуская
+    en: English
+    de: Deutsch
+    es: Español
+    fr: Français
+    it: Italiano
+    pt: Português
+    pl: Polski
+    cs: Čeština
+    sk: Slovenčina
+    bg: Български
+    hr: Hrvatski
+    sl: Slovenščina
+    nl: Nederlands
+    da: Dansk
+    sv: Svenska
+    fi: Suomi
+    et: Eesti
+    lv: Latviešu
+    lt: Lietuvių
+    ro: Română
+    hu: Magyar
+    el: Ελληνικά
+    ga: Gaeilge
+    mt: Malti
+    kk: Қазақша
+    ky: Кыргызча
+    tg: Тоҷикӣ
+    tk: Türkmençe
+    uz: Oʻzbekcha
+    az: Azərbaycanca
+    ka: ქართული
+    hy: Հայերեն
 
 sources:
   # Catalog ids from sources.yml to refuse (URLs still resolve to a source name,

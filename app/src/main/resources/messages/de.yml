@@ -1,0 +1,143 @@
+# German messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Schick mir einen Link, ich hole die Datei.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo und über hundert weitere Seiten: Videos, Shorts, Fotos, Alben, GIFs, Musik."
+    - ""
+    - "Link einfach in den Chat einfügen. Kein Befehl nötig."
+  help:
+    command: "*{command}* {description}"
+    tip: "Und am einfachsten: schick mir einfach einen Link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Ein Medien-Downloader für mehrere Plattformen: {sources} Quellen im Katalog plus jede öffentliche Seite als Ersatz."
+    - ""
+    - "Version: {version}"
+    - "Bitte achte das Urheberrecht und die Regeln der Seiten: speichere nur, was du speichern darfst."
+  settings:
+    - "*Einstellungen*"
+    - ""
+    - "Qualität: {quality}"
+    - "Sprache: {language}"
+  quality:
+    title: "Wähle die Qualität für Downloads. Sie gilt für alle neuen Anfragen."
+    set: "Qualität: *{quality}*. Neue Downloads nutzen sie."
+  lang:
+    choose: "Wähle deine Sprache:"
+    set: "Sprache umgestellt."
+  sources:
+    title: "*Unterstützte Quellen: {count}*"
+    legend: "[ok] funktioniert · [limited] teilweise (nur öffentliche Links, bricht oft ab) · [login] Konto nötig. Jede andere öffentliche Seite versucht der generische Extraktor."
+    search:
+      prompt: "Tippe einen Teil des Seitennamens, zum Beispiel `tiktok` oder `pixiv`. Eine leere Nachricht zeigt die Liste."
+      empty: "Nichts gefunden für „{query}“. Der generische Extraktor schafft die Seite vielleicht trotzdem: schick einfach den Link."
+      found: "Gefunden: {count}. Blättere mit den Pfeilen oder verfeinere die Anfrage."
+  stats:
+    - "*Deine Nutzung*"
+    - ""
+    - "Letzte Stunde: {jobs_hour} Downloads"
+    - "Heute: {jobs_today} Downloads, {bytes_today}"
+  stats.recent: "Zuletzt:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Engine: {tools}"
+    - "Jobs: {active} aktiv, {queued} in der Warteschlange"
+    - "Speicher: {vault}"
+    - "Nutzer: {users}"
+  reload:
+    done: "Nachrichtentexte und Quellenkatalog neu geladen ({sources} Quellen)."
+  flood: "Zu viele Nachrichten zu schnell. Gib mir ein paar Sekunden."
+  warning:
+    audio_raw: "Hinweis: Auf dem Server fehlt ffmpeg, darum wurde das Audio im Originalcontainer statt als mp3 geliefert."
+  pointer:
+    dm: "In deiner Privatnachricht mit dem Bot geöffnet."
+  hint:
+    no_url: "Ich habe in dieser Nachricht keinen Link gefunden. Füge eine URL wie `https://youtube.com/watch?v=…` ein, dann hole ich das Medium."
+  prompt:
+    url: "Schick mir den Link, den du speichern willst. Abbruch mit /stop."
+  cancel:
+    none: "Du hast keine aktiven Downloads zum Abbrechen."
+    done: "Abgebrochene Downloads: {count}."
+  status:
+    queued: "Speichere von *{host}*…"
+    files: "Bisher gelieferte Dateien: {count}"
+    progress: "Lade herunter… {percent}%"
+    done: "Fertig in {seconds} s · Dateien: {count} · {size}"
+  error:
+    not_owner: "Dieser Befehl ist für den Eigentümer des Bots."
+    unknown_command: "Unbekannter Befehl. /help schickt die Liste."
+    invalid_url: "Das sieht nicht nach einem gültigen http(s)-Link aus."
+    queue_full: "Die Download-Warteschlange ist gerade voll. Versuch es in einer Minute."
+    concurrent: "Du hast bereits {count} laufende Downloads. Warte sie ab oder drücke Stop."
+    quota_hour: "Stundenlimit erreicht ({limit} Downloads). Versuch es später wieder."
+    quota_day: "Tageslimit erreicht ({limit} Downloads). Bis morgen."
+    quota_bytes: "Tageslimit für den Traffic erreicht ({limit}). Bis morgen."
+    source_disabled: "Die Quelle „{title}“ ist auf diesem Bot vom Administrator deaktiviert."
+    vault_full: "Der Plattenspeicher des Servers ist voll. Versuch es später wieder."
+    blocked_type: "Die Datei „{file}“ ist ein ausführbarer Typ oder ein Skript - solche liefere ich nicht."
+    too_large: "Die Datei ist für diese Plattform zu groß: {size} (Limit {cap})."
+    too_large_link:
+      - "Die Datei ist zu groß zum Senden: {size} (Limit {cap})."
+      - ""
+      - "Direktlink: {url}"
+    cat:
+      unsupported: "Dieser Link wird nicht unterstützt: kein Extraktor konnte ihn verarbeiten."
+      login_required: "Dieser Inhalt braucht ein Konto auf der Seite. Ich speichere nur öffentliche Seiten."
+      age_restricted: "Inhalt mit Altersbeschränkung: die Seite zeigt ihn ohne Login nicht."
+      private: "Dieser Inhalt ist privat oder vom Autor gelöscht."
+      not_found: "Seite oder Medium nicht gefunden (404). Prüfe den Link."
+      unavailable: "Das Medium ist nicht verfügbar: es wurde vom Autor gelöscht oder verborgen."
+      geo_blocked: "Dieser Inhalt ist in der Region des Servers gesperrt."
+      live_stream: "Das ist ein Livestream. Schick den Link erneut, wenn die Übertragung endet."
+      rate_limited: "Die Quelle begrenzt den Bot gerade. Versuch es in ein paar Minuten wieder."
+      too_large: "Die Datei liegt über dem Limit, und die Quelle bietet kein kleineres Format."
+      timeout: "Der Download hat das Zeitlimit überschritten. Riesige oder langsame Quelle? Versuch es erneut, vielleicht mit kleinerer Qualität."
+      tool_missing: "Das Extraktionswerkzeug fehlt auf dem Server. Das ist ein Fall für den Administrator."
+      network: "Netzwerkfehler beim Zugriff auf die Quelle. Versuch es erneut."
+      cancelled: "Download abgebrochen."
+      unknown: "Beim Download ist etwas schiefgelaufen. Versuch es erneut, und sag es dem Administrator, wenn es wieder passiert."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} von {total}"
+    truncated: "Nur die ersten {count} Einträge, der Rest liegt auf der Seite"
+
+button:
+  back: "Zurück"
+  settings: "Einstellungen"
+  sources: "Quellen"
+  language: "Sprache"
+  about: "Über den Bot"
+  help: "Hilfe"
+  stats: "Meine Statistik"
+  quality_menu: "Qualität"
+  stop: "Stopp"
+  search: "Suche"
+  original: "Original"
+  github: "GitHub"
+  reload: "Texte neu laden"
+  open_link: "Link öffnen"
+  quality:
+    best: "Beste"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (aktuell)"
+
+command:
+  desc:
+    start: "Hauptmenü"
+    help: "was ich kann"
+    save: "per Link herunterladen (oder schick einfach den Link)"
+    stop: "aktive Downloads abbrechen"
+    quality: "Videoqualität / nur Audio"
+    settings: "deine Einstellungen"
+    sources: "Liste unterstützter Seiten"
+    stats: "deine Nutzung und letzte Jobs"
+    lang: "Sprache"
+    about: "über den Bot"
+    admin: "Status der Engine (Eigentümer)"
+    reload: "Nachrichtentexte neu laden (Eigentümer)"

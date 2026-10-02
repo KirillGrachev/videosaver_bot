@@ -1,0 +1,143 @@
+# Maltese messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Ibgħatli link u jiena nġiblek il-fajl.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo u aktar minn mitt sit ieħor: vidjows, shorts, ritratti, albums, GIFs, mużika."
+    - ""
+    - "Iffranka l-link fil-chat biss. M'hemmx bżonn ta' kmand."
+  help:
+    command: "*{command}* {description}"
+    tip: "U l-eħfef ħaġa minn kollha: ibgħatli link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Downloader tal-midja fuq ħafna pjattaformi: {sources} sorsi fil-katalogu flimkien ma' kwalunkwe paġna pubblika b'riżerva."
+    - ""
+    - "Verżjoni: {version}"
+    - "Rispetta d-drittijiet tal-awtur u r-regoli tas-siti: issejvja biss dak li għandek permess tissejvja."
+  settings:
+    - "*Issettjar*"
+    - ""
+    - "Kwalità: {quality}"
+    - "Lingwa: {language}"
+  quality:
+    title: "Agħżel il-kwalità tat-tniżżil. Tapplika għat-talbiet kollha ġodda."
+    set: "Kwalità: *{quality}*. It-tniżżiliet il-ġodda jużawha."
+  lang:
+    choose: "Agħżel il-lingwa tiegħek:"
+    set: "Il-lingwa nbidlet."
+  sources:
+    title: "*Sorsi appoġġjati: {count}*"
+    legend: "[ok] jaħdem · [limited] parzjalment (links pubbliċi biss, jinkiser spiss) · [login] jeħtieġ kont. Kull paġna pubblika oħra tiġi ppruvata bl-estrattur ġenerali."
+    search:
+      prompt: "Ikteb parti minn isem is-sit, per eżempju `tiktok` jew `pixiv`. Messaġġ vojt jirritorna l-lista."
+      empty: "Ma nstab xejn għal „{query}“. L-estrattur ġenerali xorta jista' jlaħħaq: ibgħat il-link biss."
+      found: "Instabu: {count}. Aqleb il-paġni bil-vleġeġ jew irfinat it-tfittxija."
+  stats:
+    - "*L-użu tiegħek*"
+    - ""
+    - "L-aħħar siegħa: {jobs_hour} tniżżiliet"
+    - "Illum: {jobs_today} tniżżiliet, {bytes_today}"
+  stats.recent: "Riċenti:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Magna: {tools}"
+    - "Xogħlijiet: {active} attivi, {queued} fil-kju"
+    - "Kaxxaforte: {vault}"
+    - "Utenti: {users}"
+  reload:
+    done: "It-testi u l-katalogu tas-sorsi reġgħu tgħabbew ({sources} sorsi)."
+  flood: "Wisq messaġġi wara xulxin. Agħtini ftit sekondi."
+  warning:
+    audio_raw: "Nota: ffmpeg mhuwiex installat fuq is-server, għalhekk l-awdjo ġie kkunsinnat fil-kontenitur oriġinali minflok mp3."
+  pointer:
+    dm: "Miftuħ fil-konversazzjoni privata tiegħek mal-bot."
+  hint:
+    no_url: "Ma sbajt l-ebda link f'dak il-messaġġ. Waħħal URL bħal `https://youtube.com/watch?v=…` u jiena nġib il-midja."
+  prompt:
+    url: "Ibgħatli l-link li trid tissejvja. Ikkanċella b'/stop."
+  cancel:
+    none: "M'għandek l-ebda tniżżila attiva x'tikkanċella."
+    done: "Tniżżiliet ikkanċellati: {count}."
+  status:
+    queued: "Qed nissejvja minn *{host}*…"
+    files: "Fajls kkunsinnati s'issa: {count}"
+    progress: "Qed inniżżel… {percent}%"
+    done: "Lest fi {seconds} s · fajls: {count} · {size}"
+  error:
+    not_owner: "Dan il-kmand huwa għas-sid tal-bot."
+    unknown_command: "Kmand mhux magħruf. /help jibgħat il-lista."
+    invalid_url: "Dan ma jidhirx link validu http(s)."
+    queue_full: "Il-kju tat-tniżżil mimli bħalissa. Erġa' pprova f'minuta."
+    concurrent: "Diġà għandek {count} tniżżiliet għaddejjin. Stennihom jew agħfas Stop."
+    quota_hour: "Il-limitu ta' kull siegħa ntlaħaq ({limit} tniżżiliet). Ipprova aktar tard."
+    quota_day: "Il-limitu ta' kuljum intlaħaq ({limit} tniżżiliet). Narak għada."
+    quota_bytes: "Il-limitu ta' kuljum tat-traffiku intlaħaq ({limit}). Narak għada."
+    source_disabled: "Is-sors „{title}“ huwa mitfi fuq dan il-bot mill-amministratur."
+    vault_full: "Il-kaxxaforte tad-diska tas-server mimlija. Ipprova aktar tard."
+    blocked_type: "Il-fajl „{file}“ huwa tip eżegwibbli jew skript - bħal dawn ma nikkunsinnahomx."
+    too_large: "Il-fajl kbir wisq għal din il-pjattaforma: {size} (limitu {cap})."
+    too_large_link:
+      - "Il-fajl kbir wisq biex jintbagħat hawn: {size} (limitu {cap})."
+      - ""
+      - "Link dirett: {url}"
+    cat:
+      unsupported: "Dan il-link mhuwiex appoġġjat: l-ebda estrattur ma seta' jieħdu."
+      login_required: "Dan il-kontenut jeħtieġ kont fuq is-sit. Nissejvja biss paġni pubbliċi."
+      age_restricted: "Kontenut b'restrizzjoni ta' età: is-sit ma jurihx mingħajr login."
+      private: "Dan il-kontenut huwa privat jew imħassar mill-awtur."
+      not_found: "Il-paġna jew il-midja ma nstabitx (404). Iċċekkja l-link."
+      unavailable: "Il-midja mhix disponibbli: tħassret jew inħbet mill-awtur."
+      geo_blocked: "Dan il-kontenut huwa mblukkat fir-reġjun tas-server."
+      live_stream: "Din hija xandira diretta. Ibgħat il-link mill-ġdid meta tispiċċa x-xandira."
+      rate_limited: "Is-sors qed jillimita l-bot bħalissa. Ipprova fi ftit minuti."
+      too_large: "Il-fajl jaqbeż il-limitu u m'hemmx format iżgħar disponibbli."
+      timeout: "It-tniżżila qabżet il-limitu ta' ħin. Sors enormi jew bil-mod? Erġa' pprova, forsi b'kwalità aktar baxxa."
+      tool_missing: "L-għodda tal-estrazzjoni nieqsa mis-server. Din hija għall-amministratur."
+      network: "Żball tan-netwerk waqt li nkellmu s-sors. Erġa' pprova."
+      cancelled: "It-tniżżila ġiet ikkanċellata."
+      unknown: "Xi ħaġa marret ħażin waqt it-tniżżila. Erġa' pprova u jekk jerġa' jiġri, għid lill-amministratur."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} minn {total}"
+    truncated: "L-ewwel {count} oġġetti biss, il-bqija qegħdin fuq il-paġna"
+
+button:
+  back: "Lura"
+  settings: "Issettjar"
+  sources: "Sorsi"
+  language: "Lingwa"
+  about: "Dwar il-bot"
+  help: "Għajnuna"
+  stats: "L-istatistika tiegħi"
+  quality_menu: "Kwalità"
+  stop: "Stop"
+  search: "Fittex"
+  original: "Oriġinali"
+  github: "GitHub"
+  reload: "Erġa' għabbe t-testi"
+  open_link: "Iftaħ il-link"
+  quality:
+    best: "L-aħjar"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Awdjo (mp3)"
+    current_suffix: " (attwali)"
+
+command:
+  desc:
+    start: "menu prinċipali"
+    help: "x'nista' nagħmel"
+    save: "niżżel bil-link (jew ibgħat il-link biss)"
+    stop: "ikkanċella t-tniżżiliet attivi"
+    quality: "kwalità tal-vidjow / awdjo biss"
+    settings: "l-issettjar tiegħek"
+    sources: "lista ta' siti appoġġjati"
+    stats: "l-użu tiegħek u x-xogħlijiet riċenti"
+    lang: "lingwa"
+    about: "dwar il-bot"
+    admin: "l-istat tal-magna (sid)"
+    reload: "erġa' għabbe t-testi (sid)"

@@ -17,6 +17,7 @@ import eu.neydev.saver.core.extract.backend.Toolchain;
 import eu.neydev.saver.core.media.MediaAttachment;
 import eu.neydev.saver.core.media.MediaKind;
 import eu.neydev.saver.core.media.MediaProbe;
+import eu.neydev.saver.core.media.MimeTypes;
 import eu.neydev.saver.core.metrics.MetricsRegistry;
 import eu.neydev.saver.core.pipeline.OutboundDispatcher;
 import eu.neydev.saver.core.pipeline.TokenBucket;
@@ -587,10 +588,10 @@ public final class JobManager implements AutoCloseable {
         job.markSucceeded(delivered, cached.items().stream()
                 .mapToLong(ExtractedItem::sizeBytes).sum(), now);
 
+        usage.increment(job.user(), epochDay(), 1, job.bytesDownloaded());
+
         jobs.updateFinished(job.id(), "SUCCEEDED", null, "cache", delivered,
                 job.bytesDownloaded(), now, job.durationMillis());
-
-        usage.increment(job.user(), epochDay(), 1, job.bytesDownloaded());
 
         // Refresh the grace window: the files just got sent again.
         vault.release(cached.jobId());
@@ -741,10 +742,8 @@ public final class JobManager implements AutoCloseable {
             Instant finished = clock.instant();
             job.markSucceeded(delivered, result.totalBytes(), finished);
 
-            jobs.updateFinished(job.id(), "SUCCEEDED", null, result.backendId(),
-                    delivered, result.totalBytes(), finished,
-                    Duration.between(started, finished).toMillis());
-
+            // Counters first, the terminal row last: anyone who sees the finished
+            // job in storage (tests, /stats, the heartbeat) must also see its metrics.
             usage.increment(job.user(), epochDay(), 1, result.totalBytes());
 
             metrics.increment("downloads_total",
@@ -753,6 +752,10 @@ public final class JobManager implements AutoCloseable {
                     Duration.between(started, finished).toMillis() / 1000.0,
                     "source", source.id());
             metrics.add("downloaded_bytes_total", result.totalBytes(), "source", source.id());
+
+            jobs.updateFinished(job.id(), "SUCCEEDED", null, result.backendId(),
+                    delivered, result.totalBytes(), finished,
+                    Duration.between(started, finished).toMillis());
 
             vault.release(job.id());
 
@@ -886,8 +889,21 @@ public final class JobManager implements AutoCloseable {
             if (verdict == SizePolicy.Verdict.LINK_FALLBACK
                     || verdict == SizePolicy.Verdict.REJECT) {
 
-                String link = item.mediaUrl() != null ? item.mediaUrl()
-                        : webpageUrl != null ? webpageUrl : job.rawUrl();
+                String link = null;
+
+                if (verdict == SizePolicy.Verdict.LINK_FALLBACK) {
+                    // The file is already in the vault: when the operator exposes the
+                    // webapp publicly, our own link beats the source CDN URL (signed
+                    // URLs expire, referer checks break external players). Same
+                    // mechanism Viber delivers by; without a public url the source
+                    // media URL remains the honest fallback.
+                    link = publishedLink(item).orElse(null);
+                }
+
+                if (link == null) {
+                    link = item.mediaUrl() != null ? item.mediaUrl()
+                            : webpageUrl != null ? webpageUrl : job.rawUrl();
+                }
 
                 if (verdict == SizePolicy.Verdict.LINK_FALLBACK) {
 
@@ -1000,6 +1016,22 @@ public final class JobManager implements AutoCloseable {
 
     }
 
+    /**
+     * A public self-hosted link to an already downloaded vault file, when the webapp is
+     * publicly reachable. Used by the oversized-file link fallback before falling back
+     * to the source media URL.
+     */
+    private java.util.Optional<String> publishedLink(ExtractedItem item) {
+
+        if (mediaLinks == null || !mediaLinks.publishing()) {
+            return java.util.Optional.empty();
+        }
+
+        String name = item.file().getFileName().toString();
+
+        return mediaLinks.publish(item.file(), name, MimeTypes.of(name));
+    }
+
     private boolean supportsGroups(eu.neydev.saver.core.api.Platform platform) {
         return dispatcher.platformSupportsGroups(platform);
     }
@@ -1098,10 +1130,10 @@ public final class JobManager implements AutoCloseable {
 
         job.markFailed(category, detail, now);
 
+        metrics.increment("downloads_total", "result", "failed", "category", category.id());
+
         jobs.updateFinished(job.id(), "FAILED", category.id(), null,
                 job.itemCount(), job.bytesDownloaded(), now, job.durationMillis());
-
-        metrics.increment("downloads_total", "result", "failed", "category", category.id());
 
         log.info("Job {} failed [{}]: {}", job.id(), category, detail);
 
@@ -1118,10 +1150,10 @@ public final class JobManager implements AutoCloseable {
 
         job.markCancelled(now);
 
+        metrics.increment("downloads_total", "result", "cancelled");
+
         jobs.updateFinished(job.id(), "CANCELLED", null, null,
                 0, 0, now, job.durationMillis());
-
-        metrics.increment("downloads_total", "result", "cancelled");
 
         dispatcher.submit(replies.cancelled(job.platform(), job.chatId(),
                 job.statusMessageId(), job.locale()));

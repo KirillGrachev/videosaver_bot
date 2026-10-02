@@ -117,9 +117,12 @@ class ConfigDefaultsTest {
     @Test
     void localeSetShipsEveryBundledLanguage() {
 
-        assertThat(config.locale().supported()).containsExactly("ru", "en", "uk");
+        assertThat(config.locale().supported()).containsExactly(
+                "ru", "uk", "be", "en", "de", "es", "fr", "it", "pt", "pl", "cs", "sk",
+                "bg", "hr", "sl", "nl", "da", "sv", "fi", "et", "lv", "lt", "ro", "hu",
+                "el", "ga", "mt", "kk", "ky", "tg", "tk", "uz", "az", "ka", "hy");
         assertThat(config.locale().displayNames())
-                .containsKeys("ru", "en", "uk");
+                .containsKeys("ru", "en", "uk", "ga", "mt", "ka", "hy", "uz");
 
     }
 

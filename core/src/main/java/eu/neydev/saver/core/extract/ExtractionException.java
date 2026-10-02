@@ -18,6 +18,12 @@ public class ExtractionException extends RuntimeException {
         /** Private/deleted-by-author content. */
         PRIVATE,
         NOT_FOUND,
+        /**
+         * The page exists but the media behind it does not (anymore): the platform's
+         * own player answers "video unavailable". Distinct from NOT_FOUND because the
+         * URL is perfectly valid - there is simply nothing left to save.
+         */
+        UNAVAILABLE,
         GEO_BLOCKED,
         LIVE_STREAM,
         RATE_LIMITED,
@@ -44,14 +50,19 @@ public class ExtractionException extends RuntimeException {
             case AGE_RESTRICTED -> 85;
             case PRIVATE -> 80;
             case GEO_BLOCKED -> 75;
-            case NOT_FOUND -> 70;
+            // UNAVAILABLE ties with NOT_FOUND on purpose: when several backends agree
+            // that the media is gone, the PRIMARY backend's phrasing wins the tie.
+            case NOT_FOUND, UNAVAILABLE -> 70;
             case LIVE_STREAM -> 65;
             case TOO_LARGE -> 60;
             case RATE_LIMITED -> 50;
             case TIMEOUT -> 40;
             case NETWORK -> 30;
+            // TOOL_MISSING outranks UNSUPPORTED: a scraper finding nothing on a page
+            // only proves the page needs a real tool, so on a server without the tool
+            // the honest verdict is "the tool is missing", not "the site is unsupported".
+            case TOOL_MISSING -> 25;
             case UNSUPPORTED -> 20;
-            case TOOL_MISSING -> 15;
             case CANCELLED -> 10;
             case UNKNOWN -> 0;
 

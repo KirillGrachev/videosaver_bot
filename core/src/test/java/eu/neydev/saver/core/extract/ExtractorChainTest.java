@@ -140,6 +140,24 @@ class ExtractorChainTest {
     }
 
     @Test
+    void toolMissingOutranksAScraperFindingNothing(@TempDir Path dir) {
+
+        // The scraper's UNSUPPORTED only proves the page needs a real tool: on a server
+        // without yt-dlp a video page with no exposed media file must be reported as
+        // the operator problem it is, not as "this site is unsupported".
+        ExtractorChain chain = new ExtractorChain(List.of(
+                new Fake("ytdlp", false, null, 0),
+                new Fake("http", true, Category.UNSUPPORTED, 0),
+                new Fake("direct", true, Category.UNSUPPORTED, 0)));
+
+        assertThatThrownBy(() -> chain.extract(request(dir)))
+                .isInstanceOf(ExtractionException.class)
+                .extracting(e -> ((ExtractionException) e).category())
+                .isEqualTo(Category.TOOL_MISSING);
+
+    }
+
+    @Test
     void gallerySourcesStartWithGalleryDl(@TempDir Path dir) {
 
         ExtractorChain chain = new ExtractorChain(List.of(

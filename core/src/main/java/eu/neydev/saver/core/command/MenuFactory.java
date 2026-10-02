@@ -74,7 +74,11 @@ public final class MenuFactory {
 
         for (QualityPreset preset : QualityPreset.values()) {
 
-            String mark = preset == current ? " ✓" : "";
+            // The current preset is spelled out in the user's language instead of a
+            // tick glyph: bundles carry the suffix (" (current)"), see button.quality.
+            String mark = preset == current
+                    ? label(locale, "button.quality.current_suffix")
+                    : "";
             presets.add(KeyboardButton.callback(
                     label(locale, "button.quality." + preset.id()) + mark,
                     Actions.QUALITY_SET_PREFIX + preset.id(),

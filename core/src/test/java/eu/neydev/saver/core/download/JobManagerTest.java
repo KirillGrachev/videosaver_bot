@@ -193,6 +193,39 @@ class JobManagerTest {
     }
 
     @Test
+    void linkFallbackPrefersTheSelfHostedCopy(@TempDir Path dir) {
+
+        // Same hopeless caps, but the webapp is public: the file already sits in the
+        // vault, so the user gets OUR link (stable, correctly named) instead of a
+        // signed CDN url that expires in hours.
+        AppConfig.Delivery caps = new AppConfig.Delivery(Map.of(
+                Platform.TELEGRAM, AppConfig.Delivery.SizeCaps.uniform(
+                        ByteFormat.parse("1mb", "t"))), true);
+
+        try (TestBot bot = TestBot.withPublicMediaLinks(dir,
+                TestBot.config(dir, 2, 20, ByteFormat.parse("2gb", "t"), caps,
+                        ByteFormat.parse("1gb", "t")),
+                List.of(TestBot.fileExtractor(MediaKind.VIDEO, ByteFormat.parse("5mb", "t"))),
+                "https://files.example.test")) {
+
+            submit(bot, "https://youtube.com/watch?v=x");
+
+            // The bundle lives in the app module, so core tests cannot assert on the
+            // rendered text - the url button of the fallback keyboard is the contract.
+            TestBot.waitUntil(() -> bot.adapter.sentOfType(OutboundMessage.Send.class).stream()
+                            .anyMatch(send -> send.keyboard().rows().stream()
+                                    .flatMap(List::stream)
+                                    .anyMatch(button -> button.url() != null
+                                            && button.url().startsWith("https://files.example.test/media/"))),
+                    "self-hosted link fallback");
+
+            assertThat(bot.adapter.sentOfType(OutboundMessage.SendMedia.class)).isEmpty();
+
+        }
+
+    }
+
+    @Test
     void blockedExtensionsAreNeverDelivered(@TempDir Path dir) {
 
         // The bot must not become a malware delivery channel: an .exe "download"

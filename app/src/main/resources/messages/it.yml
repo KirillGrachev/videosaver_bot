@@ -1,0 +1,143 @@
+# Italian messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Mandami un link e ti porto il file.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo e più di cento altri siti: video, shorts, foto, album, GIF, musica."
+    - ""
+    - "Incolla il link in chat. Non serve nessun comando."
+  help:
+    command: "*{command}* {description}"
+    tip: "E la cosa più semplice di tutte: mandami un link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Un downloader di media multipiattaforma: {sources} fonti nel catalogo più qualsiasi pagina pubblica come riserva."
+    - ""
+    - "Versione: {version}"
+    - "Rispetta il diritto d'autore e le regole dei siti: salva solo ciò che ti è permesso salvare."
+  settings:
+    - "*Impostazioni*"
+    - ""
+    - "Qualità: {quality}"
+    - "Lingua: {language}"
+  quality:
+    title: "Scegli la qualità dei download. Si applica a tutte le nuove richieste."
+    set: "Qualità: *{quality}*. I nuovi download la useranno."
+  lang:
+    choose: "Scegli la tua lingua:"
+    set: "Lingua cambiata."
+  sources:
+    title: "*Fonti supportate: {count}*"
+    legend: "[ok] funziona · [limited] parzialmente (solo link pubblici, si rompe spesso) · [login] serve un account. Qualsiasi altra pagina pubblica viene tentata con l'estrattore generico."
+    search:
+      prompt: "Scrivi parte del nome del sito, per esempio `tiktok` o `pixiv`. Un messaggio vuoto restituisce la lista."
+      empty: "Niente trovato per «{query}». L'estrattore generico potrebbe comunque farcela: manda il link."
+      found: "Trovati: {count}. Scorri con le frecce o raffina la ricerca."
+  stats:
+    - "*Il tuo utilizzo*"
+    - ""
+    - "Ultima ora: {jobs_hour} download"
+    - "Oggi: {jobs_today} download, {bytes_today}"
+  stats.recent: "Recenti:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motore: {tools}"
+    - "Attività: {active} attive, {queued} in coda"
+    - "Deposito: {vault}"
+    - "Utenti: {users}"
+  reload:
+    done: "Testi e catalogo delle fonti ricaricati ({sources} fonti)."
+  flood: "Troppi messaggi di fila. Dammi qualche secondo."
+  warning:
+    audio_raw: "Nota: ffmpeg non è installato sul server, quindi l'audio è stato consegnato nel contenitore originale invece che in mp3."
+  pointer:
+    dm: "Aperto nei messaggi privati con il bot."
+  hint:
+    no_url: "Non ho trovato un link in quel messaggio. Incolla un URL come `https://youtube.com/watch?v=…` e prenderò il media."
+  prompt:
+    url: "Mandami il link da salvare. Annulla con /stop."
+  cancel:
+    none: "Non hai download attivi da annullare."
+    done: "Download annullati: {count}."
+  status:
+    queued: "Salvo da *{host}*…"
+    files: "File consegnati finora: {count}"
+    progress: "Scarico… {percent}%"
+    done: "Fatto in {seconds} s · file: {count} · {size}"
+  error:
+    not_owner: "Questo comando è per il proprietario del bot."
+    unknown_command: "Comando sconosciuto. /help dà la lista."
+    invalid_url: "Non sembra un link http(s) valido."
+    queue_full: "La coda dei download è piena adesso. Riprova tra un minuto."
+    concurrent: "Hai già {count} download in corso. Aspettali o premi Stop."
+    quota_hour: "Limite orario raggiunto ({limit} download). Riprova più tardi."
+    quota_day: "Limite giornaliero raggiunto ({limit} download). A domani."
+    quota_bytes: "Limite giornaliero di traffico raggiunto ({limit}). A domani."
+    source_disabled: "La fonte «{title}» è disattivata su questo bot dall'amministratore."
+    vault_full: "Il deposito disco del server è pieno. Riprova più tardi."
+    blocked_type: "Il file «{file}» è un eseguibile o uno script - non consegno queste cose."
+    too_large: "Il file è troppo grande per questa piattaforma: {size} (limite {cap})."
+    too_large_link:
+      - "Il file è troppo grande per essere inviato qui: {size} (limite {cap})."
+      - ""
+      - "Link diretto: {url}"
+    cat:
+      unsupported: "Questo link non è supportato: nessun estrattore è riuscito a prenderlo."
+      login_required: "Questo contenuto richiede un account sul sito. Salvo solo pagine pubbliche."
+      age_restricted: "Contenuto con limite di età: il sito non lo mostra senza accesso."
+      private: "Questo contenuto è privato o eliminato dall'autore."
+      not_found: "Pagina o media non trovati (404). Controlla il link."
+      unavailable: "Il media non è disponibile: è stato eliminato o nascosto dall'autore."
+      geo_blocked: "Questo contenuto è bloccato nella regione del server."
+      live_stream: "È una diretta. Manda di nuovo il link quando la trasmissione finisce."
+      rate_limited: "La fonte sta limitando il bot in questo momento. Riprova tra qualche minuto."
+      too_large: "Il file supera il limite e non esiste un formato più piccolo."
+      timeout: "Il download ha superato il tempo massimo. Fonte enorme o lenta? Riprova, magari con qualità inferiore."
+      tool_missing: "Manca lo strumento di estrazione sul server. Questa è per l'amministratore."
+      network: "Errore di rete nel parlare con la fonte. Riprova."
+      cancelled: "Download annullato."
+      unknown: "Qualcosa è andato storto durante il download. Riprova e, se si ripete, dillo all'amministratore."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} di {total}"
+    truncated: "Solo i primi {count} elementi, il resto è sulla pagina"
+
+button:
+  back: "Indietro"
+  settings: "Impostazioni"
+  sources: "Fonti"
+  language: "Lingua"
+  about: "Info sul bot"
+  help: "Aiuto"
+  stats: "Le mie statistiche"
+  quality_menu: "Qualità"
+  stop: "Stop"
+  search: "Cerca"
+  original: "Originale"
+  github: "GitHub"
+  reload: "Ricarica testi"
+  open_link: "Apri link"
+  quality:
+    best: "Migliore"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (attuale)"
+
+command:
+  desc:
+    start: "menu principale"
+    help: "cosa so fare"
+    save: "scarica per link (o manda semplicemente il link)"
+    stop: "annulla i download attivi"
+    quality: "qualità video / solo audio"
+    settings: "le tue impostazioni"
+    sources: "elenco dei siti supportati"
+    stats: "il tuo utilizzo e le attività recenti"
+    lang: "lingua"
+    about: "info sul bot"
+    admin: "stato del motore (proprietario)"
+    reload: "ricarica i testi (proprietario)"

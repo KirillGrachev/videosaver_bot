@@ -1,0 +1,143 @@
+# Croatian messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Pošalji mi poveznicu i donijet ću datoteku.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo i više od stotinu drugih stranica: video, shortovi, fotografije, albumi, GIF-ovi, glazba."
+    - ""
+    - "Samo zalijepi poveznicu u chat. Naredba nije potrebna."
+  help:
+    command: "*{command}* {description}"
+    tip: "A najjednostavnije od svega: pošalji mi poveznicu."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Višeplatformski preuzimatelj medija: {sources} izvora u katalogu plus bilo koja javna stranica kao rezerva."
+    - ""
+    - "Verzija: {version}"
+    - "Poštuj autorska prava i pravila stranica: spremaj samo ono što smiješ spremati."
+  settings:
+    - "*Postavke*"
+    - ""
+    - "Kvaliteta: {quality}"
+    - "Jezik: {language}"
+  quality:
+    title: "Odaberi kvalitetu preuzimanja. Vrijedi za sve nove zahtjeve."
+    set: "Kvaliteta: *{quality}*. Nova preuzimanja koristit će je."
+  lang:
+    choose: "Odaberi svoj jezik:"
+    set: "Jezik promijenjen."
+  sources:
+    title: "*Podržani izvori: {count}*"
+    legend: "[ok] radi · [limited] djelomično (samo javne poveznice, često se lomi) · [login] potreban račun. Svaku drugu javnu stranicu pokušavam univerzalnim ekstraktorom."
+    search:
+      prompt: "Upiši dio naziva stranice, na primjer `tiktok` ili `pixiv`. Prazna poruka vraća popis."
+      empty: "Ništa nije nađeno za „{query}“. Univerzalni ekstraktor možda ipak može: samo pošalji poveznicu."
+      found: "Nađeno: {count}. Listaj strelicama ili suzi upit."
+  stats:
+    - "*Tvoja upotreba*"
+    - ""
+    - "Zadnji sat: {jobs_hour} preuzimanja"
+    - "Danas: {jobs_today} preuzimanja, {bytes_today}"
+  stats.recent: "Nedavno:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Pogon: {tools}"
+    - "Zadaci: {active} aktivnih, {queued} u redu"
+    - "Sef: {vault}"
+    - "Korisnici: {users}"
+  reload:
+    done: "Tekstovi i katalog izvora ponovno učitani ({sources} izvora)."
+  flood: "Previše poruka zaredom. Daj mi nekoliko sekundi."
+  warning:
+    audio_raw: "Napomena: na poslužitelju nema ffmpeg-a, pa je zvuk isporučen u originalnom spremniku umjesto mp3."
+  pointer:
+    dm: "Otvoreno u privatnom razgovoru s botom."
+  hint:
+    no_url: "U toj poruci nisam našao poveznicu. Zalijepi URL kao `https://youtube.com/watch?v=…` i dohvatit ću medij."
+  prompt:
+    url: "Pošalji poveznicu koju želiš spremiti. Otkazivanje s /stop."
+  cancel:
+    none: "Nemaš aktivnih preuzimanja za otkazati."
+    done: "Otkazana preuzimanja: {count}."
+  status:
+    queued: "Spremam s *{host}*…"
+    files: "Dosad isporučene datoteke: {count}"
+    progress: "Preuzimam… {percent}%"
+    done: "Gotovo za {seconds} s · datoteke: {count} · {size}"
+  error:
+    not_owner: "Ova naredba je za vlasnika bota."
+    unknown_command: "Nepoznata naredba. /help šalje popis."
+    invalid_url: "To ne izgleda kao valjana http(s) poveznica."
+    queue_full: "Red za preuzimanje trenutno je pun. Pokušaj za minutu."
+    concurrent: "Već imaš {count} preuzimanja u tijeku. Pričekaj ih ili pritisni Stop."
+    quota_hour: "Satni limit dosegnut ({limit} preuzimanja). Pokušaj kasnije."
+    quota_day: "Dnevni limit dosegnut ({limit} preuzimanja). Do sutra."
+    quota_bytes: "Dnevni limit prometa dosegnut ({limit}). Do sutra."
+    source_disabled: "Izvor „{title}“ administrator je isključio na ovom botu."
+    vault_full: "Diskovni sef poslužitelja je pun. Pokušaj kasnije."
+    blocked_type: "Datoteka „{file}“ je izvršna ili skriptna vrsta - takve ne isporučujem."
+    too_large: "Datoteka je prevelika za ovu platformu: {size} (limit {cap})."
+    too_large_link:
+      - "Datoteka je prevelika za slanje ovdje: {size} (limit {cap})."
+      - ""
+      - "Izravna poveznica: {url}"
+    cat:
+      unsupported: "Ova poveznica nije podržana: nijedan ekstraktor nije je mogao uzeti."
+      login_required: "Ovaj sadržaj traži račun na stranici. Spremam samo javne stranice."
+      age_restricted: "Sadržaj s dobnim ograničenjem: stranica ga ne pokazuje bez prijave."
+      private: "Ovaj sadržaj je privatan ili ga je autor obrisao."
+      not_found: "Stranica ili medij nisu nađeni (404). Provjeri poveznicu."
+      unavailable: "Medij nije dostupan: autor ga je obrisao ili sakrio."
+      geo_blocked: "Ovaj sadržaj je blokiran u regiji poslužitelja."
+      live_stream: "Ovo je prijenos uživo. Pošalji poveznicu opet kad prijenos završi."
+      rate_limited: "Izvor trenutno ograničava bota. Pokušaj za nekoliko minuta."
+      too_large: "Datoteka prelazi limit i manji format nije dostupan."
+      timeout: "Preuzimanje je prešlo vremenski limit. Ogroman ili spor izvor? Pokušaj opet, možda s nižom kvalitetom."
+      tool_missing: "Na poslužitelju nedostaje alat za ekstrakciju. Ovo je za administratora."
+      network: "Mrežna greška pri razgovoru s izvorom. Pokušaj opet."
+      cancelled: "Preuzimanje otkazano."
+      unknown: "Nešto je pošlo po zlu tijekom preuzimanja. Pokušaj opet i ako se ponovi, reci administratoru."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} od {total}"
+    truncated: "Samo prvih {count} stavki, ostatak je na stranici"
+
+button:
+  back: "Natrag"
+  settings: "Postavke"
+  sources: "Izvori"
+  language: "Jezik"
+  about: "O botu"
+  help: "Pomoć"
+  stats: "Moja statistika"
+  quality_menu: "Kvaliteta"
+  stop: "Stop"
+  search: "Traži"
+  original: "Original"
+  github: "GitHub"
+  reload: "Ponovno učitaj tekstove"
+  open_link: "Otvori poveznicu"
+  quality:
+    best: "Najbolja"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (trenutno)"
+
+command:
+  desc:
+    start: "glavni izbornik"
+    help: "što umijem"
+    save: "preuzmi po poveznici (ili samo pošalji poveznicu)"
+    stop: "otkaži aktivna preuzimanja"
+    quality: "kvaliteta videa / samo zvuk"
+    settings: "tvoje postavke"
+    sources: "popis podržanih stranica"
+    stats: "tvoja upotreba i nedavni zadaci"
+    lang: "jezik"
+    about: "o botu"
+    admin: "stanje pogona (vlasnik)"
+    reload: "ponovno učitaj tekstove (vlasnik)"

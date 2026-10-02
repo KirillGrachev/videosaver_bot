@@ -1,0 +1,143 @@
+# Slovenian messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Pošlji mi povezavo in prinesel bom datoteko.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo in več kot sto drugih strani: videi, shorti, fotografije, albumi, GIF-i, glasba."
+    - ""
+    - "Preprosto prilepi povezavo v klepet. Ukaz ni potreben."
+  help:
+    command: "*{command}* {description}"
+    tip: "In najpreprosteje od vsega: pošlji mi povezavo."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Večplatformski prenašalnik medijev: {sources} virov v katalogu plus katerakoli javna stran kot rezerva."
+    - ""
+    - "Različica: {version}"
+    - "Spoštuj avtorske pravice in pravila strani: shranjuj samo tisto, kar smeš shranjevati."
+  settings:
+    - "*Nastavitve*"
+    - ""
+    - "Kakovost: {quality}"
+    - "Jezik: {language}"
+  quality:
+    title: "Izberi kakovost prenosov. Velja za vse nove zahteve."
+    set: "Kakovost: *{quality}*. Novi prenosi jo bodo uporabili."
+  lang:
+    choose: "Izberi svoj jezik:"
+    set: "Jezik preklopljen."
+  sources:
+    title: "*Podprti viri: {count}*"
+    legend: "[ok] deluje · [limited] delno (samo javne povezave, pogosto se zlomi) · [login] potreben račun. Vsako drugo javno stran poskusim z univerzalnim ekstraktorjem."
+    search:
+      prompt: "Vpiši del imena strani, na primer `tiktok` ali `pixiv`. Prazno sporočilo vrne seznam."
+      empty: "Nič ni najdeno za „{query}“. Univerzalni ekstraktor morda vseeno zmore: samo pošlji povezavo."
+      found: "Najdeno: {count}. Listaj s puščicami ali zožaj poizvedbo."
+  stats:
+    - "*Tvoja uporaba*"
+    - ""
+    - "Zadnja ura: {jobs_hour} prenosov"
+    - "Danes: {jobs_today} prenosov, {bytes_today}"
+  stats.recent: "Nedavno:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Pogon: {tools}"
+    - "Naloge: {active} aktivnih, {queued} v čakalni vrsti"
+    - "Trezor: {vault}"
+    - "Uporabniki: {users}"
+  reload:
+    done: "Besedila in katalog virov ponovno naloženi ({sources} virov)."
+  flood: "Preveč sporočil zapored. Daj mi nekaj sekund."
+  warning:
+    audio_raw: "Opomba: na strežniku ni ffmpeg, zato je bil zvok dostavljen v izvornem vsebniku namesto mp3."
+  pointer:
+    dm: "Odprto v zasebnem klepetu z botom."
+  hint:
+    no_url: "V tem sporočilu nisem našel povezave. Prilepi URL kot `https://youtube.com/watch?v=…` in pobral bom medij."
+  prompt:
+    url: "Pošlji povezavo, ki jo želiš shraniti. Preklic z /stop."
+  cancel:
+    none: "Nimaš aktivnih prenosov za preklic."
+    done: "Preklicani prenosi: {count}."
+  status:
+    queued: "Shranjujem z *{host}*…"
+    files: "Doslej dostavljene datoteke: {count}"
+    progress: "Prenašam… {percent}%"
+    done: "Končano v {seconds} s · datoteke: {count} · {size}"
+  error:
+    not_owner: "Ta ukaz je za lastnika bota."
+    unknown_command: "Neznan ukaz. /help pošlje seznam."
+    invalid_url: "To ni videti kot veljavna http(s) povezava."
+    queue_full: "Čakalna vrsta prenosov je trenutno polna. Poskusi čez minuto."
+    concurrent: "Imaš že {count} prenosov v teku. Počakaj nanje ali pritisni Stop."
+    quota_hour: "Urna omejitev dosežena ({limit} prenosov). Poskusi pozneje."
+    quota_day: "Dnevna omejitev dosežena ({limit} prenosov). Do jutri."
+    quota_bytes: "Dnevna omejitev prometa dosežena ({limit}). Do jutri."
+    source_disabled: "Vir „{title}“ je na tem botu izključil administrator."
+    vault_full: "Diskovni trezor strežnika je poln. Poskusi pozneje."
+    blocked_type: "Datoteka „{file}“ je izvršljiva ali skriptna vrsta - takšnih ne dostavljam."
+    too_large: "Datoteka je prevelika za to platformo: {size} (omejitev {cap})."
+    too_large_link:
+      - "Datoteka je prevelika za pošiljanje sem: {size} (omejitev {cap})."
+      - ""
+      - "Neposredna povezava: {url}"
+    cat:
+      unsupported: "Ta povezava ni podprta: noben ekstraktor je ni mogel vzeti."
+      login_required: "Ta vsebina zahteva račun na strani. Shranjujem samo javne strani."
+      age_restricted: "Vsebina z starostno omejitvijo: stran je ne pokaže brez prijave."
+      private: "Ta vsebina je zasebna ali jo je avtor izbrisal."
+      not_found: "Strani ali medija ni mogoče najti (404). Preveri povezavo."
+      unavailable: "Medij ni na voljo: avtor ga je izbrisal ali skril."
+      geo_blocked: "Ta vsebina je blokirana v regiji strežnika."
+      live_stream: "To je prenos v živo. Pošlji povezavo znova, ko se oddaja konča."
+      rate_limited: "Vir trenutno omejuje bota. Poskusi čez nekaj minut."
+      too_large: "Datoteka presega omejitev in manjši format ni na voljo."
+      timeout: "Prenos je presegel časovno omejitev. Ogromen ali počasen vir? Poskusi znova, morda z nižjo kakovostjo."
+      tool_missing: "Na strežniku manjka orodje za ekstrakcijo. To je za administratorja."
+      network: "Omrežna napaka pri pogovoru z virom. Poskusi znova."
+      cancelled: "Prenos preklican."
+      unknown: "Med prenosom je nekaj šlo narobe. Poskusi znova in če se ponovi, povej administratorju."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} od {total}"
+    truncated: "Samo prvih {count} vnosov, ostalo je na strani"
+
+button:
+  back: "Nazaj"
+  settings: "Nastavitve"
+  sources: "Viri"
+  language: "Jezik"
+  about: "O botu"
+  help: "Pomoč"
+  stats: "Moja statistika"
+  quality_menu: "Kakovost"
+  stop: "Stop"
+  search: "Išči"
+  original: "Izvirnik"
+  github: "GitHub"
+  reload: "Ponovno naloži besedila"
+  open_link: "Odpri povezavo"
+  quality:
+    best: "Najboljša"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (trenutno)"
+
+command:
+  desc:
+    start: "glavni meni"
+    help: "kaj znam"
+    save: "prenesi po povezavi (ali samo pošlji povezavo)"
+    stop: "prekliči aktivne prenose"
+    quality: "kakovost videa / samo zvok"
+    settings: "tvoje nastavitve"
+    sources: "seznam podprtih strani"
+    stats: "tvoja uporaba in nedavne naloge"
+    lang: "jezik"
+    about: "o botu"
+    admin: "stanje pogona (lastnik)"
+    reload: "ponovno naloži besedila (lastnik)"

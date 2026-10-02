@@ -1,0 +1,143 @@
+# Czech messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Pošli mi odkaz a já přinesu soubor.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo a více než stovka dalších webů: videa, shorty, fotky, alba, GIFy, hudba."
+    - ""
+    - "Stačí vložit odkaz do chatu. Žádný příkaz není potřeba."
+  help:
+    command: "*{command}* {description}"
+    tip: "A to nejjednodušší ze všeho: pošli mi odkaz."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Víceplatformní stahovač médií: {sources} zdrojů v katalogu plus jakákoli veřejná stránka jako záloha."
+    - ""
+    - "Verze: {version}"
+    - "Respektuj autorská práva a pravidla webů: ukládej jen to, co ukládat smíš."
+  settings:
+    - "*Nastavení*"
+    - ""
+    - "Kvalita: {quality}"
+    - "Jazyk: {language}"
+  quality:
+    title: "Vyber kvalitu stahování. Platí pro všechny nové požadavky."
+    set: "Kvalita: *{quality}*. Nová stahování ji použijí."
+  lang:
+    choose: "Vyber svůj jazyk:"
+    set: "Jazyk přepnut."
+  sources:
+    title: "*Podporované zdroje: {count}*"
+    legend: "[ok] funguje · [limited] částečně (jen veřejné odkazy, často se láme) · [login] vyžaduje účet. Jakoukoli jinou veřejnou stránku zkusím univerzálním extraktorem."
+    search:
+      prompt: "Napiš část názvu webu, například `tiktok` nebo `pixiv`. Prázdná zpráva vrátí seznam."
+      empty: "Nic nenalezeno pro „{query}“. Univerzální extraktor si s webem možná poradí: prostě pošli odkaz."
+      found: "Nalezeno: {count}. Listuj šipkami, nebo upřesni dotaz."
+  stats:
+    - "*Tvoje využití*"
+    - ""
+    - "Poslední hodina: {jobs_hour} stahování"
+    - "Dnes: {jobs_today} stahování, {bytes_today}"
+  stats.recent: "Nedávné:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motor: {tools}"
+    - "Úlohy: {active} aktivní, {queued} ve frontě"
+    - "Trezor: {vault}"
+    - "Uživatelé: {users}"
+  reload:
+    done: "Texty a katalog zdrojů znovu načteny ({sources} zdrojů)."
+  flood: "Příliš mnoho zpráv za sebou. Dej mi pár vteřin."
+  warning:
+    audio_raw: "Poznámka: na serveru chybí ffmpeg, audio tedy bylo doručeno v původním kontejneru místo mp3."
+  pointer:
+    dm: "Otevřeno v soukromé konverzaci s botem."
+  hint:
+    no_url: "V téhle zprávě jsem nenašel odkaz. Vlož URL jako `https://youtube.com/watch?v=…` a já médium stáhnu."
+  prompt:
+    url: "Pošli mi odkaz, který chceš uložit. Zrušení přes /stop."
+  cancel:
+    none: "Nemáš žádná aktivní stahování ke zrušení."
+    done: "Zrušená stahování: {count}."
+  status:
+    queued: "Ukládám z *{host}*…"
+    files: "Dosud doručené soubory: {count}"
+    progress: "Stahuji… {percent}%"
+    done: "Hotovo za {seconds} s · soubory: {count} · {size}"
+  error:
+    not_owner: "Tento příkaz je pro vlastníka bota."
+    unknown_command: "Neznámý příkaz. /help pošle seznam."
+    invalid_url: "Tohle nevypadá jako platný http(s) odkaz."
+    queue_full: "Fronta stahování je teď plná. Zkus to za minutu."
+    concurrent: "Už máš {count} probíhající stahování. Počkej na ně, nebo zmáčkej Stop."
+    quota_hour: "Hodinový limit dosažen ({limit} stahování). Zkus to později."
+    quota_day: "Denní limit dosažen ({limit} stahování). Zítra."
+    quota_bytes: "Denní limit provozu dosažen ({limit}). Zítra."
+    source_disabled: "Zdroj „{title}“ je na tomto botu vypnut administrátorem."
+    vault_full: "Diskový trezor serveru je plný. Zkus to později."
+    blocked_type: "Soubor „{file}“ je spustitelný typ nebo skript - takové nedoručuji."
+    too_large: "Soubor je pro tuto platformu příliš velký: {size} (limit {cap})."
+    too_large_link:
+      - "Soubor je příliš velký na odeslání sem: {size} (limit {cap})."
+      - ""
+      - "Přímý odkaz: {url}"
+    cat:
+      unsupported: "Tento odkaz není podporován: žádný extraktor si s ním neporadil."
+      login_required: "Tento obsah vyžaduje účet na webu. Ukládám jen veřejné stránky."
+      age_restricted: "Obsah s věkovým omezením: web ho bez přihlášení neukáže."
+      private: "Tento obsah je soukromý nebo ho autor smazal."
+      not_found: "Stránka nebo médium nenalezeno (404). Zkontroluj odkaz."
+      unavailable: "Médium není dostupné: bylo smazáno nebo skryto autorem."
+      geo_blocked: "Tento obsah je v regionu serveru blokován."
+      live_stream: "Tohle je živý přenos. Pošli odkaz znovu, až vysílání skončí."
+      rate_limited: "Zdroj bota právě omezuje. Zkus to za pár minut."
+      too_large: "Soubor překračuje limit a menší formát není dostupný."
+      timeout: "Stahování překročilo časový limit. Obrovský nebo pomalý zdroj? Zkus to znovu, třeba s nižší kvalitou."
+      tool_missing: "Na serveru chybí extrakční nástroj. Tohle je pro administrátora."
+      network: "Síťová chyba při komunikaci se zdrojem. Zkus to znovu."
+      cancelled: "Stahování zrušeno."
+      unknown: "Při stahování se něco pokazilo. Zkus to znovu, a pokud se to opakuje, řekni to administrátorovi."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} z {total}"
+    truncated: "Jen prvních {count} položek, zbytek je na stránce"
+
+button:
+  back: "Zpět"
+  settings: "Nastavení"
+  sources: "Zdroje"
+  language: "Jazyk"
+  about: "O botovi"
+  help: "Nápověda"
+  stats: "Moje statistiky"
+  quality_menu: "Kvalita"
+  stop: "Stop"
+  search: "Hledat"
+  original: "Originál"
+  github: "GitHub"
+  reload: "Znovu načíst texty"
+  open_link: "Otevřít odkaz"
+  quality:
+    best: "Nejlepší"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (aktuální)"
+
+command:
+  desc:
+    start: "hlavní menu"
+    help: "co umím"
+    save: "stáhnout z odkazu (nebo prostě pošli odkaz)"
+    stop: "zrušit aktivní stahování"
+    quality: "kvalita videa / pouze audio"
+    settings: "tvoje nastavení"
+    sources: "seznam podporovaných webů"
+    stats: "tvoje využití a nedávné úlohy"
+    lang: "jazyk"
+    about: "o botovi"
+    admin: "stav motoru (vlastník)"
+    reload: "znovu načíst texty (vlastník)"

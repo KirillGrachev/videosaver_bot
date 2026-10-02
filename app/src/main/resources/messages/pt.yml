@@ -1,0 +1,143 @@
+# Portuguese messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Manda um link que eu trago o arquivo.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo e mais de cem sites: vídeos, shorts, fotos, álbuns, GIFs, música."
+    - ""
+    - "Cole o link no chat. Nenhum comando é necessário."
+  help:
+    command: "*{command}* {description}"
+    tip: "E o mais simples de tudo: me mande um link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Um baixador de mídia multiplataforma: {sources} fontes no catálogo mais qualquer página pública como reserva."
+    - ""
+    - "Versão: {version}"
+    - "Respeite os direitos autorais e as regras dos sites: salve apenas o que você tem permissão para salvar."
+  settings:
+    - "*Configurações*"
+    - ""
+    - "Qualidade: {quality}"
+    - "Idioma: {language}"
+  quality:
+    title: "Escolha a qualidade dos downloads. Ela vale para todas as novas solicitações."
+    set: "Qualidade: *{quality}*. Novos downloads vão usá-la."
+  lang:
+    choose: "Escolha seu idioma:"
+    set: "Idioma alterado."
+  sources:
+    title: "*Fontes suportadas: {count}*"
+    legend: "[ok] funciona · [limited] parcialmente (só links públicos, quebra com frequência) · [login] precisa de conta. Qualquer outra página pública é tentada pelo extrator genérico."
+    search:
+      prompt: "Digite parte do nome do site, por exemplo `tiktok` ou `pixiv`. Uma mensagem vazia devolve a lista."
+      empty: "Nada encontrado para «{query}». O extrator genérico talvez dê conta do site: é só mandar o link."
+      found: "Encontrados: {count}. Passe as páginas com as setas ou refine a busca."
+  stats:
+    - "*Seu uso*"
+    - ""
+    - "Última hora: {jobs_hour} downloads"
+    - "Hoje: {jobs_today} downloads, {bytes_today}"
+  stats.recent: "Recentes:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motor: {tools}"
+    - "Tarefas: {active} ativas, {queued} na fila"
+    - "Cofre: {vault}"
+    - "Usuários: {users}"
+  reload:
+    done: "Textos e catálogo de fontes recarregados ({sources} fontes)."
+  flood: "Mensagens demais em sequência. Me dê alguns segundos."
+  warning:
+    audio_raw: "Aviso: o ffmpeg não está instalado no servidor, então o áudio foi entregue no contêiner original em vez de mp3."
+  pointer:
+    dm: "Aberto na sua conversa privada com o bot."
+  hint:
+    no_url: "Não encontrei um link nessa mensagem. Cole uma URL como `https://youtube.com/watch?v=…` e eu busco a mídia."
+  prompt:
+    url: "Mande o link que você quer salvar. Cancele com /stop."
+  cancel:
+    none: "Você não tem downloads ativos para cancelar."
+    done: "Downloads cancelados: {count}."
+  status:
+    queued: "Salvando de *{host}*…"
+    files: "Arquivos entregues até agora: {count}"
+    progress: "Baixando… {percent}%"
+    done: "Pronto em {seconds} s · arquivos: {count} · {size}"
+  error:
+    not_owner: "Este comando é do dono do bot."
+    unknown_command: "Comando desconhecido. /help mostra a lista."
+    invalid_url: "Isso não parece um link http(s) válido."
+    queue_full: "A fila de downloads está cheia agora. Tente em um minuto."
+    concurrent: "Você já tem {count} downloads em andamento. Espere ou aperte Stop."
+    quota_hour: "Limite por hora atingido ({limit} downloads). Tente mais tarde."
+    quota_day: "Limite diário atingido ({limit} downloads). Até amanhã."
+    quota_bytes: "Limite diário de tráfego atingido ({limit}). Até amanhã."
+    source_disabled: "A fonte «{title}» está desativada neste bot pelo administrador."
+    vault_full: "O cofre de disco do servidor está cheio. Tente mais tarde."
+    blocked_type: "O arquivo «{file}» é um executável ou script - eu não entrego isso."
+    too_large: "O arquivo é grande demais para esta plataforma: {size} (limite {cap})."
+    too_large_link:
+      - "O arquivo é grande demais para enviar aqui: {size} (limite {cap})."
+      - ""
+      - "Link direto: {url}"
+    cat:
+      unsupported: "Este link não é suportado: nenhum extrator conseguiu pegá-lo."
+      login_required: "Este conteúdo exige uma conta no site. Só salvo páginas públicas."
+      age_restricted: "Conteúdo com restrição de idade: o site não mostra sem login."
+      private: "Este conteúdo é privado ou foi apagado pelo autor."
+      not_found: "Página ou mídia não encontrada (404). Confira o link."
+      unavailable: "A mídia não está disponível: foi eliminada ou ocultada pelo autor."
+      geo_blocked: "Este conteúdo está bloqueado na região do servidor."
+      live_stream: "É uma transmissão ao vivo. Mande o link de novo quando terminar."
+      rate_limited: "A fonte está limitando o bot agora. Tente em alguns minutos."
+      too_large: "O arquivo passa do limite e não há formato menor disponível."
+      timeout: "O download passou do tempo limite. Fonte enorme ou lenta? Tente de novo, talvez com qualidade menor."
+      tool_missing: "Falta a ferramenta de extração no servidor. Isso é para o administrador."
+      network: "Erro de rede ao falar com a fonte. Tente de novo."
+      cancelled: "Download cancelado."
+      unknown: "Algo deu errado durante o download. Tente de novo e, se repetir, avise o administrador."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} de {total}"
+    truncated: "Só os primeiros {count} itens, o resto está na página"
+
+button:
+  back: "Voltar"
+  settings: "Configurações"
+  sources: "Fontes"
+  language: "Idioma"
+  about: "Sobre o bot"
+  help: "Ajuda"
+  stats: "Minhas estatísticas"
+  quality_menu: "Qualidade"
+  stop: "Parar"
+  search: "Buscar"
+  original: "Original"
+  github: "GitHub"
+  reload: "Recarregar textos"
+  open_link: "Abrir link"
+  quality:
+    best: "Melhor"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Áudio (mp3)"
+    current_suffix: " (atual)"
+
+command:
+  desc:
+    start: "menu principal"
+    help: "o que eu sei fazer"
+    save: "baixar por link (ou só mande o link)"
+    stop: "cancelar downloads ativos"
+    quality: "qualidade de vídeo / só áudio"
+    settings: "suas configurações"
+    sources: "lista de sites suportados"
+    stats: "seu uso e tarefas recentes"
+    lang: "idioma"
+    about: "sobre o bot"
+    admin: "estado do motor (dono)"
+    reload: "recarregar textos (dono)"

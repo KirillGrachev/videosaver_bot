@@ -115,7 +115,18 @@ public final class DiscordAdapter implements PlatformAdapter {
             Map<net.dv8tion.jda.api.interactions.DiscordLocale, String> localizations = new java.util.HashMap<>();
 
             for (String language : bundleHolder.bundle().languages()) {
-                localizations.put(net.dv8tion.jda.api.interactions.DiscordLocale.from(language),
+
+                // We ship more languages than Discord has locales: a code Discord does
+                // not know would make the whole command update fail, so those languages
+                // simply keep the default description instead of a localization.
+                net.dv8tion.jda.api.interactions.DiscordLocale discordLocale =
+                        DISCORD_LOCALES.get(language);
+
+                if (discordLocale == null) {
+                    continue;
+                }
+
+                localizations.put(discordLocale,
                         truncate(bundleHolder.renderer().raw(spec.descriptionKey(),
                                 java.util.Locale.forLanguageTag(language), Map.of()), 100));
             }
@@ -131,6 +142,39 @@ public final class DiscordAdapter implements PlatformAdapter {
 
     private static String truncate(String value, int max) {
         return value.length() <= max ? value : value.substring(0, max - 3) + "...";
+    }
+
+    /**
+     * Bundle language code -> Discord locale, built from what JDA's enum actually knows
+     * instead of a hand-maintained list: a new Discord locale starts working on its own.
+     * The four aliases expand a plain language code to the regional code Discord uses
+     * (our bundles are not regionalized); everything else matches by its own code, and
+     * languages Discord does not have (az, be, kk, ky, mt, tg, tk, uz, ka, hy, et, lv,
+     * sk, sl, ga) are absent from the map and get skipped at registration.
+     */
+    private static final Map<String, net.dv8tion.jda.api.interactions.DiscordLocale>
+            DISCORD_LOCALES = discordLocalesByLanguage();
+
+    private static Map<String, net.dv8tion.jda.api.interactions.DiscordLocale>
+            discordLocalesByLanguage() {
+
+        Map<String, net.dv8tion.jda.api.interactions.DiscordLocale> byCode =
+                new java.util.HashMap<>();
+
+        for (net.dv8tion.jda.api.interactions.DiscordLocale locale
+                : net.dv8tion.jda.api.interactions.DiscordLocale.values()) {
+            byCode.put(locale.getLocale(), locale);
+        }
+
+        byCode.remove(net.dv8tion.jda.api.interactions.DiscordLocale.UNKNOWN.getLocale());
+
+        byCode.put("en", byCode.get("en-US"));
+        byCode.put("es", byCode.get("es-ES"));
+        byCode.put("pt", byCode.get("pt-BR"));
+        byCode.put("sv", byCode.get("sv-SE"));
+
+        return byCode;
+
     }
 
     @Override

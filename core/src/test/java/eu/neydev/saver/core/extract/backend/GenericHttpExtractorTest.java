@@ -352,4 +352,105 @@ class GenericHttpExtractorTest {
 
     }
 
+    /**
+     * The regression behind "file without extension" in the user's chat: a CDN answer
+     * with a useless Content-Type and an id-like path used to reach the platform as an
+     * anonymous document card. The magic-byte sniff renames it before delivery.
+     */
+    @Test
+    void extensionlessDownloadIsRenamedFromItsHeader(@TempDir Path dir) {
+
+        byte[] mp4 = new byte[]{0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70,
+                0x69, 0x73, 0x6F, 0x6D, 0, 0, 0, 0, 0, 0};
+        file("/media/KLz17Yc9shs", "application/octet-stream", mp4);
+
+        DirectLinkExtractor direct =
+                new DirectLinkExtractor(new SafeHttp(new SsrfGuard(true), Duration.ofSeconds(10)));
+
+        ExtractionResult result = direct.extract(request(dir, "/media/KLz17Yc9shs", 1_000_000));
+
+        assertThat(result.items()).hasSize(1);
+        assertThat(result.items().get(0).file().getFileName().toString())
+                .isEqualTo("KLz17Yc9shs.mp4");
+        assertThat(result.items().get(0).kind()).isEqualTo(MediaKind.VIDEO);
+
+    }
+
+    @Test
+    void unrecognizableHeaderKeepsTheExtensionlessName(@TempDir Path dir) {
+
+        file("/media/KLz17Yc9shs", "application/octet-stream", "not a known container".getBytes());
+
+        DirectLinkExtractor direct =
+                new DirectLinkExtractor(new SafeHttp(new SsrfGuard(true), Duration.ofSeconds(10)));
+
+        ExtractionResult result = direct.extract(request(dir, "/media/KLz17Yc9shs", 1_000_000));
+
+        assertThat(result.items().get(0).file().getFileName().toString())
+                .isEqualTo("KLz17Yc9shs");
+
+    }
+
+    /**
+     * The "143 KB video" regression: a page that presents itself as video but exposes
+     * only its poster must NOT deliver the poster as the content. The scraper reports
+     * UNSUPPORTED and the chain turns that into the honest tool verdict.
+     */
+    @Test
+    void posterOfAVideoPageIsNotTheVideo(@TempDir Path dir) {
+
+        file("/poster.jpg", "image/jpeg", new byte[]{9, 9});
+        page("/watch", """
+                <html><head>
+                <meta property="og:type" content="video.other">
+                <meta property="og:title" content="Some clip">
+                <meta property="og:image" content="/poster.jpg">
+                </head><body>player shell</body></html>
+                """);
+
+        assertThatThrownBy(() -> extractor().extract(request(dir, "/watch", 1_000_000)))
+                .isInstanceOf(ExtractionException.class)
+                .extracting(e -> ((ExtractionException) e).category())
+                .isEqualTo(Category.UNSUPPORTED);
+
+    }
+
+    /**
+     * The embed-error regression (YouTube "This video is unavailable", error 152-4):
+     * the watch page of a deleted or hidden video answers HTTP 200, so the verdict has
+     * to come from the page's own player response, not from the HTTP status.
+     */
+    @Test
+    void aDeletedVideoReportsThePlayersVerdict(@TempDir Path dir) {
+
+        file("/poster.jpg", "image/jpeg", new byte[]{9, 9});
+        page("/shorts/KLz17Yc9shs", """
+                <html><head><meta property="og:image" content="/poster.jpg"></head>
+                <body><script>var ytInitialPlayerResponse = {"playabilityStatus":\
+                {"status":"ERROR","reason":"Video unavailable"}};</script></body></html>
+                """);
+
+        assertThatThrownBy(() -> extractor().extract(request(dir, "/shorts/KLz17Yc9shs", 1_000_000)))
+                .isInstanceOf(ExtractionException.class)
+                .extracting(e -> ((ExtractionException) e).category())
+                .isEqualTo(Category.UNAVAILABLE);
+
+    }
+
+    @Test
+    void anAgeGatedVideoIsAnAgeGateNotALoginWall(@TempDir Path dir) {
+
+        page("/watch", """
+                <html><body><script>window["ytInitialPlayerResponse"] = \
+                {"playabilityStatus":{"status":"LOGIN_REQUIRED",\
+                "reason":"Sign in to confirm your age"}};</script></body></html>
+                """);
+
+        assertThatThrownBy(() -> extractor().extract(request(dir, "/watch", 1_000_000)))
+                .isInstanceOf(ExtractionException.class)
+                .extracting(e -> ((ExtractionException) e).category())
+                .isEqualTo(Category.AGE_RESTRICTED);
+
+    }
+
 }

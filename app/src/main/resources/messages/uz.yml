@@ -1,0 +1,143 @@
+# Uzbek messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Menga havola yuboring, men faylni olib kelaman.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo va yuzdan ortiq boshqa saytlar: videolar, shortslar, fotolar, albomlar, GIF, musiqa."
+    - ""
+    - "Havolani shunchaki chatga qo'ying. Buyruq kerak emas."
+  help:
+    command: "*{command}* {description}"
+    tip: "Va eng oddiysi: menga shunchaki havola yuboring."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Ko'p platformali media yuklab oluvchi: katalogda {sources} manba, zaxira sifatida istalgan ochiq sahifa."
+    - ""
+    - "Versiya: {version}"
+    - "Mualliflik huquqi va saytlar qoidalariga hurmat qiling: faqat saqlashga ruxsatingiz bor narsani saqlang."
+  settings:
+    - "*Sozlamalar*"
+    - ""
+    - "Sifat: {quality}"
+    - "Til: {language}"
+  quality:
+    title: "Yuklab olish sifatini tanlang. U barcha yangi so'rovlarga qo'llanadi."
+    set: "Sifat: *{quality}*. Yangi yuklab olishlar undan foydalanadi."
+  lang:
+    choose: "Tilingizni tanlang:"
+    set: "Til almashtirildi."
+  sources:
+    title: "*Qo'llab-quvvatlanadigan manbalar: {count}*"
+    legend: "[ok] ishlaydi · [limited] qisman (faqat ochiq havolalar, tez-tez buziladi) · [login] hisob kerak. Boshqa har qanday ochiq sahifani umumiy ekstraktor bilan sinab ko'raman."
+    search:
+      prompt: "Sayt nomining bir qismini yozing, masalan `tiktok` yoki `pixiv`. Bo'sh xabar ro'yxatni qaytaradi."
+      empty: "«{query}» bo'yicha hech narsa topilmadi. Umumiy ekstraktor baribir uddasidan chiqishi mumkin: shunchaki havolani yuboring."
+      found: "Topildi: {count}. Strelkalar bilan varaqlang yoki so'rovni aniqlashtiring."
+  stats:
+    - "*Sizning foydalanishingiz*"
+    - ""
+    - "Oxirgi soat: {jobs_hour} yuklab olish"
+    - "Bugun: {jobs_today} yuklab olish, {bytes_today}"
+  stats.recent: "So'nggi:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Dvigatel: {tools}"
+    - "Vazifalar: {active} faol, {queued} navbatda"
+    - "Ombor: {vault}"
+    - "Foydalanuvchilar: {users}"
+  reload:
+    done: "Matnlar va manbalar katalogi qayta yuklandi ({sources} manba)."
+  flood: "Biriga juda ko'p xabar. Menga bir necha soniya bering."
+  warning:
+    audio_raw: "Eslatma: serverda ffmpeg o'rnatilmagan, shuning uchun audio mp3 o'rniga asl konteynerda yetkazildi."
+  pointer:
+    dm: "Bot bilan shaxsiy suhbatingizda ochildi."
+  hint:
+    no_url: "U xabarda havola topmadim. `https://youtube.com/watch?v=…` kabi URL qo'ying, men mediani olaman."
+  prompt:
+    url: "Saqlamoqchi bo'lgan havolangizni yuboring. Bekor qilish: /stop."
+  cancel:
+    none: "Bekor qilish uchun faol yuklab olishlaringiz yo'q."
+    done: "Bekor qilingan yuklab olishlar: {count}."
+  status:
+    queued: "*{host}* manbasidan saqlanmoqda…"
+    files: "Hozirgacha yetkazilgan fayllar: {count}"
+    progress: "Yuklab olinmoqda… {percent}%"
+    done: "{seconds} s da tayyor · fayllar: {count} · {size}"
+  error:
+    not_owner: "Bu buyruq bot egasi uchun."
+    unknown_command: "Noma'lum buyruq. /help ro'yxatni yuboradi."
+    invalid_url: "Bu yaroqli http(s) havolasiga o'xshamaydi."
+    queue_full: "Yuklab olish navbati hozir to'la. Bir daqiqadan so'ng urinib ko'ring."
+    concurrent: "Sizda allaqachon {count} yuklab olish jarayonda. Ularni kuting yoki Stop tugmasini bosing."
+    quota_hour: "Soatlik limitga yetildi ({limit} yuklab olish). Keyinroq urinib ko'ring."
+    quota_day: "Kunlik limitga yetildi ({limit} yuklab olish). Ertaga ko'rishguncha."
+    quota_bytes: "Kunlik trafik limitiga yetildi ({limit}). Ertaga ko'rishguncha."
+    source_disabled: "«{title}» manbasi ushbu botda administrator tomonidan o'chirilgan."
+    vault_full: "Server disk ombori to'la. Keyinroq urinib ko'ring."
+    blocked_type: "«{file}» fayli bajariladigan tur yoki skript - bundaylarni yetkazmayman."
+    too_large: "Fayl ushbu platforma uchun juda katta: {size} (limit {cap})."
+    too_large_link:
+      - "Fayl bu yerga yuborish uchun juda katta: {size} (limit {cap})."
+      - ""
+      - "To'g'ridan-to'g'ri havola: {url}"
+    cat:
+      unsupported: "Bu havola qo'llab-quvvatlanmaydi: hech bir ekstraktor uni ola olmadi."
+      login_required: "Bu kontent saytda hisob talab qiladi. Men faqat ochiq sahifalarni saqlayman."
+      age_restricted: "Yosh cheklovi bor kontent: sayt uni kirishsiz ko'rsatmaydi."
+      private: "Bu kontent shaxsiy yoki muallif o'chirgan."
+      not_found: "Sahifa yoki media topilmadi (404). Havolani tekshiring."
+      unavailable: "Media mavjud emas: u muallif tomonidan o'chirilgan yoki yashirilgan."
+      geo_blocked: "Bu kontent server mintaqasida bloklangan."
+      live_stream: "Bu jonli efir. Translyatsiya tugagach havolani qayta yuboring."
+      rate_limited: "Manba hozir botni cheklamoqda. Bir necha daqiqadan so'ng urinib ko'ring."
+      too_large: "Fayl limitten oshadi va kichikroq format mavjud emas."
+      timeout: "Yuklab olish vaqt limitidan oshdi. Juda katta yoki sekin manbami? Qayta urinib ko'ring, balki pastroq sifat bilan."
+      tool_missing: "Serverda ekstraktsiya asbobi yo'q. Bu administrator uchun."
+      network: "Manba bilan aloqada tarmoq xatosi. Qayta urinib ko'ring."
+      cancelled: "Yuklab olish bekor qilindi."
+      unknown: "Yuklab olish paytida nimadir noto'g'ri ketdi. Qayta urinib ko'ring va takrorlansa, administratorga ayting."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} / {total}"
+    truncated: "Faqat dastlabki {count} element, qolgani sahifada"
+
+button:
+  back: "Orqaga"
+  settings: "Sozlamalar"
+  sources: "Manbalar"
+  language: "Til"
+  about: "Bot haqida"
+  help: "Yordam"
+  stats: "Mening statistikam"
+  quality_menu: "Sifat"
+  stop: "Stop"
+  search: "Qidiruv"
+  original: "Original"
+  github: "GitHub"
+  reload: "Matnlarni qayta yuklash"
+  open_link: "Havolani ochish"
+  quality:
+    best: "Eng yaxshi"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (joriy)"
+
+command:
+  desc:
+    start: "asosiy menyu"
+    help: "men nima qila olaman"
+    save: "havola orqali yuklab olish (yoki shunchaki havolani yuboring)"
+    stop: "faol yuklab olishlarni bekor qilish"
+    quality: "video sifati / faqat audio"
+    settings: "sizning sozlamalaringiz"
+    sources: "qo'llab-quvvatlanadigan saytlar ro'yxati"
+    stats: "foydalanishingiz va so'nggi vazifalar"
+    lang: "til"
+    about: "bot haqida"
+    admin: "dvigatel holati (egasi)"
+    reload: "matnlarni qayta yuklash (egasi)"

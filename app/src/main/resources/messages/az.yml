@@ -1,0 +1,143 @@
+# Azerbaijani messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Mənə link göndər, faylı gətirim.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo və yüzdən çox başqa sayt: videolar, shortslar, fotolar, albomlar, GIF, musiqi."
+    - ""
+    - "Linki sadəcə söhbətə yapışdır. Komanda lazım deyil."
+  help:
+    command: "*{command}* {description}"
+    tip: "Və ən sadəsi: mənə sadəcə bir link göndər."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Çoxplatformalı media yükləyicisi: kataloqda {sources} mənbə, üstəlik ehtiyat olaraq istənilən ictimai səhifə."
+    - ""
+    - "Versiya: {version}"
+    - "Müəllif hüquqlarına və saytların qaydalarına hörmət et: yalnız saxlamağa icazən olanı saxla."
+  settings:
+    - "*Parametrlər*"
+    - ""
+    - "Keyfiyyət: {quality}"
+    - "Dil: {language}"
+  quality:
+    title: "Yükləmələrin keyfiyyətini seç. Bütün yeni sorğulara tətbiq olunur."
+    set: "Keyfiyyət: *{quality}*. Yeni yükləmələr ondan istifadə edəcək."
+  lang:
+    choose: "Dilini seç:"
+    set: "Dil dəyişdirildi."
+  sources:
+    title: "*Dəstəklənən mənbələr: {count}*"
+    legend: "[ok] işləyir · [limited] qismən (yalnız ictimai linklər, tez-tez sınır) · [login] hesab lazımdır. Başqa istənilən ictimai səhifəni ümumi ekstraktorla yoxlayıram."
+    search:
+      prompt: "Sayt adının bir hissəsini yaz, məsələn `tiktok` və ya `pixiv`. Boş mesaj siyahını qaytarır."
+      empty: "«{query}» üçün heç nə tapılmadı. Ümumi ekstraktor yenə də bacara bilər: sadəcə linki göndər."
+      found: "Tapıldı: {count}. Oxlarla vərəqlə və ya sorğunu dəqiqləşdir."
+  stats:
+    - "*Sənin istifadən*"
+    - ""
+    - "Son saat: {jobs_hour} yükləmə"
+    - "Bu gün: {jobs_today} yükləmə, {bytes_today}"
+  stats.recent: "Sonuncular:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Mühərrik: {tools}"
+    - "Tapşırıqlar: {active} aktiv, {queued} növbədə"
+    - "Anbar: {vault}"
+    - "İstifadəçilər: {users}"
+  reload:
+    done: "Mətnlər və mənbə kataloqu yenidən yükləndi ({sources} mənbə)."
+  flood: "Ardıcıl həddindən çox mesaj. Mənə bir neçə saniyə ver."
+  warning:
+    audio_raw: "Qeyd: serverdə ffmpeg quraşdırılmayıb, ona görə səs mp3 əvəzinə orijinal konteynerdə çatdırıldı."
+  pointer:
+    dm: "Botla şəxsi söhbətində açıldı."
+  hint:
+    no_url: "Həmin mesajda link tapmadım. `https://youtube.com/watch?v=…` kimi URL yapışdır, mən medianı gətirim."
+  prompt:
+    url: "Saxlamaq istədiyin linki göndər. Ləğv: /stop."
+  cancel:
+    none: "Ləğv etməyə aktiv yükləmələrin yoxdur."
+    done: "Ləğv edilən yükləmələr: {count}."
+  status:
+    queued: "*{host}* mənbəyindən saxlanılır…"
+    files: "İndiyə qədər çatdırılan fayllar: {count}"
+    progress: "Yüklənir… {percent}%"
+    done: "{seconds} s-da hazırdır · fayllar: {count} · {size}"
+  error:
+    not_owner: "Bu komanda botun sahibinə aiddir."
+    unknown_command: "Naməlum komanda. /help siyahını göndərir."
+    invalid_url: "Bu etibarlı http(s) linkinə oxşamır."
+    queue_full: "Yükləmə növbəsi indi doludur. Bir dəqiqə sonra cəhd et."
+    concurrent: "Artıq {count} yükləmən davam edir. Onları gözlə və ya Stop bas."
+    quota_hour: "Saatlıq limitə çatıldı ({limit} yükləmə). Daha sonra cəhd et."
+    quota_day: "Günlük limitə çatıldı ({limit} yükləmə). Sabaha qədər."
+    quota_bytes: "Günlük trafik limitinə çatıldı ({limit}). Sabaha qədər."
+    source_disabled: "«{title}» mənbəyi bu botda administrator tərəfindən söndürülüb."
+    vault_full: "Serverin disk anbarı doludur. Daha sonra cəhd et."
+    blocked_type: "«{file}» faylı icra olunan növ və ya skriptdir - belələrini çatdırmıram."
+    too_large: "Fayl bu platforma üçün çox böyükdür: {size} (limit {cap})."
+    too_large_link:
+      - "Fayl bura göndərmək üçün çox böyükdür: {size} (limit {cap})."
+      - ""
+      - "Birbaşa link: {url}"
+    cat:
+      unsupported: "Bu link dəstəklənmir: heç bir ekstraktor onu ala bilmədi."
+      login_required: "Bu məzmun saytda hesab tələb edir. Mən yalnız ictimai səhifələri saxlayıram."
+      age_restricted: "Yaş məhdudiyyəti olan məzmun: sayt onu girişsiz göstərmir."
+      private: "Bu məzmun şəxsidir və ya müəllif silib."
+      not_found: "Səhifə və ya media tapılmadı (404). Linki yoxla."
+      unavailable: "Media əlçatan deyil: müəllif tərəfindən silinib və ya gizlədilib."
+      geo_blocked: "Bu məzmun server regionunda bloklanıb."
+      live_stream: "Bu canlı yayımdır. Yayım bitəndə linki yenidən göndər."
+      rate_limited: "Mənbə indi botu məhdudlaşdırır. Bir neçə dəqiqə sonra cəhd et."
+      too_large: "Fayl limiti aşır və daha kiçik format mövcud deyil."
+      timeout: "Yükləmə vaxt limitini aşdı. Nəhəng və ya yavaş mənbə? Yenidən cəhd et, bəlkə daha aşağı keyfiyyətlə."
+      tool_missing: "Serverdə çıxarış aləti yoxdur. Bu administrator üçündür."
+      network: "Mənbə ilə əlaqədə şəbəkə xətası. Yenidən cəhd et."
+      cancelled: "Yükləmə ləğv edildi."
+      unknown: "Yükləmə zamanı nəsə xəta getdi. Yenidən cəhd et və təkrarlanarsa, administratora de."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} / {total}"
+    truncated: "Yalnız ilk {count} element, qalanı səhifədədir"
+
+button:
+  back: "Geri"
+  settings: "Parametrlər"
+  sources: "Mənbələr"
+  language: "Dil"
+  about: "Bot haqqında"
+  help: "Kömək"
+  stats: "Mənim statistikam"
+  quality_menu: "Keyfiyyət"
+  stop: "Stop"
+  search: "Axtarış"
+  original: "Orijinal"
+  github: "GitHub"
+  reload: "Mətnləri yenidən yüklə"
+  open_link: "Linki aç"
+  quality:
+    best: "Ən yaxşı"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (cari)"
+
+command:
+  desc:
+    start: "əsas menyu"
+    help: "mən nə bacarıram"
+    save: "linklə yüklə (və ya sadəcə linki göndər)"
+    stop: "aktiv yükləmələri ləğv et"
+    quality: "video keyfiyyəti / yalnız səs"
+    settings: "sənin parametrlərin"
+    sources: "dəstəklənən saytların siyahısı"
+    stats: "sənin istifadən və son tapşırıqlar"
+    lang: "dil"
+    about: "bot haqqında"
+    admin: "mühərrikin vəziyyəti (sahib)"
+    reload: "mətnləri yenidən yüklə (sahib)"

@@ -1,0 +1,143 @@
+# Hungarian messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Küldj egy linket, és hozom a fájlt.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo és több mint száz másik oldal: videók, shortok, fotók, albumok, GIF-ek, zene."
+    - ""
+    - "Csak illeszd be a linket a csevegésbe. Parancs nem kell."
+  help:
+    command: "*{command}* {description}"
+    tip: "És a legegyszerűbb mindegyik közül: küldj egy linket."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Többplatformos médialetöltő: {sources} forrás a katalógusban plusz bármely nyilvános oldal tartalékként."
+    - ""
+    - "Verzió: {version}"
+    - "Tartsd tiszteletben a szerzői jogokat és az oldalak szabályait: csak azt mentsd, amit szabad."
+  settings:
+    - "*Beállítások*"
+    - ""
+    - "Minőség: {quality}"
+    - "Nyelv: {language}"
+  quality:
+    title: "Válaszd ki a letöltések minőségét. Minden új kérésre vonatkozik."
+    set: "Minőség: *{quality}*. Az új letöltések ezt használják."
+  lang:
+    choose: "Válaszd ki a nyelved:"
+    set: "Nyelv átállítva."
+  sources:
+    title: "*Támogatott források: {count}*"
+    legend: "[ok] működik · [limited] részben (csak nyilvános linkek, gyakran elromlik) · [login] fiók kell. Bármely más nyilvános oldalt az általános kibontóval próbálok."
+    search:
+      prompt: "Írd be az oldal nevének egy részét, például `tiktok` vagy `pixiv`. Az üres üzenet visszaadja a listát."
+      empty: "Nincs találat erre: „{query}“. Az általános kibontó talán így is boldogul: csak küldd el a linket."
+      found: "Találat: {count}. Lapozz a nyilakkal, vagy pontosítsd a keresést."
+  stats:
+    - "*A te használatod*"
+    - ""
+    - "Utolsó óra: {jobs_hour} letöltés"
+    - "Ma: {jobs_today} letöltés, {bytes_today}"
+  stats.recent: "Legutóbbiak:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motor: {tools}"
+    - "Feladatok: {active} aktív, {queued} sorban"
+    - "Tároló: {vault}"
+    - "Felhasználók: {users}"
+  reload:
+    done: "Szövegek és forráskatalógus újratöltve ({sources} forrás)."
+  flood: "Túl sok üzenet egymás után. Adj pár másodpercet."
+  warning:
+    audio_raw: "Megjegyzés: a szerveren nincs ffmpeg, ezért a hang az eredeti konténerben érkezett mp3 helyett."
+  pointer:
+    dm: "Megnyitva a bottal folytatott privát beszélgetésedben."
+  hint:
+    no_url: "Nem találtam linket abban az üzenetben. Illessz be egy URL-t, például `https://youtube.com/watch?v=…`, és hozom a médiát."
+  prompt:
+    url: "Küldd el a linket, amelyet menteni szeretnél. Megszakítás: /stop."
+  cancel:
+    none: "Nincs aktív letöltésed megszakítani."
+    done: "Megszakított letöltések: {count}."
+  status:
+    queued: "Mentés innen: *{host}*…"
+    files: "Eddig kézbesített fájlok: {count}"
+    progress: "Letöltés… {percent}%"
+    done: "Kész {seconds} s · fájlok: {count} · {size}"
+  error:
+    not_owner: "Ez a parancs a bot tulajdonosáé."
+    unknown_command: "Ismeretlen parancs. A /help elküldi a listát."
+    invalid_url: "Ez nem néz ki érvényes http(s) linknek."
+    queue_full: "A letöltési sor most tele van. Próbáld egy perc múlva."
+    concurrent: "Már {count} letöltésed fut. Várd meg őket, vagy nyomd meg a Stop-ot."
+    quota_hour: "Óránkénti limit elérve ({limit} letöltés). Próbáld később."
+    quota_day: "Napi limit elérve ({limit} letöltés). Holnap folytatjuk."
+    quota_bytes: "Napi forgalmi limit elérve ({limit}). Holnap folytatjuk."
+    source_disabled: "A(z) „{title}” forrást az adminisztrátor kikapcsolta ezen a boton."
+    vault_full: "A szerver lemeztárolója tele van. Próbáld később."
+    blocked_type: "A(z) „{file}” fájl futtatható típus vagy szkript - ilyet nem kézbesítek."
+    too_large: "A fájl túl nagy ehhez a platformhoz: {size} (limit {cap})."
+    too_large_link:
+      - "A fájl túl nagy, hogy ide küldjem: {size} (limit {cap})."
+      - ""
+      - "Közvetlen link: {url}"
+    cat:
+      unsupported: "Ez a link nem támogatott: egyetlen kibontó sem tudta megszerezni."
+      login_required: "Ehhez a tartalomhoz fiók kell az oldalon. Csak nyilvános oldalakat mentek."
+      age_restricted: "Korhatáros tartalom: az oldal bejelentkezés nélkül nem mutatja."
+      private: "Ez a tartalom privát, vagy a szerző törölte."
+      not_found: "Az oldal vagy média nem található (404). Ellenőrizd a linket."
+      unavailable: "A média nem elérhető: a szerző törölte vagy elrejtette."
+      geo_blocked: "Ez a tartalom blokkolt a szerver régiójában."
+      live_stream: "Ez élő közvetítés. Küldd el újra a linket, amikor az adás véget ér."
+      rate_limited: "A forrás éppen korlátozza a botot. Próbáld pár perc múlva."
+      too_large: "A fájl túllépi a limitet, és nincs kisebb formátum."
+      timeout: "A letöltés túllépte az időkorlátot. Hatalmas vagy lassú forrás? Próbáld újra, esetleg kisebb minőséggel."
+      tool_missing: "A kibontó eszköz hiányzik a szerverről. Ez az adminisztrátor dolga."
+      network: "Hálózati hiba a forrással való kommunikációban. Próbáld újra."
+      cancelled: "Letöltés megszakítva."
+      unknown: "Valami elromlott a letöltés közben. Próbáld újra, és ismétlődés esetén szólj az adminisztrátornak."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} / {total}"
+    truncated: "Csak az első {count} elem, a többi az oldalon van"
+
+button:
+  back: "Vissza"
+  settings: "Beállítások"
+  sources: "Források"
+  language: "Nyelv"
+  about: "A botról"
+  help: "Súgó"
+  stats: "Statisztikáim"
+  quality_menu: "Minőség"
+  stop: "Stop"
+  search: "Keresés"
+  original: "Eredeti"
+  github: "GitHub"
+  reload: "Szövegek újratöltése"
+  open_link: "Link megnyitása"
+  quality:
+    best: "Legjobb"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Hang (mp3)"
+    current_suffix: " (jelenlegi)"
+
+command:
+  desc:
+    start: "főmenü"
+    help: "mit tudok"
+    save: "letöltés linkből (vagy csak küldd el a linket)"
+    stop: "aktív letöltések megszakítása"
+    quality: "videóminőség / csak hang"
+    settings: "beállításaid"
+    sources: "támogatott oldalak listája"
+    stats: "használatod és legutóbbi feladatok"
+    lang: "nyelv"
+    about: "a botról"
+    admin: "motor állapota (tulajdonos)"
+    reload: "szövegek újratöltése (tulajdonos)"

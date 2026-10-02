@@ -8,14 +8,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class ByteFormatTest {
 
     @Test
-    void humanSizesAreDecimal() {
+    void humanSizesAreBinaryLikeThePlatformUIs() {
 
         assertThat(ByteFormat.human(0)).isEqualTo("0 B");
         assertThat(ByteFormat.human(999)).isEqualTo("999 B");
+        assertThat(ByteFormat.human(1_024)).isEqualTo("1.0 KB");
         assertThat(ByteFormat.human(1_500)).isEqualTo("1.5 KB");
-        assertThat(ByteFormat.human(4_200_000)).isEqualTo("4.2 MB");
-        assertThat(ByteFormat.human(1_234_567_890)).isEqualTo("1.2 GB");
-        assertThat(ByteFormat.human(150_000_000)).isEqualTo("150 MB");
+        // The regression that matters: 146_432 bytes is what Telegram's file card
+        // calls "143.0 KB"; a decimal formatter printed "146 KB" next to it.
+        assertThat(ByteFormat.human(146_432)).isEqualTo("143 KB");
+        assertThat(ByteFormat.human(4_200_000)).isEqualTo("4.0 MB");
+        assertThat(ByteFormat.human(1_234_567_890)).isEqualTo("1.1 GB");
+        assertThat(ByteFormat.human(150_000_000)).isEqualTo("143 MB");
 
     }
 

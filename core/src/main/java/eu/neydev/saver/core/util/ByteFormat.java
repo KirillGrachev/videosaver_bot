@@ -3,10 +3,12 @@ package eu.neydev.saver.core.util;
 import java.util.Locale;
 
 /**
- * Human-readable byte sizes for captions, quotas and logs ("4.2 MB"). Decimal units
- * on purpose: platforms quote their limits in decimal megabytes (Telegram "50 MB"
- * = 50_000_000 bytes), and mixing binary MiB into user-facing text invites the
- * "but the file is only 48 MB!" support thread.
+ * Human-readable byte sizes for captions, quotas and logs ("4.2 MB"). Binary units
+ * on purpose: every platform UI we deliver to renders file sizes in binary (Telegram
+ * shows a 146_432-byte file as "143.0 KB"), so a decimal formatter would print "146 KB"
+ * next to a card that says 143 and read as a bug to every user. Config parsing stays
+ * decimal: operators quote the published platform limits, and those documents are
+ * decimal ("50 MB" caps in delivery.caps).
  */
 public final class ByteFormat {
 
@@ -15,7 +17,7 @@ public final class ByteFormat {
 
     public static String human(long bytes) {
 
-        if (bytes < 1_000) {
+        if (bytes < 1_024) {
             return bytes + " B";
         }
 
@@ -23,8 +25,8 @@ public final class ByteFormat {
         double value = bytes;
         int unit = -1;
 
-        while (value >= 1_000 && unit < units.length - 1) {
-            value /= 1_000;
+        while (value >= 1_024 && unit < units.length - 1) {
+            value /= 1_024;
             unit++;
         }
 

@@ -1,0 +1,143 @@
+# Dutch messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Stuur me een link en ik haal het bestand.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo en meer dan honderd andere sites: video's, shorts, foto's, albums, GIFs, muziek."
+    - ""
+    - "Plak de link gewoon in de chat. Geen commando nodig."
+  help:
+    command: "*{command}* {description}"
+    tip: "En het simpelste van alles: stuur me een link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Een multiplatform mediadownloader: {sources} bronnen in de catalogus plus elke openbare pagina als terugval."
+    - ""
+    - "Versie: {version}"
+    - "Respecteer het auteursrecht en de regels van de sites: bewaar alleen wat je mag bewaren."
+  settings:
+    - "*Instellingen*"
+    - ""
+    - "Kwaliteit: {quality}"
+    - "Taal: {language}"
+  quality:
+    title: "Kies de kwaliteit voor downloads. Die geldt voor alle nieuwe verzoeken."
+    set: "Kwaliteit: *{quality}*. Nieuwe downloads gebruiken die."
+  lang:
+    choose: "Kies je taal:"
+    set: "Taal gewisseld."
+  sources:
+    title: "*Ondersteunde bronnen: {count}*"
+    legend: "[ok] werkt · [limited] gedeeltelijk (alleen openbare links, breekt vaak) · [login] account nodig. Elke andere openbare pagina probeer ik met de generieke extractor."
+    search:
+      prompt: "Typ een deel van de sitenaam, bijvoorbeeld `tiktok` of `pixiv`. Een leeg bericht geeft de lijst."
+      empty: "Niets gevonden voor „{query}“. De generieke extractor kan de site misschien toch aan: stuur gewoon de link."
+      found: "Gevonden: {count}. Blader met de pijlen of verfijn de zoekopdracht."
+  stats:
+    - "*Jouw gebruik*"
+    - ""
+    - "Laatste uur: {jobs_hour} downloads"
+    - "Vandaag: {jobs_today} downloads, {bytes_today}"
+  stats.recent: "Recent:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motor: {tools}"
+    - "Taken: {active} actief, {queued} in de wachtrij"
+    - "Kluis: {vault}"
+    - "Gebruikers: {users}"
+  reload:
+    done: "Teksten en broncatalogus herladen ({sources} bronnen)."
+  flood: "Te veel berichten achter elkaar. Geef me een paar seconden."
+  warning:
+    audio_raw: "Let op: ffmpeg is niet geïnstalleerd op de server, dus de audio is geleverd in de originele container in plaats van mp3."
+  pointer:
+    dm: "Geopend in je privégesprek met de bot."
+  hint:
+    no_url: "Ik vond geen link in dat bericht. Plak een URL zoals `https://youtube.com/watch?v=…` en ik haal de media."
+  prompt:
+    url: "Stuur me de link die je wil bewaren. Annuleren met /stop."
+  cancel:
+    none: "Je hebt geen actieve downloads om te annuleren."
+    done: "Geannuleerde downloads: {count}."
+  status:
+    queued: "Bewaar van *{host}*…"
+    files: "Tot nu geleverde bestanden: {count}"
+    progress: "Downloaden… {percent}%"
+    done: "Klaar in {seconds} s · bestanden: {count} · {size}"
+  error:
+    not_owner: "Dit commando is voor de eigenaar van de bot."
+    unknown_command: "Onbekend commando. /help geeft de lijst."
+    invalid_url: "Dat lijkt geen geldige http(s)-link."
+    queue_full: "De downloadwachtrij zit nu vol. Probeer het over een minuut."
+    concurrent: "Je hebt al {count} downloads lopen. Wacht ze af of druk op Stop."
+    quota_hour: "Uurlimiet bereikt ({limit} downloads). Probeer het later opnieuw."
+    quota_day: "Daglimiet bereikt ({limit} downloads). Tot morgen."
+    quota_bytes: "Daglimiet voor verkeer bereikt ({limit}). Tot morgen."
+    source_disabled: "De bron „{title}“ is op deze bot uitgeschakeld door de beheerder."
+    vault_full: "De schijfkluis van de server is vol. Probeer het later opnieuw."
+    blocked_type: "Het bestand „{file}“ is een uitvoerbaar type of script - zulke lever ik niet."
+    too_large: "Het bestand is te groot voor dit platform: {size} (limiet {cap})."
+    too_large_link:
+      - "Het bestand is te groot om hier te sturen: {size} (limiet {cap})."
+      - ""
+      - "Directe link: {url}"
+    cat:
+      unsupported: "Deze link wordt niet ondersteund: geen enkele extractor kon hem pakken."
+      login_required: "Deze inhoud vereist een account op de site. Ik bewaar alleen openbare pagina's."
+      age_restricted: "Inhoud met leeftijdsbeperking: de site toont hem zonder login niet."
+      private: "Deze inhoud is privé of door de auteur verwijderd."
+      not_found: "Pagina of media niet gevonden (404). Controleer de link."
+      unavailable: "De media is niet beschikbaar: verwijderd of verborgen door de auteur."
+      geo_blocked: "Deze inhoud is geblokkeerd in de regio van de server."
+      live_stream: "Dit is een livestream. Stuur de link opnieuw wanneer de uitzending eindigt."
+      rate_limited: "De bron beperkt de bot nu. Probeer het over een paar minuten."
+      too_large: "Het bestand gaat over de limiet en er is geen kleiner formaat."
+      timeout: "De download overschreed de tijdslimiet. Enorme of trage bron? Probeer opnieuw, misschien met lagere kwaliteit."
+      tool_missing: "Het extractiegereedschap ontbreekt op de server. Dit is voor de beheerder."
+      network: "Netwerkfout bij het praten met de bron. Probeer opnieuw."
+      cancelled: "Download geannuleerd."
+      unknown: "Er ging iets mis tijdens de download. Probeer opnieuw en zeg het de beheerder als het zich herhaalt."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} van {total}"
+    truncated: "Alleen de eerste {count} items, de rest staat op de pagina"
+
+button:
+  back: "Terug"
+  settings: "Instellingen"
+  sources: "Bronnen"
+  language: "Taal"
+  about: "Over de bot"
+  help: "Hulp"
+  stats: "Mijn statistieken"
+  quality_menu: "Kwaliteit"
+  stop: "Stop"
+  search: "Zoeken"
+  original: "Origineel"
+  github: "GitHub"
+  reload: "Teksten herladen"
+  open_link: "Link openen"
+  quality:
+    best: "Beste"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Audio (mp3)"
+    current_suffix: " (huidig)"
+
+command:
+  desc:
+    start: "hoofdmenu"
+    help: "wat ik kan"
+    save: "downloaden via link (of stuur gewoon de link)"
+    stop: "actieve downloads annuleren"
+    quality: "videokwaliteit / alleen audio"
+    settings: "jouw instellingen"
+    sources: "lijst met ondersteunde sites"
+    stats: "jouw gebruik en recente taken"
+    lang: "taal"
+    about: "over de bot"
+    admin: "status van de motor (eigenaar)"
+    reload: "teksten herladen (eigenaar)"

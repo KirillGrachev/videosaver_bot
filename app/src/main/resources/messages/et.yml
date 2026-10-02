@@ -1,0 +1,143 @@
+# Estonian messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Saada mulle link ja ma toon faili.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo ja üle saja muu saidi: videod, shortid, fotod, albumid, GIF-id, muusika."
+    - ""
+    - "Lihtsalt kleebi link chati. Käsku pole vaja."
+  help:
+    command: "*{command}* {description}"
+    tip: "Ja kõige lihtsam: saada mulle lihtsalt link."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "Mitmeplatvormiline meedia allalaadija: {sources} allikat katalogis pluss varuks ükskõik milline avalik leht."
+    - ""
+    - "Versioon: {version}"
+    - "Austa autoriõigusi ja saitide reegleid: salvesta ainult seda, mida tohid salvestada."
+  settings:
+    - "*Seaded*"
+    - ""
+    - "Kvaliteet: {quality}"
+    - "Keel: {language}"
+  quality:
+    title: "Vali allalaadimiste kvaliteet. See kehtib kõikidele uutele päringutele."
+    set: "Kvaliteet: *{quality}*. Uued allalaadimised kasutavad seda."
+  lang:
+    choose: "Vali oma keel:"
+    set: "Keel vahetatud."
+  sources:
+    title: "*Toetatud allikad: {count}*"
+    legend: "[ok] töötab · [limited] osaliselt (ainult avalikud lingid, läheb tihti katki) · [login] vajab kontot. Igat muud avalikku lehte proovin üldise ekstraktoriga."
+    search:
+      prompt: "Kirjuta osa saidi nimest, näiteks `tiktok` või `pixiv`. Tühi sõnum tagastab loendi."
+      empty: "Päringule „{query}“ ei leitud midagi. Üldine ekstraktor võib saidiga siiski hakkama saada: saada lihtsalt link."
+      found: "Leitud: {count}. Lehtede vahel liigud nooltega või täpsusta päringut."
+  stats:
+    - "*Sinu kasutus*"
+    - ""
+    - "Viimane tund: {jobs_hour} allalaadimist"
+    - "Täna: {jobs_today} allalaadimist, {bytes_today}"
+  stats.recent: "Hiljutised:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Mootor: {tools}"
+    - "Tööd: {active} aktiivset, {queued} järjekorras"
+    - "Laegas: {vault}"
+    - "Kasutajad: {users}"
+  reload:
+    done: "Tekstid ja allikate kataloog on uuesti laaditud ({sources} allikat)."
+  flood: "Liiga palju sõnumeid järjest. Anna mulle paar sekundit."
+  warning:
+    audio_raw: "Märkus: serveris puudub ffmpeg, seega anti heli üle algse konteinerina, mitte mp3-na."
+  pointer:
+    dm: "Avatud sinu privaatvestluses botiga."
+  hint:
+    no_url: "Ma ei leidnud sellest sõnumist linki. Kleebi URL nagu `https://youtube.com/watch?v=…` ja ma toon meedia."
+  prompt:
+    url: "Saada link, mille soovid salvestada. Tühista käsuga /stop."
+  cancel:
+    none: "Sul pole aktiivseid allalaadimisi, mida tühistada."
+    done: "Tühistatud allalaadimised: {count}."
+  status:
+    queued: "Salvestan allikast *{host}*…"
+    files: "Seni tarnitud failid: {count}"
+    progress: "Laadin alla… {percent}%"
+    done: "Valmis {seconds} s · failid: {count} · {size}"
+  error:
+    not_owner: "See käsk on boti omanikule."
+    unknown_command: "Tundmatu käsk. /help saadab loendi."
+    invalid_url: "See ei näe välja nagu korrektne http(s) link."
+    queue_full: "Allalaadimiste järjekord on praegu täis. Proovi minuti pärast."
+    concurrent: "Sul on juba {count} allalaadimist pooleli. Oota need ära või vajuta Stop."
+    quota_hour: "Tunnilimiit on saavutatud ({limit} allalaadimist). Proovi hiljem."
+    quota_day: "Päevalimiit on saavutatud ({limit} allalaadimist). Homme näeme."
+    quota_bytes: "Päevane liikluslimiit on saavutatud ({limit}). Homme näeme."
+    source_disabled: "Allikas „{title}“ on sellel botil administraatori poolt välja lülitatud."
+    vault_full: "Serveri kettalaegas on täis. Proovi hiljem."
+    blocked_type: "Fail „{file}“ on käivitatav tüüp või skript - selliseid ma ei tarni."
+    too_large: "Fail on selle platvormi jaoks liiga suur: {size} (limiit {cap})."
+    too_large_link:
+      - "Fail on liiga suur, et siia saata: {size} (limiit {cap})."
+      - ""
+      - "Otselink: {url}"
+    cat:
+      unsupported: "See link pole toetatud: ükski ekstraktor ei saanud seda kätte."
+      login_required: "See sisu nõuab kontot saidil. Salvestan ainult avalikke lehti."
+      age_restricted: "Vanusepiiranguga sisu: sait ei näita seda ilma sisselogimiseta."
+      private: "See sisu on privaatne või autori kustutatud."
+      not_found: "Lehte või meediat ei leitud (404). Kontrolli linki."
+      unavailable: "Meedia pole saadaval: autor on selle kustutanud või peitnud."
+      geo_blocked: "See sisu on serveri regioonis blokeeritud."
+      live_stream: "See on otseülekanne. Saada link uuesti, kui saade lõpeb."
+      rate_limited: "Allikas piirab botti praegu. Proovi mõne minuti pärast."
+      too_large: "Fail ületab limiidi ja väiksemat vormingut pole saadaval."
+      timeout: "Allalaadimine ületas aja limiidi. Tohutu või aeglane allikas? Proovi uuesti, võib-olla madalama kvaliteediga."
+      tool_missing: "Ekstraktori tööriist puudub serverist. See on administraatori jaoks."
+      network: "Võrguviga allikaga suhtlemisel. Proovi uuesti."
+      cancelled: "Allalaadimine tühistatud."
+      unknown: "Midagi läks allalaadimisel valesti. Proovi uuesti ja kordumisel räägi administraatorile."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} / {total}"
+    truncated: "Ainult esimesed {count} üksust, ülejäänu on lehel"
+
+button:
+  back: "Tagasi"
+  settings: "Seaded"
+  sources: "Allikad"
+  language: "Keel"
+  about: "Botist"
+  help: "Abi"
+  stats: "Minu statistika"
+  quality_menu: "Kvaliteet"
+  stop: "Stop"
+  search: "Otsing"
+  original: "Originaal"
+  github: "GitHub"
+  reload: "Laadi tekstid uuesti"
+  open_link: "Ava link"
+  quality:
+    best: "Parim"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Heli (mp3)"
+    current_suffix: " (praegune)"
+
+command:
+  desc:
+    start: "peamenüü"
+    help: "mida ma oskan"
+    save: "laadi lingi järgi (või saada lihtsalt link)"
+    stop: "tühista aktiivsed allalaadimised"
+    quality: "video kvaliteet / ainult heli"
+    settings: "sinu seaded"
+    sources: "toetatud saitide loend"
+    stats: "sinu kasutus ja hiljutised tööd"
+    lang: "keel"
+    about: "botist"
+    admin: "mootori olek (omanik)"
+    reload: "laadi tekstid uuesti (omanik)"

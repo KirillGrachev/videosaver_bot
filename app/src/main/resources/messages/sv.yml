@@ -1,0 +1,143 @@
+# Swedish messages messages. Flat dotted keys or nested maps - nesting expands into dotted keys.
+message:
+  start:
+    - "*Skicka mig en länk så hämtar jag filen.*"
+    - ""
+    - "YouTube, TikTok, Instagram, Reddit, Pixiv, Vimeo och över hundra andra sajter: video, shorts, foton, album, GIF:ar, musik."
+    - ""
+    - "Klistra bara in länken i chatten. Inget kommando behövs."
+  help:
+    command: "*{command}* {description}"
+    tip: "Och det enklaste av allt: skicka mig en länk."
+  about:
+    - "*Saver Bot*"
+    - ""
+    - "En flerplattformssnedladdare för media: {sources} källor i katalogen plus vilken offentlig sida som helst som reserv."
+    - ""
+    - "Version: {version}"
+    - "Respektera upphovsrätten och sajternas regler: spara bara det du får spara."
+  settings:
+    - "*Inställningar*"
+    - ""
+    - "Kvalitet: {quality}"
+    - "Språk: {language}"
+  quality:
+    title: "Välj kvalitet för nedladdningar. Den gäller alla nya förfrågningar."
+    set: "Kvalitet: *{quality}*. Nya nedladdningar använder den."
+  lang:
+    choose: "Välj ditt språk:"
+    set: "Språk bytt."
+  sources:
+    title: "*Stödda källor: {count}*"
+    legend: "[ok] fungerar · [limited] delvis (endast offentliga länkar, går ofta sönder) · [login] konto krävs. Varje annan offentlig sida försöks med den generiska extractorn."
+    search:
+      prompt: "Skriv en del av sajtens namn, till exempel `tiktok` eller `pixiv`. Ett tomt meddelande ger listan."
+      empty: "Inget hittades för „{query}“. Den generiska extractorn kan ändå klara sajten: skicka bara länken."
+      found: "Hittade: {count}. Bläddra med pilarna eller förfina sökningen."
+  stats:
+    - "*Din användning*"
+    - ""
+    - "Senaste timmen: {jobs_hour} nedladdningar"
+    - "I dag: {jobs_today} nedladdningar, {bytes_today}"
+  stats.recent: "Senaste:"
+  admin:
+    - "*Admin*"
+    - ""
+    - "Motor: {tools}"
+    - "Jobb: {active} aktiva, {queued} i kö"
+    - "Valv: {vault}"
+    - "Användare: {users}"
+  reload:
+    done: "Texter och källkatalog omladdade ({sources} källor)."
+  flood: "För många meddelanden i rad. Ge mig några sekunder."
+  warning:
+    audio_raw: "Obs: ffmpeg är inte installerat på servern, så ljudet levererades i sin originalcontainer i stället för mp3."
+  pointer:
+    dm: "Öppnat i din privatkonversation med botten."
+  hint:
+    no_url: "Jag hittade ingen länk i det meddelandet. Klistra in en URL som `https://youtube.com/watch?v=…` så hämtar jag mediet."
+  prompt:
+    url: "Skicka mig länken du vill spara. Avbryt med /stop."
+  cancel:
+    none: "Du har inga aktiva nedladdningar att avbryta."
+    done: "Avbrutna nedladdningar: {count}."
+  status:
+    queued: "Sparar från *{host}*…"
+    files: "Filer levererade hittills: {count}"
+    progress: "Laddar ner… {percent}%"
+    done: "Klart på {seconds} s · filer: {count} · {size}"
+  error:
+    not_owner: "Detta kommando är för bottens ägare."
+    unknown_command: "Okänt kommando. /help ger listan."
+    invalid_url: "Det ser inte ut som en giltig http(s)-länk."
+    queue_full: "Nedladdningskön är full just nu. Försök om en minut."
+    concurrent: "Du har redan {count} nedladdningar i gång. Vänta på dem eller tryck Stop."
+    quota_hour: "Timgränsen nådd ({limit} nedladdningar). Försök senare."
+    quota_day: "Dagsgränsen nådd ({limit} nedladdningar). Vi ses i morgon."
+    quota_bytes: "Dagsgränsen för trafik nådd ({limit}). Vi ses i morgon."
+    source_disabled: "Källan „{title}“ är avstängd på denna bot av administratören."
+    vault_full: "Serverns diskvalv är fullt. Försök senare."
+    blocked_type: "Filen „{file}“ är en körbar typ eller ett skript - sådant levererar jag inte."
+    too_large: "Filen är för stor för denna plattform: {size} (gräns {cap})."
+    too_large_link:
+      - "Filen är för stor för att skickas här: {size} (gräns {cap})."
+      - ""
+      - "Direkt länk: {url}"
+    cat:
+      unsupported: "Denna länk stöds inte: ingen extractor kunde ta den."
+      login_required: "Detta innehåll kräver ett konto på sajten. Jag sparar bara offentliga sidor."
+      age_restricted: "Innehåll med åldersgräns: sajten visar det utan inloggning."
+      private: "Detta innehåll är privat eller borttaget av författaren."
+      not_found: "Sidan eller mediet hittades inte (404). Kontrollera länken."
+      unavailable: "Mediet är inte tillgängligt: det har tagits bort eller döljts av upphovspersonen."
+      geo_blocked: "Detta innehåll är blockerat i serverns region."
+      live_stream: "Detta är en livestream. Skicka länken igen när sändningen slutar."
+      rate_limited: "Källan begränsar botten just nu. Försök om några minuter."
+      too_large: "Filen överskrider gränsen och inget mindre format finns."
+      timeout: "Nedladdningen överskred tidsgränsen. Enorm eller trög källa? Försök igen, kanske med lägre kvalitet."
+      tool_missing: "Extraktionsverktyget saknas på servern. Den här är för administratören."
+      network: "Nätverksfel vid talan med källan. Försök igen."
+      cancelled: "Nedladdning avbruten."
+      unknown: "Något gick fel under nedladdningen. Försök igen och säg till administratören om det upprepas."
+  caption:
+    meta: "{source} · {size} · {duration}"
+    index: "{index} av {total}"
+    truncated: "Endast de första {count} posterna, resten finns på sidan"
+
+button:
+  back: "Tillbaka"
+  settings: "Inställningar"
+  sources: "Källor"
+  language: "Språk"
+  about: "Om botten"
+  help: "Hjälp"
+  stats: "Min statistik"
+  quality_menu: "Kvalitet"
+  stop: "Stop"
+  search: "Sök"
+  original: "Original"
+  github: "GitHub"
+  reload: "Ladda om texter"
+  open_link: "Öppna länk"
+  quality:
+    best: "Bästa"
+    "1080": "1080p"
+    "720": "720p"
+    "480": "480p"
+    audio: "Ljud (mp3)"
+    current_suffix: " (aktuell)"
+
+command:
+  desc:
+    start: "huvudmeny"
+    help: "vad jag kan"
+    save: "ladda ner via länk (eller skicka bara länken)"
+    stop: "avbryt aktiva nedladdningar"
+    quality: "videokvalitet / endast ljud"
+    settings: "dina inställningar"
+    sources: "lista över stödda sajter"
+    stats: "din användning och senaste jobb"
+    lang: "språk"
+    about: "om botten"
+    admin: "motorns tillstånd (ägare)"
+    reload: "ladda om texter (ägare)"
