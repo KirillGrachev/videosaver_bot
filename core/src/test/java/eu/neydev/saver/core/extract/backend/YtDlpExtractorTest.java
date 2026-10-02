@@ -245,6 +245,26 @@ class YtDlpExtractorTest {
     }
 
     @Test
+    void downloadCommandSpellsNegatedFlagsTheWayYtDlpAccepts(@TempDir Path dir) throws IOException {
+
+        YtDlpExtractor extractor = extractor(fakeYtDlp(dir, "single"));
+        Path workDir = Files.createDirectories(dir.resolve("job"));
+
+        extractor.extract(request(workDir, ProgressListener.NOOP));
+
+        // Token-exact: yt-dlp aborts the whole download at argument parsing on the
+        // compressed spelling (--no-write-infojson), which is how every job died once
+        // the probe phase started succeeding. The fake dumps one space-joined line
+        // per invocation, so split it back into tokens.
+        List<String> tokens = List.of(Files.readString(workDir.resolve(".cmd-args.txt"))
+                .trim().split("\\s+"));
+
+        assertThat(tokens).contains("--no-write-info-json");
+        assertThat(tokens).doesNotContain("--no-write-infojson");
+
+    }
+
+    @Test
     void cookiesFollowThePerRequestAllowFlag(@TempDir Path dir) throws IOException {
 
         Toolchain tools = Toolchain.probe(fakeYtDlp(dir, "single").toString(),

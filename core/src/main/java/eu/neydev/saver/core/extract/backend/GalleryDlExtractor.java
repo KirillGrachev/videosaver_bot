@@ -84,7 +84,9 @@ public final class GalleryDlExtractor implements Extractor {
                 "--directory", request.workDir().toString(),
                 "--range", "1-" + (request.maxItems() + 1),
                 "--no-mtime",
-                "--filename-format", "{num|0:>3.{length}}{title[:%d]}.{extension}"
+                // gallery-dl spells the template flag -f/--filename; the historical
+                // --filename-format is not an option and dies at argument parsing.
+                "--filename", "{num|0:>3.{length}}{title[:%d]}.{extension}"
                         .formatted(NAME_LENGTH_LIMIT),
                 request.url().toString()));
 

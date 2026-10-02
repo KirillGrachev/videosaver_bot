@@ -456,7 +456,7 @@ public final class YtDlpExtractor implements Extractor {
         command.add("-o");
         command.add("%(id).80s.%(ext)s");
         command.add("--restrict-filenames");
-        command.add("--no-write-infojson");
+        command.add("--no-write-info-json");
         command.add("--no-write-comments");
 
         if (playlist) {

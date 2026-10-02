@@ -51,6 +51,11 @@ class GalleryDlExtractorTest {
                   if [ "$prev" = "--directory" ]; then DEST="$a"; fi
                   prev="$a"
                 done
+                # Arg dump for assertions. It lives NEXT TO the work dir, not inside
+                # it: the extractor's overflow logic and the file-count assertions
+                # walk the work dir and must never see this bookkeeping file.
+                ARGS="$(dirname "$DEST")/.cmd-args.txt"
+                for a in "$@"; do printf '%s\\n' "$a" >> "$ARGS"; done
                 """);
 
         if ("fail-auth".equals(mode)) {
@@ -93,6 +98,27 @@ class GalleryDlExtractorTest {
 
         return new ExtractionRequest(SOURCE, URI.create("https://fakeart.example/gallery/1"),
                 QualityPreset.BEST, workDir, 100_000_000L, maxItems, ProgressListener.NOOP);
+
+    }
+
+    @Test
+    void commandSpellsTheFilenameTemplateFlagTheWayGalleryDlAccepts(@TempDir Path dir)
+            throws IOException {
+
+        GalleryDlExtractor extractor = extractor(fakeGalleryDl(dir, 1, "ok"));
+        Path workDir = Files.createDirectories(dir.resolve("job"));
+
+        extractor.extract(request(workDir, 5));
+
+        // Token-exact on purpose: the rejected spelling (--filename-format, not an
+        // option in gallery-dl 1.32) STARTS WITH the good one, so a substring check
+        // would happily pass on the flag that kills every job at argument parsing.
+        // The fake dumps its args next to the work dir (the work dir itself is
+        // file-counted by the overflow assertions).
+        List<String> tokens = Files.readAllLines(dir.resolve(".cmd-args.txt"));
+
+        assertThat(tokens).contains("--filename");
+        assertThat(tokens).doesNotContain("--filename-format");
 
     }
 
