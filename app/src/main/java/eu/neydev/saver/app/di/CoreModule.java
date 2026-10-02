@@ -127,8 +127,6 @@ public final class CoreModule extends AbstractModule {
         return new LocaleResolver(config.locale().supported(), config.locale().defaultLanguage());
     }
 
-    // ---- extraction engine -------------------------------------------------------
-
     @Provides
     @Singleton
     Toolchain toolchain(AppConfig config, MetricsRegistry metrics) {
@@ -320,8 +318,6 @@ public final class CoreModule extends AbstractModule {
         return new UrlIntake();
     }
 
-    // ---- downloads -----------------------------------------------------------------
-
     @Provides
     @Singleton
     FileVault fileVault(AppConfig config, MetricsRegistry metrics) {
@@ -360,8 +356,6 @@ public final class CoreModule extends AbstractModule {
                 config.pipeline().outboundPerChatPerMinute(),
                 metrics);
     }
-
-    // ---- dialog layer ----------------------------------------------------------------
 
     @Provides
     @Singleton

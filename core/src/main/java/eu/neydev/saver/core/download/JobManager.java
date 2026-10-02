@@ -200,8 +200,6 @@ public final class JobManager implements AutoCloseable {
 
     }
 
-    // ---- lifecycle ----------------------------------------------------------------
-
     public void start() {
 
         if (!running.compareAndSet(false, true)) {
@@ -335,8 +333,6 @@ public final class JobManager implements AutoCloseable {
     public int queuedCount() {
         return queue.size();
     }
-
-    // ---- submit ---------------------------------------------------------------------
 
     public SubmitOutcome submit(PlatformUser user, String chatId, String rawUrl,
                                 QualityPreset quality, Locale locale) {
@@ -572,8 +568,10 @@ public final class JobManager implements AutoCloseable {
 
     }
 
-    // ---- cache (C41: dedupe within the vault grace window) ---------------------------
-
+    /**
+     * Cache path (C41): an identical request inside the vault grace window is served
+     * from the stored result instead of being downloaded again.
+     */
     private void serveFromCache(DownloadJob job, Source source, ResultCache.Entry cached) {
 
         metrics.increment("downloads_total", "result", "cache_hit", "source", source.id());
@@ -600,8 +598,6 @@ public final class JobManager implements AutoCloseable {
                 job.locale(), delivered, job.bytesDownloaded(), Duration.ofSeconds(0), null));
 
     }
-
-    // ---- worker ---------------------------------------------------------------------
 
     private void workerLoop() {
 

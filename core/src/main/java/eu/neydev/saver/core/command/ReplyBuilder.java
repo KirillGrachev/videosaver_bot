@@ -65,8 +65,6 @@ public final class ReplyBuilder {
         this.clock = clock;
     }
 
-    // ---- helpers --------------------------------------------------------------------
-
     public Locale localeOf(UserSettings settings) {
         return Locale.forLanguageTag(settings.locale());
     }
@@ -95,8 +93,6 @@ public final class ReplyBuilder {
                 interaction.chatId(), text, keyboard);
 
     }
-
-    // ---- menus ------------------------------------------------------------------------
 
     public OutboundMessage start(Interaction interaction) {
 
@@ -382,8 +378,6 @@ public final class ReplyBuilder {
         return spec == CommandCatalog.ADMIN || spec == CommandCatalog.RELOAD;
     }
 
-    // ---- conversation and hints ---------------------------------------------------------
-
     public OutboundMessage unknownCommand(Interaction interaction) {
 
         return reply(interaction, text("message.error.unknown_command", interaction.locale()),
@@ -419,8 +413,6 @@ public final class ReplyBuilder {
                 InlineKeyboard.empty());
 
     }
-
-    // ---- formatting helpers -------------------------------------------------------------
 
     /**
      * Plain-text status tokens, deliberately not symbols: the source list and the job

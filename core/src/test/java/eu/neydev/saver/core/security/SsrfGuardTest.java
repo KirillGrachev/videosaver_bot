@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -206,6 +207,55 @@ class SsrfGuardTest {
 
         assertThatCode(() -> permissive.check(URI.create("http://127.0.0.1:8080/x")))
                 .doesNotThrowAnyException();
+
+    }
+
+    @Test
+    void resolveAllowedHandsBackTheCheckedAddressForPinning() {
+
+        // The proxy pins THIS answer into the connection; a second lookup (which a
+        // rebinding DNS could answer privately) never happens.
+        InetAddress address = strict().resolveAllowed("stable.example", 443);
+
+        assertThat(address.getAddress())
+                .containsExactly(93, (byte) 184, (byte) 216, 34);
+
+    }
+
+    @Test
+    void resolveAllowedRefusesPrivateTargetsLikeCheckHostPort() {
+
+        SsrfGuard guard = guardWith(Set.of("evil.example"), new byte[]{127, 0, 0, 1});
+
+        assertThatThrownBy(() -> guard.resolveAllowed("evil.example", 443))
+                .isInstanceOf(SsrfGuard.SsrfException.class)
+                .hasMessageContaining("non-public");
+
+    }
+
+    @Test
+    void resolveAllowedValidatesThePortBeforeResolving() {
+
+        assertThatThrownBy(() -> strict().resolveAllowed("ok.example", 0))
+                .isInstanceOf(SsrfGuard.SsrfException.class)
+                .hasMessageContaining("Port out of range");
+
+        assertThatThrownBy(() -> strict().resolveAllowed("  ", 443))
+                .isInstanceOf(SsrfGuard.SsrfException.class)
+                .hasMessageContaining("Empty host");
+
+    }
+
+    @Test
+    void resolveAllowedWorksForPrivateTargetsWhenTheOperatorAllowsThem() throws Exception {
+
+        // allowPrivate skips the POLICY check but still resolves: the address is the
+        // return value, and an unresolvable host fails here instead of at connect.
+        InetAddress loopback = InetAddress.getByAddress(new byte[]{127, 0, 0, 1});
+
+        SsrfGuard permissive = new SsrfGuard(true, host -> new InetAddress[]{loopback});
+
+        assertThat(permissive.resolveAllowed("loopback.example", 8080)).isEqualTo(loopback);
 
     }
 

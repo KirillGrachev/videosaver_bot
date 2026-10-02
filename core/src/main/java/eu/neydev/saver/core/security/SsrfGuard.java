@@ -20,11 +20,12 @@ import java.util.function.Function;
  * generic HTTP extractor also disables auto-redirects and re-checks EVERY hop, because
  * a public URL that 302s into the LAN defeats a check that only saw the first hop.
  *
- * <p>Known residual risk, documented not hidden: DNS can answer differently between
- * the check and the actual connect (rebinding). Pinning the resolved address into the
- * connection is the full fix; until then the guard keeps the honest common cases out
- * and self-hosted operators who NEED private targets can flip
- * {@code downloader.allow-private-networks}.
+ * <p>Rebinding - DNS answering differently between the check and the actual connect -
+ * is closed where WE own the socket: {@link #resolveAllowed(String, int)} hands the
+ * caller the checked address to pin into the connection (the filter proxy does exactly
+ * that). Callers behind {@code java.net.http} cannot pin, so entry points there use the
+ * double-resolve {@link #checkStable(URI)} as the next best thing. Self-hosted operators
+ * who NEED private targets can flip {@code downloader.allow-private-networks}.
  */
 public final class SsrfGuard {
 
@@ -71,6 +72,20 @@ public final class SsrfGuard {
      * every resolved address must be public.
      */
     public void checkHostPort(String host, int port) {
+        resolveAllowed(host, port);
+    }
+
+    /**
+     * Validates the target like {@link #checkHostPort(String, int)} AND returns the
+     * first address of the DNS answer that was just validated, so the caller can pin
+     * the connection to it ({@code new InetSocketAddress(address, port)} does not
+     * re-resolve). Check and connect then use the SAME answer - the rebinding window
+     * between two lookups is gone.
+     *
+     * <p>Resolution happens even with {@code allow-private-networks} on: the address is
+     * the return value, not only a policy input.
+     */
+    public InetAddress resolveAllowed(String host, int port) {
 
         if (host == null || host.isBlank()) {
             throw new SsrfException("Empty host");
@@ -80,17 +95,26 @@ public final class SsrfGuard {
             throw new SsrfException("Port out of range: " + port);
         }
 
-        if (allowPrivate) {
-            return;
+        InetAddress[] addresses = resolver.apply(host);
+
+        if (addresses == null || addresses.length == 0) {
+            throw new SsrfException("Host does not resolve: " + host);
         }
 
-        for (InetAddress address : resolver.apply(host)) {
+        if (!allowPrivate) {
 
-            if (!isPublic(address)) {
-                throw new SsrfException("Host resolves to a non-public address: " + host);
+            for (InetAddress address : addresses) {
+
+                if (!isPublic(address)) {
+                    log.debug("SSRF guard blocked {}:{} -> {}", host, port, address.getHostAddress());
+                    throw new SsrfException("Host resolves to a non-public address: " + host);
+                }
+
             }
 
         }
+
+        return addresses[0];
 
     }
 

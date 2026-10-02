@@ -159,8 +159,6 @@ class ToolProvisionerTest {
         return sha256(body) + "  " + asset + "\n";
     }
 
-    // ---- platform matrix and asset naming ------------------------------------------------
-
     @Test
     void platformDetectionCoversTheSupportedMatrix() {
 
@@ -199,8 +197,6 @@ class ToolProvisionerTest {
 
     }
 
-    // ---- parsers ---------------------------------------------------------------------------
-
     @Test
     void sha256SumsParserTakesHashNamePairsAndIgnoresJunk() {
 
@@ -235,8 +231,6 @@ class ToolProvisionerTest {
         assertThat(ToolProvisioner.parseReleaseAssets("not json")).isEmpty();
 
     }
-
-    // ---- installs ---------------------------------------------------------------------------
 
     @Test
     void ytDlpIsDownloadedVerifiedAndMadeExecutable() throws IOException {
@@ -435,8 +429,6 @@ class ToolProvisionerTest {
 
     }
 
-    // ---- toolchain hand-off ------------------------------------------------------------------
-
     @Test
     void redirectFlipsALandedToolToPresentWithoutARestart() throws IOException {
 
@@ -464,8 +456,6 @@ class ToolProvisionerTest {
         assertThat(chain.ytDlp().version()).isEqualTo("2026.99.1");
 
     }
-
-    // ---- archive builders ---------------------------------------------------------------------
 
     private static byte[] tarXz(Map<String, byte[]> entries) throws IOException {
 

@@ -129,8 +129,6 @@ public final class HealthServer implements AutoCloseable {
 
     }
 
-    // ---- endpoints ------------------------------------------------------------------
-
     private void handleHealthz(HttpExchange exchange) throws IOException {
 
         if (!metricsAuthorized(exchange)) {
@@ -269,8 +267,6 @@ public final class HealthServer implements AutoCloseable {
         respond(exchange, response.status(), response.contentType(), response.body());
 
     }
-
-    // ---- plumbing -------------------------------------------------------------------
 
     private static void respond(HttpExchange exchange, int status, String contentType,
                                 String body) throws IOException {

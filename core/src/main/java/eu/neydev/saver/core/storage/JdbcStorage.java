@@ -274,8 +274,6 @@ public final class JdbcStorage implements AutoCloseable {
         dataSource.close();
     }
 
-    // ---- repositories -----------------------------------------------------------
-
     private static final class JdbcUserRepository implements UserRepository {
 
         private static final String COLUMNS =

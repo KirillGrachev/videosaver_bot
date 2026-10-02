@@ -310,8 +310,6 @@ public final class YtDlpExtractor implements Extractor {
 
     }
 
-    // ---- phase 1: cheap flat probe -----------------------------------------------
-
     private List<Meta> probe(String url, ExtractionRequest request) throws ExtractionException {
         // (metas is reassigned when the JSON fallback resolves an unknown live-state)
 
@@ -444,8 +442,6 @@ public final class YtDlpExtractor implements Extractor {
         return value > 0 ? value : null;
 
     }
-
-    // ---- phase 2: download ----------------------------------------------------------
 
     private List<String> downloadCommand(ExtractionRequest request, boolean playlist) {
 
@@ -656,8 +652,6 @@ public final class YtDlpExtractor implements Extractor {
 
     }
 
-    // ---- result ---------------------------------------------------------------------
-
     private List<ExtractedItem> scanWorkDir(Path workDir, List<Meta> metas,
                                             ExtractionRequest request) throws ExtractionException {
 
@@ -732,8 +726,6 @@ public final class YtDlpExtractor implements Extractor {
         return dot > 0 ? fileName.substring(0, dot) : fileName;
 
     }
-
-    // ---- error classification ---------------------------------------------------------
 
     /**
      * Ordered pattern table over the tool output; UNKNOWN classifications are counted

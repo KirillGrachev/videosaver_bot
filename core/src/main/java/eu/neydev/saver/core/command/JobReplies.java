@@ -52,8 +52,6 @@ public final class JobReplies {
 
     }
 
-    // ---- lifecycle ------------------------------------------------------------------
-
     public OutboundMessage.Send jobQueued(Platform platform, String chatId, Locale locale,
                                           String host) {
 
@@ -224,8 +222,6 @@ public final class JobReplies {
     public InlineKeyboard sourceLink(Locale locale, String url) {
         return menus.sourceLink(locale, url);
     }
-
-    // ---- formatting helpers -----------------------------------------------------------
 
     static String formatDuration(int seconds) {
 

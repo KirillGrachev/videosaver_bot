@@ -28,8 +28,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *   <li>HTTP: the absolute-form request line gives the target host - checked, then the
  *       connection is relayed byte-for-byte (transparent, keep-alive safe: a reused
  *       connection can only reach the endpoint it was checked for);</li>
- *   <li>CONNECT (TLS): host:port is checked BEFORE the tunnel opens; the bytes inside
- *       are opaque and stay opaque - no MITM, no certificates, no keys.</li>
+ *   <li>CONNECT (TLS): the ENTIRE request head is consumed first (leaking it into the
+ *       tunnel corrupts the origin's TLS handshake), host:port is checked BEFORE the
+ *       tunnel opens, and the connection is pinned to the checked DNS answer - which
+ *       is what actually closes the rebinding window. The bytes inside are opaque and
+ *       stay opaque: no MITM, no certificates, no keys.</li>
  * </ul>
  *
  * <p>Deliberately minimal: no caching, no rewriting, one check per connection. When the
@@ -41,17 +44,31 @@ public final class SsrfFilterProxy implements AutoCloseable {
     private static final Logger log = LoggerFactory.getLogger(SsrfFilterProxy.class);
 
     private static final int RELAY_BUFFER = 16 * 1024;
+    private static final int MAX_REQUEST_HEAD_BYTES = 64 * 1024;
+    private static final int DEFAULT_HEADER_TIMEOUT_MILLIS = 30_000;
+    private static final int CONNECT_TIMEOUT_MILLIS = 15_000;
 
     private final SsrfGuard guard;
     private final MetricsRegistry metrics;
+    private final int headerTimeoutMillis;
     private final AtomicBoolean running = new AtomicBoolean();
 
     private ServerSocket serverSocket;
     private Thread acceptThread;
 
     public SsrfFilterProxy(SsrfGuard guard, MetricsRegistry metrics) {
+        this(guard, metrics, DEFAULT_HEADER_TIMEOUT_MILLIS);
+    }
+
+    /**
+     * Test-visible seam: a tiny header timeout lets a test prove the deadline DISAPPEARS
+     * once the tunnel stands - with the production 30s value that test would take half
+     * a minute per run.
+     */
+    SsrfFilterProxy(SsrfGuard guard, MetricsRegistry metrics, int headerTimeoutMillis) {
         this.guard = guard;
         this.metrics = metrics;
+        this.headerTimeoutMillis = headerTimeoutMillis;
     }
 
     /** Binds a loopback ephemeral port. */
@@ -91,11 +108,22 @@ public final class SsrfFilterProxy implements AutoCloseable {
 
             } catch (IOException e) {
 
-                if (running.get()) {
-                    log.debug("SSRF proxy accept failed: {}", e.getMessage());
+                if (!running.get() || serverSocket.isClosed()) {
+                    return;
                 }
 
-                return;
+                // A transient accept failure (fd exhaustion and friends) must not kill
+                // the proxy: the tools bake this address into their command lines at
+                // startup, so a dead accept loop fails EVERY later job. Pause briefly
+                // (a persistent error must not become a hot spin) and keep serving.
+                log.debug("SSRF proxy accept failed, retrying: {}", e.getMessage());
+
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
 
             }
 
@@ -107,7 +135,10 @@ public final class SsrfFilterProxy implements AutoCloseable {
 
         try (client) {
 
-            client.setSoTimeout(30_000);
+            client.setTcpNoDelay(true);
+            // The deadline covers the REQUEST HEAD only; the relay phase that follows
+            // is deliberately unlimited (see beginRelayPhase).
+            client.setSoTimeout(headerTimeoutMillis);
 
             String requestLine = readLine(client.getInputStream());
 
@@ -128,7 +159,7 @@ public final class SsrfFilterProxy implements AutoCloseable {
             if ("CONNECT".equals(method)) {
                 handleConnect(client, target);
             } else {
-                handleHttp(client, client.getInputStream(), requestLine, target);
+                handleHttp(client, requestLine, target);
             }
 
         } catch (IOException | RuntimeException e) {
@@ -137,27 +168,38 @@ public final class SsrfFilterProxy implements AutoCloseable {
 
     }
 
-    /** CONNECT host:port - check the host, answer 200, then tunnel opaque bytes. */
+    /** CONNECT host:port - consume the head, check the host, answer 200, tunnel opaque bytes. */
     private void handleConnect(Socket client, String authority) throws IOException {
 
-        int colon = authority.lastIndexOf(':');
-        String host = colon > 0 ? authority.substring(0, colon) : authority;
-        int port = colon > 0 ? parsePort(authority.substring(colon + 1)) : 443;
+        // The client's CONNECT head (Host:, User-Agent:, ... ending with the blank
+        // line) is still sitting in the socket buffer and MUST be consumed here. Relay
+        // is byte-transparent: started with the head unread, it copies those ASCII
+        // bytes to the origin's TLS port AHEAD of the ClientHello, the origin answers
+        // the garbage "record" with a fatal protocol_version alert, and the tool dies
+        // with [SSL: TLSV1_ALERT_PROTOCOL_VERSION] on every https job.
+        drainRequestHead(client.getInputStream());
 
-        if (!allow(host, port)) {
-            reject(client, "blocked by SSRF guard: " + host);
+        Authority target = Authority.parse(authority);
+
+        InetAddress address = allow(target.host(), target.port());
+
+        if (address == null) {
+            reject(client, "blocked by SSRF guard: " + target.host());
             return;
         }
 
         try (Socket upstream = new Socket()) {
 
-            upstream.connect(new InetSocketAddress(host, port), 15_000);
+            connectPinned(upstream, address, target.port());
 
             OutputStream toClient = client.getOutputStream();
             toClient.write("HTTP/1.1 200 Connection Established\r\n\r\n"
                     .getBytes(StandardCharsets.US_ASCII));
             toClient.flush();
 
+            metrics.increment("ssrf_proxy_tunnels_total");
+
+            beginRelayPhase(client, upstream);
             relay(client, upstream);
 
         }
@@ -165,8 +207,7 @@ public final class SsrfFilterProxy implements AutoCloseable {
     }
 
     /** Plain HTTP: the absolute URI in the request line carries the host. */
-    private void handleHttp(Socket client, InputStream in, String requestLine, String target)
-            throws IOException {
+    private void handleHttp(Socket client, String requestLine, String target) throws IOException {
 
         URI uri;
 
@@ -178,46 +219,147 @@ public final class SsrfFilterProxy implements AutoCloseable {
         }
 
         String host = uri.getHost();
+
+        if (host == null) {
+            // Origin-form ("GET /x HTTP/1.1") at a proxy: there is no endpoint to
+            // check or to connect to - refuse honestly instead of guessing.
+            reject(client, "proxy requires an absolute-form target");
+            return;
+        }
+
         int port = uri.getPort() > 0 ? uri.getPort() : 80;
 
-        if (host == null || !allow(host, port)) {
+        InetAddress address = allow(host, port);
+
+        if (address == null) {
             reject(client, "blocked by SSRF guard: " + host);
             return;
         }
 
         try (Socket upstream = new Socket()) {
 
-            upstream.connect(new InetSocketAddress(host, port), 15_000);
+            connectPinned(upstream, address, port);
 
-            // Forward the request verbatim (absolute-form is legal for proxies), then
-            // tunnel the rest of the stream in both directions - keep-alive included.
+            // Forward the request line verbatim (absolute-form is legal for proxies);
+            // the relay carries the rest of the head and the body byte-for-byte -
+            // keep-alive included.
             OutputStream out = upstream.getOutputStream();
             out.write((requestLine + "\r\n").getBytes(StandardCharsets.US_ASCII));
             out.flush();
 
+            metrics.increment("ssrf_proxy_requests_total");
+
+            beginRelayPhase(client, upstream);
             relay(client, upstream);
 
         }
 
     }
 
-    private boolean allow(String host, int port) {
+    /** Checks the target and returns the DNS answer to pin into the connection; null when blocked. */
+    private @Nullable InetAddress allow(String host, int port) {
 
         try {
 
-            guard.checkHostPort(host, port);
-            return true;
+            return guard.resolveAllowed(host, port);
 
         } catch (SsrfGuard.SsrfException e) {
 
             metrics.increment("ssrf_proxy_blocked_total");
             log.debug("SSRF proxy blocked {}:{} - {}", host, port, e.getMessage());
-            return false;
+            return null;
 
         } catch (RuntimeException e) {
 
             metrics.increment("ssrf_proxy_blocked_total");
-            return false;
+            return null;
+
+        }
+
+    }
+
+    /**
+     * Connects to the address the guard has JUST cleared, not to the hostname: letting
+     * the socket re-resolve would give DNS a second, unchecked vote (rebinding).
+     */
+    private static void connectPinned(Socket socket, InetAddress address, int port)
+            throws IOException {
+
+        socket.setTcpNoDelay(true);
+        socket.connect(new InetSocketAddress(address, port), CONNECT_TIMEOUT_MILLIS);
+
+    }
+
+    /**
+     * The head deadline has done its job; the relay phase gets NO read timeout. Pooled
+     * keep-alive connections and live-stream tunnels legitimately idle far longer than
+     * any header wait, and killing those mid-job is exactly the class of mystery
+     * download failure this proxy is supposed to prevent. OS-level TCP keepalive reaps
+     * truly dead peers eventually; both sides closing ends the relay immediately.
+     */
+    private static void beginRelayPhase(Socket client, Socket upstream) throws IOException {
+
+        client.setSoTimeout(0);
+        upstream.setSoTimeout(0);
+        client.setKeepAlive(true);
+        upstream.setKeepAlive(true);
+
+    }
+
+    /** Consumes the request head up to (and including) the blank line that ends it. */
+    private void drainRequestHead(InputStream in) throws IOException {
+
+        int total = 0;
+        String line;
+
+        do {
+
+            line = readLine(in);
+
+            if (line == null) {
+                // Client hung up mid-head; the connection is finished either way.
+                return;
+            }
+
+            total += line.length() + 2;
+
+            if (total > MAX_REQUEST_HEAD_BYTES) {
+                throw new IOException("request head too large");
+            }
+
+        } while (!line.isEmpty());
+
+    }
+
+    /** A parsed CONNECT target; IPv6 literals arrive bracketed ([::1]:443). */
+    private record Authority(String host, int port) {
+
+        static Authority parse(String authority) {
+
+            String value = authority.trim();
+
+            if (value.startsWith("[")) {
+
+                int close = value.indexOf(']');
+
+                if (close > 0) {
+
+                    String rest = value.substring(close + 1);
+                    int port = rest.startsWith(":") ? parsePort(rest.substring(1)) : 443;
+                    return new Authority(value.substring(1, close), port);
+
+                }
+
+            }
+
+            int colon = value.lastIndexOf(':');
+
+            if (colon > 0) {
+                return new Authority(value.substring(0, colon),
+                        parsePort(value.substring(colon + 1)));
+            }
+
+            return new Authority(value, 443);
 
         }
 

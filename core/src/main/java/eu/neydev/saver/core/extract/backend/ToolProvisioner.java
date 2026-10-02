@@ -258,8 +258,6 @@ public final class ToolProvisioner {
 
     }
 
-    // ---- per-tool installs ---------------------------------------------------------
-
     private void installSingle(String id, String target, Runnable afterInstall) {
 
         String asset = "ytdlp".equals(id) ? ytDlpAsset(platform) : galleryDlAsset(platform);
@@ -414,8 +412,6 @@ public final class ToolProvisioner {
         }
 
     }
-
-    // ---- HTTP, archives, checksums ---------------------------------------------------
 
     private void download(URI uri, Path destination) throws IOException {
 
@@ -605,8 +601,6 @@ public final class ToolProvisioner {
 
     }
 
-    // ---- release asset naming ----------------------------------------------------------
-
     static @Nullable String ytDlpAsset(Platform platform) {
 
         return switch (platform.os()) {
@@ -663,8 +657,6 @@ public final class ToolProvisioner {
         return Path.of(tools.provisionDir().isBlank() ? "tools" : tools.provisionDir().trim());
     }
 
-    // ---- outcomes -----------------------------------------------------------------------
-
     private void skip(String id, String reason) {
         metric(id, "skipped");
         log.info("Provisioning {}: skipped - {} (platform {}/{}), the backend stays disabled",
@@ -689,8 +681,6 @@ public final class ToolProvisioner {
             }
         }
     }
-
-    // ---- Codeberg release resolution ------------------------------------------------------
 
     private static volatile Map<String, String> codebergAssets;
 

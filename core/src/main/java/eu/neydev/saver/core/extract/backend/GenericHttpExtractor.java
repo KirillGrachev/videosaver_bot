@@ -261,8 +261,6 @@ public final class GenericHttpExtractor implements Extractor {
 
     }
 
-    // ---- page parsing ---------------------------------------------------------
-
     /**
      * The YouTube player response embedded in watch/shorts pages, or null on any other
      * site. The object is minified JSON assigned to a global variable, so it is cut out
@@ -743,8 +741,6 @@ public final class GenericHttpExtractor implements Extractor {
         return element == null ? null : element.attr("content");
 
     }
-
-    // ---- file naming ------------------------------------------------------------
 
     static String fileNameFrom(URI url, int index, String contentType) {
 
