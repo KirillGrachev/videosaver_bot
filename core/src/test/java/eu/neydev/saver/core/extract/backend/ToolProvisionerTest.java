@@ -27,6 +27,8 @@ import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -454,6 +456,93 @@ class ToolProvisionerTest {
 
         assertThat(chain.hasYtDlp()).isTrue();
         assertThat(chain.ytDlp().version()).isEqualTo("2026.99.1");
+
+    }
+
+    @Test
+    void awaitRunReturnsImmediatelyWhenNoRunWasStarted() {
+
+        ToolProvisioner provisioner = provisioner(LINUX_X64);
+
+        assertThat(provisioner.runActive()).isFalse();
+        assertThat(provisioner.awaitRun(Duration.ofMillis(50))).isTrue();
+
+    }
+
+    @Test
+    void awaitRunBlocksWhileTheRunIsStuckAndObservesItEnd() throws Exception {
+
+        CountDownLatch inDownload = new CountDownLatch(1);
+        CountDownLatch release = new CountDownLatch(1);
+
+        AppConfig.Downloader.Tools tools = new AppConfig.Downloader.Tools(
+                "yt-dlp", "gallery-dl", "ffmpeg", "ffprobe", Duration.ZERO, true,
+                tempDir.resolve("tools").toString());
+
+        ToolProvisioner provisioner = new ToolProvisioner(tools, new MetricsRegistry(),
+                new BlockingUrls(inDownload, release), LINUX_X64);
+
+        provisioner.installAsync(Map.of("ytdlp", provisioner.targetPath("ytdlp")), () -> { });
+
+        assertThat(inDownload.await(5, TimeUnit.SECONDS)).isTrue();
+        assertThat(provisioner.runActive()).isTrue();
+
+        // A wedged download must not park the caller forever: the bounded wait lapses
+        // while the run is still in flight...
+        assertThat(provisioner.awaitRun(Duration.ofMillis(200))).isFalse();
+        assertThat(provisioner.runActive()).isTrue();
+
+        release.countDown();
+
+        // ...and once the run ends the same call observes it promptly.
+        assertThat(provisioner.awaitRun(Duration.ofSeconds(10))).isTrue();
+        assertThat(provisioner.runActive()).isFalse();
+
+    }
+
+    /** ReleaseUrls whose yt-dlp download parks on a latch: a run we can hold mid-flight. */
+    private record BlockingUrls(CountDownLatch inDownload, CountDownLatch release)
+            implements ToolProvisioner.ReleaseUrls {
+
+        @Override
+        public URI ytDlpBinary(String asset) {
+
+            inDownload.countDown();
+
+            try {
+                release.await(30, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+            return null;   // unresolved asset = an honest skip, the run ends
+
+        }
+
+        @Override
+        public URI ytDlpChecksums() {
+            return null;
+        }
+
+        @Override
+        public URI ffmpegArchive(String asset) {
+            return null;
+        }
+
+        @Override
+        public URI ffmpegChecksums() {
+            return null;
+        }
+
+        @Override
+        public URI galleryDlBinary(String asset) {
+            return null;
+        }
+
+        @Override
+        public URI galleryDlChecksums() {
+            return null;
+        }
 
     }
 

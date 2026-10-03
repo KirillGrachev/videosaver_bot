@@ -61,10 +61,14 @@ public final class BotProcess {
     /** An exit code 0 this early is not a planned shutdown - the bot died silently. */
     private static final long SUSPICIOUSLY_SHORT_LIFE_MILLIS = 60_000L;
 
-    private static final int LEVEL_DEBUG = -1;
-    private static final int LEVEL_INFO = 0;
-    private static final int LEVEL_WARN = 1;
-    private static final int LEVEL_ERROR = 2;
+    /**
+     * Package-visible on purpose: {@link RepeatCoalescer} must recognise debug records,
+     * and the tests assert which level a record was emitted at.
+     */
+    static final int LEVEL_DEBUG = -1;
+    static final int LEVEL_INFO = 0;
+    static final int LEVEL_WARN = 1;
+    static final int LEVEL_ERROR = 2;
 
     /** {@link #heartbeatLevel} result for a line that is not a heartbeat. */
     private static final int NOT_A_HEARTBEAT = -2;
@@ -418,6 +422,9 @@ public final class BotProcess {
         Thread thread = new Thread(() -> {
 
             int level = LEVEL_INFO;
+            // One coalescer per pipe: records of a retry storm stay contiguous within
+            // a stream, while stdout and stderr interleave freely at the source.
+            RepeatCoalescer coalescer = new RepeatCoalescer(this::emit);
 
             try (BufferedReader in = new BufferedReader(
                     new InputStreamReader(stream, StandardCharsets.UTF_8))) {
@@ -439,16 +446,15 @@ public final class BotProcess {
 
                     int heartbeatLevel = heartbeatLevel(line);
 
-                    if (heartbeatLevel == NOT_A_HEARTBEAT) {
-                        emit(level, line);
-                    } else {
-                        emit(heartbeatLevel, line);
-                    }
+                    coalescer.accept(
+                            heartbeatLevel == NOT_A_HEARTBEAT ? level : heartbeatLevel, line);
 
                 }
 
             } catch (IOException e) {
                 // the child is gone, the pipe is closed - nothing to report
+            } finally {
+                coalescer.flush();
             }
 
         }, threadName);
@@ -476,9 +482,9 @@ public final class BotProcess {
     }
 
     /** Stack-trace lines belong to the ERROR/WARN header above them, not to themselves. */
-    private static boolean isTraceContinuation(String line) {
+    static boolean isTraceContinuation(String line) {
         return line.startsWith("\t") || line.startsWith("    at ") || line.startsWith("Caused by:")
-                || line.matches("^\\s*\\.\\.\\. \\d+ more.*");
+                || line.matches("^\\s*\\.\\.\\. \\d+ (more|common frames).*");
     }
 
     /**

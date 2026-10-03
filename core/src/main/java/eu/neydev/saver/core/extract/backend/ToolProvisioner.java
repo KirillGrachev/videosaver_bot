@@ -3,6 +3,7 @@ package eu.neydev.saver.core.extract.backend;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.neydev.saver.core.config.AppConfig;
+import eu.neydev.saver.core.extract.ProvisionGate;
 import eu.neydev.saver.core.metrics.MetricsRegistry;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -29,6 +30,10 @@ import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -65,7 +70,7 @@ import java.util.zip.ZipInputStream;
  * honest TOOL_MISSING answer until the next start or a manual install. Provisioning never
  * throws into the startup path.
  */
-public final class ToolProvisioner {
+public final class ToolProvisioner implements ProvisionGate {
 
     private static final Logger log = LoggerFactory.getLogger(ToolProvisioner.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -177,6 +182,8 @@ public final class ToolProvisioner {
     private final ReleaseUrls urls;
     private final Platform platform;
     private final AtomicBoolean started = new AtomicBoolean();
+    /** Completed exactly once, when the install run ends - however it ends. */
+    private final CompletableFuture<Void> runDone = new CompletableFuture<>();
 
     public ToolProvisioner(AppConfig.Downloader.Tools tools, MetricsRegistry metrics) {
         this(tools, metrics, PRODUCTION_URLS, Platform.current());
@@ -215,8 +222,9 @@ public final class ToolProvisioner {
 
     /**
      * Kicks the install run off on a daemon thread: startup must never WAIT for a
-     * 150 MB archive. Jobs arriving before a download lands get the honest TOOL_MISSING;
-     * the reprobe after each landed binary flips the state live.
+     * 150 MB archive. Jobs arriving while a download is in flight wait for the run
+     * through the {@link ProvisionGate} this class implements (bounded, cold-start
+     * only); the reprobe after each landed binary flips the state live.
      */
     public void installAsync(Map<String, String> targets, Runnable afterInstall) {
 
@@ -236,25 +244,71 @@ public final class ToolProvisioner {
     void install(Map<String, String> targets, Runnable afterInstall) {
 
         try {
-            Files.createDirectories(toolsDir());
-        } catch (IOException e) {
-            log.warn("Tool provisioning cannot create {}: {}", toolsDir(), e.getMessage());
-            return;
+
+            try {
+                Files.createDirectories(toolsDir());
+            } catch (IOException e) {
+                log.warn("Tool provisioning cannot create {}: {}", toolsDir(), e.getMessage());
+                return;
+            }
+
+            if (targets.containsKey("ytdlp")) {
+                installSingle("ytdlp", targets.get("ytdlp"), afterInstall);
+            }
+
+            if (targets.containsKey("ffmpeg") || targets.containsKey("ffprobe")) {
+                installFfmpegFamily(targets, afterInstall);
+            }
+
+            if (targets.containsKey("gallerydl")) {
+                installSingle("gallerydl", targets.get("gallerydl"), afterInstall);
+            }
+
+            log.info("Tool provisioning run complete");
+
+        } catch (RuntimeException e) {
+
+            // The run ending is what unblocks waiting jobs: even an unexpected crash
+            // must complete the gate, or cold-start jobs would park for the full grace.
+            log.warn("Tool provisioning run crashed", e);
+
+        } finally {
+
+            runDone.complete(null);
+
         }
 
-        if (targets.containsKey("ytdlp")) {
-            installSingle("ytdlp", targets.get("ytdlp"), afterInstall);
+    }
+
+    @Override
+    public boolean runActive() {
+        return started.get() && !runDone.isDone();
+    }
+
+    @Override
+    public boolean awaitRun(Duration timeout) {
+
+        if (!runActive()) {
+            return true;
         }
 
-        if (targets.containsKey("ffmpeg") || targets.containsKey("ffprobe")) {
-            installFfmpegFamily(targets, afterInstall);
-        }
+        metrics.increment("tool_provision_waits_total");
 
-        if (targets.containsKey("gallerydl")) {
-            installSingle("gallerydl", targets.get("gallerydl"), afterInstall);
-        }
+        try {
 
-        log.info("Tool provisioning run complete");
+            runDone.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            return true;
+
+        } catch (TimeoutException e) {
+            return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return true;
+        } catch (ExecutionException e) {
+            // install() turns every failure into a skip/WARN and never completes the
+            // future exceptionally; a finished run is finished, availability re-checks.
+            return true;
+        }
 
     }
 

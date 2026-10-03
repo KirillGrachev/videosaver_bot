@@ -10,6 +10,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +20,9 @@ class ExtractorChainTest {
 
     private static final Source SOURCE = new Source("test", "Test", List.of("test.example"),
             SourceBackend.YTDLP, SourceStatus.OK);
+
+    private static final Source HTTP_SOURCE = new Source("web", "Web",
+            List.of("web.example"), SourceBackend.HTTP, SourceStatus.OK);
 
     /** A scripted backend: fails with a canned error, or "downloads" a marker file. */
     private record Fake(String backendId, boolean available, Category failure, int order)
@@ -62,6 +66,81 @@ class ExtractorChainTest {
     private static ExtractionRequest request(Path workDir) {
         return new ExtractionRequest(SOURCE, URI.create("https://test.example/v/1"),
                 QualityPreset.BEST, workDir);
+    }
+
+    private static ExtractionRequest request(Path workDir, Source source) {
+        return new ExtractionRequest(source, URI.create("https://" + source.hosts().get(0) + "/v/1"),
+                QualityPreset.BEST, workDir);
+    }
+
+    /** A backend whose availability flips mid-test: the cold-start provisioning shape. */
+    private static final class Flaky implements Extractor {
+
+        private final String id;
+        private volatile boolean available;
+
+        private Flaky(String id, boolean available) {
+            this.id = id;
+            this.available = available;
+        }
+
+        @Override
+        public String backendId() {
+            return id;
+        }
+
+        @Override
+        public boolean available() {
+            return available;
+        }
+
+        @Override
+        public ExtractionResult extract(ExtractionRequest request) {
+
+            try {
+
+                Path file = request.workDir().resolve(id + "-file.mp4");
+                java.nio.file.Files.writeString(file, "content of " + id);
+
+                return new ExtractionResult(request.source(), id,
+                        List.of(ExtractedItem.of(
+                                eu.neydev.saver.core.media.MediaKind.VIDEO, file)),
+                        "title", null, request.url().toString(), false);
+
+            } catch (java.io.IOException e) {
+                throw new ExtractionException(Category.UNKNOWN, id, e.getMessage(), e);
+            }
+
+        }
+
+    }
+
+    /** A gate the test drives: counts awaitRun calls, optionally "lands" a backend. */
+    private static final class Gate implements ProvisionGate {
+
+        private final java.util.concurrent.atomic.AtomicInteger calls =
+                new java.util.concurrent.atomic.AtomicInteger();
+        private volatile boolean active = true;
+        private @org.jetbrains.annotations.Nullable Flaky flips;
+
+        @Override
+        public boolean runActive() {
+            return active;
+        }
+
+        @Override
+        public boolean awaitRun(Duration timeout) {
+
+            calls.incrementAndGet();
+
+            if (flips != null) {
+                flips.available = true;
+            }
+
+            return true;
+
+        }
+
     }
 
     @Test
@@ -182,6 +261,57 @@ class ExtractorChainTest {
         // Even an unknown-host request produces a ladder (which then fails with
         // "no extraction attempted" - an honest UNKNOWN, never a crash).
         assertThat(chain.orderFor(SourceCatalog.GENERIC)).isNotEmpty();
+
+    }
+
+    @Test
+    void coldStartJobWaitsForTheInstallRunAndThenUsesTheLandedBackend(@TempDir Path dir) {
+
+        Flaky ytdlp = new Flaky("ytdlp", false);
+        Gate gate = new Gate();
+        gate.flips = ytdlp;   // the run "lands" the tool while the job waits
+
+        ExtractorChain chain = new ExtractorChain(
+                List.of(ytdlp, new Fake("http", true, null, 0)), gate);
+
+        ExtractionResult result = chain.extract(request(dir));
+
+        assertThat(result.backendId()).isEqualTo("ytdlp");
+        assertThat(gate.calls.get()).isEqualTo(1);
+
+    }
+
+    @Test
+    void waitingOutTheRunWithoutALandedToolStillMeansToolMissing(@TempDir Path dir) {
+
+        // The gate reports an active run but nothing lands: after the wait the honest
+        // answer is still TOOL_MISSING, exactly as before the gate existed.
+        ExtractorChain chain = new ExtractorChain(List.of(
+                new Flaky("ytdlp", false),
+                new Fake("gallerydl", false, null, 0),
+                new Fake("direct", false, null, 0)), new Gate());
+
+        assertThatThrownBy(() -> chain.extract(request(dir)))
+                .isInstanceOf(ExtractionException.class)
+                .extracting(e -> ((ExtractionException) e).category())
+                .isEqualTo(Category.TOOL_MISSING);
+
+    }
+
+    @Test
+    void toolFreePrimaryBackendNeverWaitsForSomebodyElsesDownload(@TempDir Path dir) {
+
+        Gate gate = new Gate();
+
+        ExtractorChain chain = new ExtractorChain(List.of(
+                new Fake("ytdlp", false, null, 0),
+                new Fake("http", true, null, 0),
+                new Fake("direct", true, null, 0)), gate);
+
+        ExtractionResult result = chain.extract(request(dir, HTTP_SOURCE));
+
+        assertThat(result.backendId()).isEqualTo("http");
+        assertThat(gate.calls.get()).isZero();
 
     }
 

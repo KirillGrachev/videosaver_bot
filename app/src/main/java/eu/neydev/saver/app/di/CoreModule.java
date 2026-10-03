@@ -129,7 +129,13 @@ public final class CoreModule extends AbstractModule {
 
     @Provides
     @Singleton
-    Toolchain toolchain(AppConfig config, MetricsRegistry metrics) {
+    ToolProvisioner toolProvisioner(AppConfig config, MetricsRegistry metrics) {
+        return new ToolProvisioner(config.downloader().tools(), metrics);
+    }
+
+    @Provides
+    @Singleton
+    Toolchain toolchain(AppConfig config, ToolProvisioner provisioner) {
 
         AppConfig.Downloader.Tools tools = config.downloader().tools();
 
@@ -144,7 +150,6 @@ public final class CoreModule extends AbstractModule {
         // provision dir NOW, so the re-probe after each landed download flips them to
         // present without a restart; the downloads themselves run in the background,
         // because startup must never wait for a 150 MB archive.
-        ToolProvisioner provisioner = new ToolProvisioner(tools, metrics);
         Map<String, String> missing = provisioner.plan(toolchain);
 
         if (!missing.isEmpty()) {
@@ -289,9 +294,10 @@ public final class CoreModule extends AbstractModule {
     @Provides
     @Singleton
     ExtractorChain extractorChain(YtDlpExtractor ytDlp, GalleryDlExtractor galleryDl,
-                                  GenericHttpExtractor generic, DirectLinkExtractor direct) {
+                                  GenericHttpExtractor generic, DirectLinkExtractor direct,
+                                  ToolProvisioner provisioner) {
 
-        return new ExtractorChain(List.of(ytDlp, galleryDl, generic, direct));
+        return new ExtractorChain(List.of(ytDlp, galleryDl, generic, direct), provisioner);
 
     }
 

@@ -78,6 +78,37 @@ class BotProcessTest {
     }
 
     @Test
+    void retryStormIsCoalescedInThePump() throws Exception {
+
+        // Three identical getUpdates retry records, as a Telegram 502 blip produces.
+        String record = String.join("\n",
+                "echo '12:00:00.000 ERROR BotSession - Error received from Telegram "
+                        + "GetUpdates Request, retrying in 500 millis...'",
+                "echo '    at org.telegram.telegrambots.longpolling.BotSession"
+                        + ".getUpdatesFromTelegram(BotSession.java:161)'",
+                "echo 'Caused by: 502: TelegramApiErrorResponseException'",
+                "echo '    ... 7 common frames omitted'");
+
+        String java = fakeJava("for i in 1 2 3; do\n" + record + "\ndone");
+
+        Recording log = new Recording();
+        BotProcess process = process(java, false, log);
+
+        process.start();
+        await(() -> log.error.stream().anyMatch(line -> line.contains("repeated 2 more times")));
+
+        // The first case arrives in full, once; the two repeats speak only through
+        // the summary line instead of adding 26 more lines to the server log.
+        assertThat(log.error.stream()
+                .filter(line -> line.contains("GetUpdates Request")).count()).isEqualTo(1);
+        assertThat(log.error)
+                .anyMatch(line -> line.contains("(the record above repeated 2 more times)"));
+
+        process.stop();
+
+    }
+
+    @Test
     void heartbeatLineIsTrackedAndStalenessIsDetected() throws Exception {
 
         String java = fakeJava(String.join("\n",
